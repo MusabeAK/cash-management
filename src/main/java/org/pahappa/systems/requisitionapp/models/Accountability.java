@@ -1,5 +1,6 @@
 package org.pahappa.systems.requisitionapp.models;
 
+import javax.persistence.OneToOne;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -8,6 +9,9 @@ public class Accountability {
     private String description;
     private byte[] image;
     private int amountUsed;
+
+    @OneToOne
+    private Requisition requisition;
 
     public Accountability() {}
 
@@ -49,27 +53,31 @@ public class Accountability {
         this.amountUsed = amountUsed;
     }
 
+    public Requisition getRequisition() {
+        return requisition;
+    }
+
+    public void setRequisition(Requisition requisition) {
+        this.requisition = requisition;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Accountability that = (Accountability) o;
-        return id == that.id && amountUsed == that.amountUsed && Objects.equals(description, that.description) && Objects.deepEquals(image, that.image);
+        return id == that.id && Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, Arrays.hashCode(image), amountUsed);
+        return Objects.hash(id, description);
     }
 
     @Override
     public String toString() {
         return "Accountability{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", image=" + Arrays.toString(image) +
-                ", amountUsed=" + amountUsed +
+                "description='" + description + '\'' +
                 '}';
     }
-
 }

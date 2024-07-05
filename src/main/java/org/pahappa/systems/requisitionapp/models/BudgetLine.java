@@ -2,7 +2,10 @@ package org.pahappa.systems.requisitionapp.models;
 
 import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
 
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class BudgetLine {
@@ -12,6 +15,13 @@ public class BudgetLine {
     private int initialAmount;
     private Date startDate;
     private Date endDate;
+    private BudgetLineStatus status;
+
+    @OneToMany(mappedBy = "budgetLine")
+    private List<Requisition> requisitions;
+
+    @ManyToOne
+    private BudgetLineCategory budgetLineCategory;
 
     public BudgetLine() {}
 
@@ -69,6 +79,30 @@ public class BudgetLine {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public BudgetLineStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BudgetLineStatus status) {
+        this.status = status;
+    }
+
+    public BudgetLineCategory getBudgetLineCategory() {
+        return budgetLineCategory;
+    }
+
+    public void setBudgetLineCategory(BudgetLineCategory budgetLineCategory) {
+        this.budgetLineCategory = budgetLineCategory;
+    }
+
+    public List<Requisition> getRequisitions() {
+        return requisitions;
+    }
+
+    public void setRequisitions(List<Requisition> requisitions) {
+        this.requisitions = requisitions;
     }
 
     @Override

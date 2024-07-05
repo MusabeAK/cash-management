@@ -3,10 +3,15 @@ package org.pahappa.systems.requisitionapp.models;
 import org.pahappa.systems.requisitionapp.models.utils.Gender;
 import org.pahappa.systems.requisitionapp.models.utils.Role;
 
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import java.util.List;
 import java.util.Objects;
 
 public class User {
     private long id;
+    private String username;
     private String firstName;
     private String lastName;
     private String email;
@@ -15,10 +20,16 @@ public class User {
     private Gender gender;
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Requisition> requisitions;
+
     public User() {}
 
-    private User(long id, String firstName, String lastName, String email, String password, Gender gender, Role role, String phoneNumber) {
-        this.id = id;
+    private User(String username, String firstName, String lastName, String email, String password, Gender gender, Role role, String phoneNumber) {
+        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -26,6 +37,14 @@ public class User {
         this.gender = gender;
         this.role = role;
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public long getId() {
@@ -97,22 +116,18 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName);
+        return Objects.equals(username, user.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName);
+        return Objects.hash(username);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "role=" + role +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", id=" + id +
-                ", gender=" + gender +
+                "username='" + username + '\'' +
                 '}';
     }
 }

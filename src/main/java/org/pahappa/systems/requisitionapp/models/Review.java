@@ -1,17 +1,24 @@
 package org.pahappa.systems.requisitionapp.models;
 
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.util.Date;
+import java.util.Objects;
 
 public class Review {
     private long id;
     private String comment;
-    private Date reviewDate;
+
+    @ManyToOne
+    private User user;
+
+    @OneToOne
+    private Requisition requisition;
 
     public Review(){}
 
-    private Review(String comment, Date reviewDate) {
+    private Review(String comment) {
         this.comment = comment;
-        this.reviewDate = reviewDate;
     }
 
     public long getId() {
@@ -30,12 +37,32 @@ public class Review {
         this.comment = comment;
     }
 
-    public Date getReviewDate() {
-        return reviewDate;
+    public Requisition getRequisition() {
+        return requisition;
     }
 
-    public void setReviewDate(Date reviewDate) {
-        this.reviewDate = reviewDate;
+    public void setRequisition(Requisition requisition) {
+        this.requisition = requisition;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return id == review.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
