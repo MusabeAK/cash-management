@@ -15,7 +15,7 @@ public class BudgetLineCategory {
     @Column(name = "category_name")
     private String categoryName;
 
-    @OneToMany(mappedBy = "budgetLine", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "budgetLineCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<BudgetLine> budgetLines;
 
     public BudgetLineCategory() {}
