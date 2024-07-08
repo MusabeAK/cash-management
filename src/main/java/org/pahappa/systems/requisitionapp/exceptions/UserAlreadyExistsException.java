@@ -1,0 +1,7 @@
+package org.pahappa.systems.requisitionapp.exceptions;
+
+public class UserAlreadyExistsException extends Exception{
+    public UserAlreadyExistsException(String message) {
+        super(message);
+    }
+}
