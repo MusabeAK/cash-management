@@ -1,13 +1,18 @@
 package org.pahappa.systems.requisitionapp.models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "budget_line_categories")
 public class BudgetLineCategory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "budget_line_category_id")
     private int id;
+
+    @Column(name = "category_name")
     private String categoryName;
 
     @OneToMany(mappedBy = "budgetLine", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

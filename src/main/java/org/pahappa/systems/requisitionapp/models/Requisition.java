@@ -2,29 +2,45 @@ package org.pahappa.systems.requisitionapp.models;
 
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "requisitions")
 public class Requisition {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "requisition_id")
     private int id;
+
+    @Column(name = "subject")
     private String subject;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "amount")
     private int amount;
+
+    @Column(name = "date_needed")
     private Date dateNeeded;
+
+    @Column(name = "status")
     private RequisitionStatus status;
 
     @ManyToOne
+    @JoinColumn(name = "budget_line_id")
     private BudgetLine budgetLine;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
+    @OneToOne(mappedBy = "requisition", cascade = CascadeType.ALL, orphanRemoval = true)
     private Review review;
 
-    @OneToOne
+    @OneToOne(mappedBy = "requisition", cascade = CascadeType.ALL, orphanRemoval = true)
     private Accountability accountability;
 
     public Requisition() {}

@@ -1,23 +1,33 @@
 package org.pahappa.systems.requisitionapp.models;
 
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
+@Entity
+@Table(name = "accountabilities")
 public class Accountability {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "accountability_id")
     private long id;
+
+    @Column(name = "description")
     private String description;
-    private byte[] image;
+
+    //private byte[] image;
+
+    @Column(name = "amount_used")
     private int amountUsed;
 
     @OneToOne
+    @JoinColumn(name = "requisition_id")
     private Requisition requisition;
 
     public Accountability() {}
 
-    private Accountability(String description, byte[] image, int amountUsed) {
+    private Accountability(String description, int amountUsed) {
         this.description = description;
-        this.image = image;
         this.amountUsed = amountUsed;
     }
 
@@ -37,13 +47,13 @@ public class Accountability {
         this.description = description;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
+//    public byte[] getImage() {
+//        return image;
+//    }
+//
+//    public void setImage(byte[] image) {
+//        this.image = image;
+//    }
 
     public int getAmountUsed() {
         return amountUsed;

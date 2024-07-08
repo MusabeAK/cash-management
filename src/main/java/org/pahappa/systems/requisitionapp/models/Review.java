@@ -1,18 +1,21 @@
 package org.pahappa.systems.requisitionapp.models;
 
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "reviews")
 public class Review {
     private long id;
     private String comment;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne
+    @JoinColumn(name = "requisition_id")
     private Requisition requisition;
 
     public Review(){}
