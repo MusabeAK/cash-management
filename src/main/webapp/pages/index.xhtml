@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Index</title>
+</h:head>
+<h:body>
+    <h:form>
+        <table>
+            <tr>
+                <p:messages id="messages" showDetail="false" closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <td><h:outputLabel for="username" value="Username : " /></td>
+                <td><h:inputText id="username" value="#{userBean.username}">
+                </h:inputText>
+                </td>
+            </tr>
+            <tr>
+                <td><h:outputLabel for="name" value="Name : " /></td>
+                <td>
+                    <h:inputText id="name" value="#{userBean.firstName}">
+                </h:inputText>
+                </td>
+            </tr>
+            <tr>
+                <td><h:outputLabel for="surname" value="Surname : " /></td>
+                <td><h:inputText id="surname" value="#{userBean.lastName}">
+                </h:inputText>
+                </td>
+            </tr>
+            <tr>
+                <td><h:outputLabel for="password" value="Password : " /></td>
+                <td><h:inputText id="password" value="#{userBean.password}">
+                </h:inputText>
+                </td>
+            </tr>
+            <tr>
+                <td><h:commandButton id="addUser" value="Add" action="#{userBean.registerUser()}"/></td>
+            </tr>
+        </table>
+    </h:form>
+
+</h:body>
+</html>

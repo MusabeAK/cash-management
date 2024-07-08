@@ -31,6 +31,7 @@ public class BudgetLine {
     private Date endDate;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private BudgetLineStatus status;
 
     @OneToMany(mappedBy = "budgetLine")

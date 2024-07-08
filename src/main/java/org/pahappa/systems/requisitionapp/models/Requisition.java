@@ -27,6 +27,7 @@ public class Requisition {
     private Date dateNeeded;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private RequisitionStatus status;
 
     @ManyToOne
