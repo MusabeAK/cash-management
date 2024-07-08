@@ -7,6 +7,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "reviews")
 public class Review {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String comment;
 
