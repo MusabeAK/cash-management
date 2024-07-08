@@ -11,5 +11,3 @@ bin/
 target/
 *.jar
 *.idea/
-*.smarttomcat/
-/web3/
