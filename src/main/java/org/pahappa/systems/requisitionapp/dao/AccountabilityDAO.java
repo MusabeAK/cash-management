@@ -47,7 +47,7 @@ public class AccountabilityDAO {
         sessionFactory.getCurrentSession().delete(accountability);
     }
 
-    public Accountability getAccountabilityById(int id) {
+    public Accountability getAccountabilityById(long id) {
         return (Accountability) sessionFactory.getCurrentSession().get(Accountability.class, id);
     }
 

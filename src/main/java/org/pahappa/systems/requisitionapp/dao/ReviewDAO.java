@@ -49,7 +49,7 @@ public class ReviewDAO {
         sessionFactory.getCurrentSession().delete(review);
     }
 
-    public Review getReviewById(int id) {
+    public Review getReviewById(long id) {
         return (Review) sessionFactory.getCurrentSession().get(Review.class, id);
     }
 

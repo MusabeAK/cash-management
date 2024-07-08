@@ -23,7 +23,7 @@ public class UserService {
         return userDAO.getAllUsers();
     }
 
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         return userDAO.getById(id);
     }
 

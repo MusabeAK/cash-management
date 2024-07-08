@@ -46,7 +46,7 @@ public class RequisitionDAO {
         sessionFactory.getCurrentSession().delete(requisition);
     }
 
-    public Requisition getRequisitionById(int id) {
+    public Requisition getRequisitionById(long id) {
         return (Requisition) sessionFactory.getCurrentSession().get(Requisition.class, id);
     }
 

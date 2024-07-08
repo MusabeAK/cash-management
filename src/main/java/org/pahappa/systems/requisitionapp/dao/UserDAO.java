@@ -21,7 +21,7 @@ public class UserDAO {
         sessionFactory.getCurrentSession().save(user);
     }
 
-    public User getById(int id) {
+    public User getById(long id) {
         return (User) sessionFactory.getCurrentSession().get(User.class, id);
     }
 
