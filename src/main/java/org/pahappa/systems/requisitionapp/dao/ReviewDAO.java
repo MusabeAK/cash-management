@@ -23,22 +23,14 @@ public class ReviewDAO {
 
     public void addReviewToRequisition(Review review, User user, Requisition requisition) {
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            review.setUser(user);
-            review.setRequisition(requisition);
-            requisition.setReview(review);
-            user.getReviews().add(review);
+        review.setUser(user);
+        review.setRequisition(requisition);
+        requisition.setReview(review);
+        user.getReviews().add(review);
 
-            session.saveOrUpdate(review);
-            session.saveOrUpdate(requisition);
-            session.saveOrUpdate(user);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            throw e;
-        }
+        session.saveOrUpdate(review);
+        session.saveOrUpdate(requisition);
+        session.saveOrUpdate(user);
     }
 
     public void updateReview(Review review) {

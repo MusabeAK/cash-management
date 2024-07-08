@@ -22,20 +22,10 @@ public class RequisitionDAO {
 
     public void makeRequisition(Requisition requisition, User user) {
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            requisition.setUser(user);
-            user.getRequisitions().add(requisition);
-            session.saveOrUpdate(requisition);
-            session.saveOrUpdate(user);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }
+        requisition.setUser(user);
+        user.getRequisitions().add(requisition);
+        session.saveOrUpdate(requisition);
+        session.saveOrUpdate(user);
     }
 
     public void updateRequisition(Requisition requisition) {
@@ -56,21 +46,11 @@ public class RequisitionDAO {
 
     public List<Requisition> getRequisitionsByUser(User user) {
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
         List<Requisition> requisitions = null;
-        try {
-            transaction = session.beginTransaction();
-            String hql = "FROM Requisition rq WHERE rq.user = :user";
-            requisitions = session.createQuery(hql, Requisition.class)
-                    .setParameter("user", user)
-                    .list();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }
+        String hql = "FROM Requisition rq WHERE rq.user = :user";
+        requisitions = session.createQuery(hql, Requisition.class)
+                .setParameter("user", user)
+                .list();
         return requisitions;
     }
 

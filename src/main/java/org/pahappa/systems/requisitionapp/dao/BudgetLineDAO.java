@@ -54,21 +54,11 @@ public class BudgetLineDAO {
 
     public List<BudgetLine> getAllBudgetLinesForCategory(BudgetLineCategory category){
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
         List<BudgetLine> budgetLines = null;
-        try {
-            transaction = session.beginTransaction();
-            String hql = "FROM BudgetLine bl WHERE bl.budgetLineCategory = :category";
-            budgetLines = session.createQuery(hql, BudgetLine.class)
-                    .setParameter("category", category)
-                    .list();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }
+        String hql = "FROM BudgetLine bl WHERE bl.budgetLineCategory = :category";
+        budgetLines = session.createQuery(hql, BudgetLine.class)
+                .setParameter("category", category)
+                .list();
         return budgetLines;
     }
 
