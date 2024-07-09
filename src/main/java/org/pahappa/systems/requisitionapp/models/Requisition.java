@@ -17,6 +17,9 @@ public class Requisition {
     @Column(name = "subject")
     private String subject;
 
+    @Column(name = "comment")
+    private String comment;
+
     @Column(name = "description")
     private String description;
 
@@ -114,6 +117,13 @@ public class Requisition {
         this.user = user;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public Accountability getAccountability() {
         return accountability;
