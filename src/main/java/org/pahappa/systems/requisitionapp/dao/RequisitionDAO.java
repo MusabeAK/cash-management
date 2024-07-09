@@ -20,12 +20,8 @@ public class RequisitionDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public void makeRequisition(Requisition requisition, User user) {
-        Session session = sessionFactory.getCurrentSession();
-        requisition.setUser(user);
-        user.getRequisitions().add(requisition);
-        session.saveOrUpdate(requisition);
-        session.saveOrUpdate(user);
+    public void makeRequisition(Requisition requisition) {
+        sessionFactory.getCurrentSession().save(requisition);
     }
 
     public void updateRequisition(Requisition requisition) {

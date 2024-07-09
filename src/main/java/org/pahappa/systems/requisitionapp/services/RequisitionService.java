@@ -1,4 +1,5 @@
 package org.pahappa.systems.requisitionapp.services;
 
-public class RequisitionService {
+public interface RequisitionService {
+
 }

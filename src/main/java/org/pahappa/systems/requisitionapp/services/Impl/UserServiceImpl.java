@@ -1,11 +1,10 @@
 package org.pahappa.systems.requisitionapp.services.Impl;
 
 import org.pahappa.systems.requisitionapp.dao.UserDAO;
-import org.pahappa.systems.requisitionapp.exceptions.InvalidInputException;
-import org.pahappa.systems.requisitionapp.exceptions.NullUserException;
-import org.pahappa.systems.requisitionapp.exceptions.UserAlreadyExistsException;
-import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
+import org.pahappa.systems.requisitionapp.exceptions.*;
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
 import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,4 +80,28 @@ public class UserServiceImpl implements UserService {
 
         userDAO.delete(user);
     }
+
+    public void approveBudgetLine(BudgetLine budgetLine) {
+        if (budgetLine == null){
+            throw new NullBudgetLineException("BudgetLine does not exist");
+        }
+        if (budgetLine.getStatus() != BudgetLineStatus.DRAFT){
+            throw new InvalidInputException("Cannot approve a budget line that is not in draft");
+        }
+        budgetLine.setStatus(BudgetLineStatus.APPROVED);
+    }
+
+    public void rejectBudgetLine(BudgetLine budgetLine) {
+        if (budgetLine == null){
+            throw new NullBudgetLineException("BudgetLine does not exist");
+        }
+        if (budgetLine.getStatus() != BudgetLineStatus.DRAFT){
+            throw new InvalidInputException("Cannot approve a budget line that is not in draft");
+        }
+        budgetLine.setStatus(BudgetLineStatus.REJECTED);
+    }
+
+//    public void expireBudgetLine(BudgetLine budgetLine) {
+//
+//    }
 }

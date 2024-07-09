@@ -57,19 +57,11 @@ public class AccountabilityDAO {
 
     public Accountability getAccountabilityByRequisition(Requisition requisition) {
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
         Accountability accountability = null;
-        try {
-            transaction = session.beginTransaction();
-            String hql = "FROM Accountability a WHERE a.requisition = :requisition";
-            accountability = session.createQuery(hql, Accountability.class)
-                    .setParameter("requisition", requisition)
-                    .uniqueResult();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            throw e;
-        }
+        String hql = "FROM Accountability a WHERE a.requisition = :requisition";
+        accountability = session.createQuery(hql, Accountability.class)
+                .setParameter("requisition", requisition)
+                .uniqueResult();
         return accountability;
     }
 

@@ -21,16 +21,13 @@ public class ReviewDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public void addReviewToRequisition(Review review, User user, Requisition requisition) {
+    public void addReviewToRequisition(Review review, Requisition requisition) {
         Session session = sessionFactory.getCurrentSession();
-        review.setUser(user);
         review.setRequisition(requisition);
         requisition.setReview(review);
-        user.getReviews().add(review);
 
         session.saveOrUpdate(review);
         session.saveOrUpdate(requisition);
-        session.saveOrUpdate(user);
     }
 
     public void updateReview(Review review) {

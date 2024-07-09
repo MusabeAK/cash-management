@@ -2,6 +2,7 @@ package org.pahappa.systems.requisitionapp.services;
 
 import org.pahappa.systems.requisitionapp.exceptions.UserAlreadyExistsException;
 import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.User;
 
 import java.util.List;
@@ -19,5 +20,16 @@ public interface UserService {
     void updateUser(User user);
 
     void deleteUser(User user);
+
+    void approveBudgetLine(BudgetLine budgetLine);
+
+//    void expireBudgetLine(BudgetLine budgetLine);
+
+    /*
+
+    TO-DO:
+    Add a Cron Job for expiry for budget line
+
+     */
 
 }
