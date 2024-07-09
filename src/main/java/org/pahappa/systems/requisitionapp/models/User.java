@@ -132,6 +132,22 @@ public class User {
         this.role = role;
     }
 
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public List<Requisition> getRequisitions() {
+        return requisitions;
+    }
+
+    public void setRequisitions(List<Requisition> requisitions) {
+        this.requisitions = requisitions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

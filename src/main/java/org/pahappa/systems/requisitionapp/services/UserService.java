@@ -1,47 +1,23 @@
 package org.pahappa.systems.requisitionapp.services;
 
-import org.pahappa.systems.requisitionapp.dao.UserDAO;
+import org.pahappa.systems.requisitionapp.exceptions.UserAlreadyExistsException;
+import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
 import org.pahappa.systems.requisitionapp.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service("UserService")
-@Transactional
-public class UserService {
+public interface UserService {
 
-    private final UserDAO userDAO;
+    List<User> getAllUsers();
 
-    @Autowired
-    public UserService(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
+    User getUserById(Long id) throws UserDoesNotExistException;
 
-    public List<User> getAllUsers() {
-        return userDAO.getAllUsers();
-    }
+    User getUserByUsername(String username) throws UserDoesNotExistException;
 
-    public User getUserById(int id) {
-        return userDAO.getById(id);
-    }
+    void addUser(User user) throws UserAlreadyExistsException, UserDoesNotExistException;
 
-    public User getUserByUsername(String username) {
-        return userDAO.getUserByUsername(username);
-    }
+    void updateUser(User user);
 
-    public void addUser(User user) {
-        userDAO.save(user);
-    }
-
-    public void updateUser(User user) {
-        userDAO.update(user);
-    }
-
-    public void deleteUser(User user) {
-        userDAO.delete(user);
-    }
-
+    void deleteUser(User user);
 
 }

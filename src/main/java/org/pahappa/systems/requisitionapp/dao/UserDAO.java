@@ -1,6 +1,8 @@
 package org.pahappa.systems.requisitionapp.dao;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -21,7 +23,7 @@ public class UserDAO {
         sessionFactory.getCurrentSession().save(user);
     }
 
-    public User getById(int id) {
+    public User getById(Long id) {
         return (User) sessionFactory.getCurrentSession().get(User.class, id);
     }
 
@@ -38,7 +40,16 @@ public class UserDAO {
     }
 
     public User getUserByUsername(String username) {
-        return (User) sessionFactory.getCurrentSession().get(User.class, username);
+//        return sessionFactory.getCurrentSession().get(User.class, username);
+        Session session = sessionFactory.getCurrentSession();
+        User user = null;
+        try{
+            String hql = "from User where username=:username";
+            user = (User) session.createQuery(hql, User.class).setParameter("username", username).getSingleResult();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return user;
     }
 
 }

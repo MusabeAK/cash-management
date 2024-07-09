@@ -5,7 +5,7 @@
     <artifactId>PCS</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>PCS Maven Webapp</name>
+    <name>Cash Management</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
@@ -162,6 +162,6 @@
     </dependencies>
 
     <build>
-        <finalName>PCS</finalName>
+        <finalName>Cash Management</finalName>
     </build>
 </project>
