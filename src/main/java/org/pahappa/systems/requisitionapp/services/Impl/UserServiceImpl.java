@@ -26,11 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-        List<User> users = userDAO.getAllUsers();
-        if(users == null || users.isEmpty()){
-            throw new NullUserException("No users found in the database");
-        }
-        return users;
+        return userDAO.getAllUsers();
     }
 
     public User getUserById(Long id) throws UserDoesNotExistException {
