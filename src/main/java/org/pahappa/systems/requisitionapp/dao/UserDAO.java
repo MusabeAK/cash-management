@@ -52,4 +52,14 @@ public class UserDAO {
         return user;
     }
 
+    public List<User> searchUsers(String searchTerm) {
+        String query = "FROM User WHERE username LIKE :searchTerm " +
+                "OR firstName LIKE :searchTerm " +
+                "OR lastName LIKE :searchTerm";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, User.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
+    }
+
 }

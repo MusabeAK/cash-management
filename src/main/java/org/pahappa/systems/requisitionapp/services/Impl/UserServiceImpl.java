@@ -81,4 +81,13 @@ public class UserServiceImpl implements UserService {
 
         userDAO.delete(user);
     }
+
+
+    @Override
+    public List<User> searchUsers(String searchTerm) {
+        if (searchTerm == null || searchTerm.isEmpty()) {
+            return userDAO.getAllUsers();
+        }
+        return userDAO.searchUsers(searchTerm);
+    }
 }

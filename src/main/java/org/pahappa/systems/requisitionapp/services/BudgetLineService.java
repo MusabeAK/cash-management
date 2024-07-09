@@ -1,4 +1,4 @@
 package org.pahappa.systems.requisitionapp.services;
 
-public class BudgetLineService {
+public interface BudgetLineService {
 }
