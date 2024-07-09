@@ -39,9 +39,6 @@ public class Requisition {
     private User user;
 
     @OneToOne(mappedBy = "requisition", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Review review;
-
-    @OneToOne(mappedBy = "requisition", cascade = CascadeType.ALL, orphanRemoval = true)
     private Accountability accountability;
 
     public Requisition() {}
@@ -117,13 +114,6 @@ public class Requisition {
         this.user = user;
     }
 
-    public Review getReview() {
-        return review;
-    }
-
-    public void setReview(Review review) {
-        this.review = review;
-    }
 
     public Accountability getAccountability() {
         return accountability;

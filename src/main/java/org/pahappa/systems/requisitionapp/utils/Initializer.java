@@ -1,5 +1,6 @@
 package org.pahappa.systems.requisitionapp.utils;
 
+import org.pahappa.systems.requisitionapp.dao.UserDAO;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Gender;
 import org.pahappa.systems.requisitionapp.models.utils.Role;
