@@ -3,6 +3,7 @@ package org.pahappa.systems.requisitionapp.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.pahappa.systems.requisitionapp.models.Accountability;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,8 @@ public class RequisitionDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public void makeRequisition(Requisition requisition, User user) {
-        Session session = sessionFactory.getCurrentSession();
-        requisition.setUser(user);
-        user.getRequisitions().add(requisition);
-        session.saveOrUpdate(requisition);
-        session.saveOrUpdate(user);
+    public void makeRequisition(Requisition requisition) {
+        sessionFactory.getCurrentSession().save(requisition);
     }
 
     public void updateRequisition(Requisition requisition) {
@@ -41,17 +38,28 @@ public class RequisitionDAO {
     }
 
     public List<Requisition> getAllRequisitions() {
-        return sessionFactory.getCurrentSession().createQuery("from Requisition").list();
+//        return sessionFactory.getCurrentSession().createQuery("from Requisition").list();
+        return sessionFactory.getCurrentSession().createQuery("from Requisition", Requisition.class).list();
+
     }
 
     public List<Requisition> getRequisitionsByUser(User user) {
         Session session = sessionFactory.getCurrentSession();
-        List<Requisition> requisitions = null;
+        List<Requisition> requisitions;
         String hql = "FROM Requisition rq WHERE rq.user = :user";
         requisitions = session.createQuery(hql, Requisition.class)
                 .setParameter("user", user)
                 .list();
         return requisitions;
+    }
+
+    public List<Requisition> searchRequisitions(String searchTerm) {
+        String query = "FROM Requisition WHERE description LIKE :searchTerm " +
+                "OR subject LIKE :searchTerm";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, Requisition.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
     }
 
 }

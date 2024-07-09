@@ -23,20 +23,10 @@ public class AccountabilityDAO {
 
     public void addAccountabilityToRequisition(Accountability accountability, Requisition requisition) {
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            accountability.setRequisition(requisition);
-            requisition.setAccountability(accountability);
-            session.saveOrUpdate(accountability);
-            session.saveOrUpdate(requisition);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }
+        accountability.setRequisition(requisition);
+        requisition.setAccountability(accountability);
+        session.saveOrUpdate(accountability);
+        session.saveOrUpdate(requisition);
     }
 
     public void updateAccountability(Accountability accountability) {
@@ -48,29 +38,25 @@ public class AccountabilityDAO {
     }
 
     public Accountability getAccountabilityById(long id) {
-        return (Accountability) sessionFactory.getCurrentSession().get(Accountability.class, id);
+        return sessionFactory.getCurrentSession().get(Accountability.class, id);
     }
 
     public List<Accountability> getAllAccountabilities() {
-        return sessionFactory.getCurrentSession().createQuery("from Accountability").list();
+        return sessionFactory.getCurrentSession().createQuery("from Accountability", Accountability.class).list();
     }
 
     public Accountability getAccountabilityByRequisition(Requisition requisition) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
-        Accountability accountability = null;
-        try {
-            transaction = session.beginTransaction();
-            String hql = "FROM Accountability a WHERE a.requisition = :requisition";
-            accountability = session.createQuery(hql, Accountability.class)
-                    .setParameter("requisition", requisition)
-                    .uniqueResult();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            throw e;
-        }
-        return accountability;
+        String hql = "FROM Accountability a WHERE a.requisition = :requisition";
+        return sessionFactory.getCurrentSession().createQuery(hql, Accountability.class)
+                .setParameter("requisition", requisition)
+                .uniqueResult();
     }
 
+    public List<Accountability> searchAccountabilities(String searchTerm) {
+        String query = "FROM Accountability WHERE description LIKE :searchTerm ";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, Accountability.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
+    }
 }

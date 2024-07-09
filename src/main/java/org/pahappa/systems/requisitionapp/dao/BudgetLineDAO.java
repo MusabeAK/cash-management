@@ -20,20 +20,10 @@ public class BudgetLineDAO {
 
     public void addBudgetLineToBudgetLineCategory(BudgetLine budgetLine, BudgetLineCategory budgetLineCategory) {
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            budgetLine.setBudgetLineCategory(budgetLineCategory);
-            budgetLineCategory.getBudgetLines().add(budgetLine);
-            session.saveOrUpdate(budgetLine);
-            session.saveOrUpdate(budgetLineCategory);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }
+        budgetLine.setBudgetLineCategory(budgetLineCategory);
+        budgetLineCategory.getBudgetLines().add(budgetLine);
+        session.saveOrUpdate(budgetLine);
+        session.saveOrUpdate(budgetLineCategory);
     }
 
     public void updateBudgetLine(BudgetLine budgetLine) {

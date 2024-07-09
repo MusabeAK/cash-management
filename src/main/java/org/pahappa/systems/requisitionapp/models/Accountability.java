@@ -15,7 +15,7 @@ public class Accountability {
     @Column(name = "description")
     private String description;
 
-    //private byte[] image;
+    private byte[] image;
 
     @Column(name = "amount_used")
     private int amountUsed;
@@ -47,13 +47,13 @@ public class Accountability {
         this.description = description;
     }
 
-//    public byte[] getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(byte[] image) {
-//        this.image = image;
-//    }
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 
     public int getAmountUsed() {
         return amountUsed;
