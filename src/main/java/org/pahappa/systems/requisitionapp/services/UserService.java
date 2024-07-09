@@ -20,6 +20,4 @@ public interface UserService {
 
     void deleteUser(User user);
 
-    List<User> searchUsers(String searchTerm);
-
 }

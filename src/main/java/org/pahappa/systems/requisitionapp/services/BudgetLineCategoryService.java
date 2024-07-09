@@ -1,4 +1,18 @@
 package org.pahappa.systems.requisitionapp.services;
 
+import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+
+import java.util.List;
+
 public interface BudgetLineCategoryService {
+
+    void createBudgetLineCategory(BudgetLineCategory budgetLineCategory);
+
+    void deleteBudgetLineCategory(BudgetLineCategory budgetLineCategory);
+
+    void updateBudgetLineCategory(BudgetLineCategory budgetLineCategory);
+
+    BudgetLineCategory getBudgetLineCategory(int id);
+
+    List<BudgetLineCategory> getAllBudgetLineCategories();
 }

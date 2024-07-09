@@ -33,7 +33,7 @@ public class RequisitionServiceImpl implements RequisitionService {
             throw new IllegalArgumentException("User cannot be null");
         }
         requisition.setStatus(RequisitionStatus.DRAFT);
-        requisitionDAO.makeRequisition(requisition, user);
+        requisitionDAO.makeRequisition(requisition);
     }
 
     @Override
