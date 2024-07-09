@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.List;
 
 @Service("UserService")
@@ -80,5 +81,19 @@ public class UserServiceImpl implements UserService {
         }
 
         userDAO.delete(user);
+    }
+
+    public User loginUser(String username, String password) {
+        User userWithUsername =  userDAO.getUserByUsername(username);
+        if (userWithUsername != null) {
+            String encodedPasswordFromDatabase = userWithUsername.getPassword();
+            // Decode the stored password using Base64
+            String storedPassword = new String(Base64.getDecoder().decode(encodedPasswordFromDatabase));
+            // Compare the entered password with the decoded stored password
+            if (password.equals(storedPassword)) {
+                return userWithUsername;
+            }
+        }
+        return null;
     }
 }

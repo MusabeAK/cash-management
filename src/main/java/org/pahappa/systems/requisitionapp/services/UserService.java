@@ -20,4 +20,6 @@ public interface UserService {
 
     void deleteUser(User user);
 
+    User loginUser(String username, String password);
+
 }
