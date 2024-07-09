@@ -1,6 +1,7 @@
 package org.pahappa.systems.requisitionapp.services.Impl;
 
 import org.pahappa.systems.requisitionapp.dao.RequisitionDAO;
+import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
@@ -65,9 +66,9 @@ public class RequisitionServiceImpl implements RequisitionService {
     }
 
     @Override
-    public List<Requisition> getRequisitionsByUser(User user) {
+    public List<Requisition> getRequisitionsByUser(User user) throws UserDoesNotExistException {
         if (user == null || user.getId() == 0) {
-            throw new IllegalArgumentException("Invalid user provided for fetching requisitions");
+            throw new UserDoesNotExistException("Invalid user provided for fetching requisitions");
         }
         return requisitionDAO.getRequisitionsByUser(user);
     }
