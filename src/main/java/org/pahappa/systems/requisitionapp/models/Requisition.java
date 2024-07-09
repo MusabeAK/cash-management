@@ -17,6 +17,9 @@ public class Requisition {
     @Column(name = "subject")
     private String subject;
 
+    @Column(name = "comment")
+    private String comment;
+
     @Column(name = "description")
     private String description;
 
@@ -37,9 +40,6 @@ public class Requisition {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToOne(mappedBy = "requisition", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Review review;
 
     @OneToOne(mappedBy = "requisition", cascade = CascadeType.ALL, orphanRemoval = true)
     private Accountability accountability;
@@ -117,12 +117,12 @@ public class Requisition {
         this.user = user;
     }
 
-    public Review getReview() {
-        return review;
+    public String getComment() {
+        return comment;
     }
 
-    public void setReview(Review review) {
-        this.review = review;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Accountability getAccountability() {
