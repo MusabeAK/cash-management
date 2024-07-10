@@ -87,34 +87,10 @@ public class LoginBean {
 
 
     public void logout() throws IOException {
-
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-                .getExternalContext().getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.getSessionMap().put("currentUser", null);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.getSessionMap().put("logout", true);
         externalContext.redirect(externalContext.getRequestContextPath() + Hyperlink.LOGIN_VIEW);
-
     }
 
-
-    /*
-    // Method to log out the current user
-    public void logout() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-
-        try {
-            // Invalidate session and redirect to login page
-            externalContext.invalidateSession();
-            externalContext.redirect(externalContext.getRequestContextPath() + Hyperlink.LOGIN_VIEW);
-        } catch (IOException e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Logout failed.", null));
-            e.printStackTrace();
-        }
-    }
-*/
 }

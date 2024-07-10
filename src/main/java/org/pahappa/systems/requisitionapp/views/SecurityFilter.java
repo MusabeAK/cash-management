@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,14 +36,24 @@ public class SecurityFilter implements Filter {
         String requestedPath = req.getServletPath();
         String contextPath = req.getContextPath();
 
-        // Allow access to login and logout pages
-        if (requestedPath.equals(contextPath + "/pages/login/login.xhtml")) {
-            chain.doFilter(request, response);
+        HttpSession session = req.getSession(false);
+//        User currentUser = (session != null) ? (User) session.getAttribute("currentUser") : null;
+        Boolean logoutFlag = (session != null) ? (Boolean) session.getAttribute("logout") : null;
+
+
+        // Handle logout flag
+        if (logoutFlag != null && logoutFlag) {
+            session.invalidate();
+            res.sendRedirect(contextPath + Hyperlink.LOGIN_VIEW);
             return;
         }
 
-        System.out.println("\n\n------------------------------------------\nContext Path: " + contextPath);
-        System.out.println("LOGIN_VIEW Path: " + Hyperlink.LOGIN_VIEW+"\n\n-------------------------------------");
+
+        // Allow access to login page
+        if (requestedPath.equals(contextPath+Hyperlink.LOGIN_VIEW) || requestedPath.equals(contextPath + "/pages/login/login.xhtml")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if (currentUser != null) {
             String allowedPath = roleToPathMap.get(currentUser.getRole());
@@ -51,6 +62,12 @@ public class SecurityFilter implements Filter {
                 // Redirect to the appropriate home page based on user role
                 String redirectPath = determineRedirectPath(currentUser, contextPath);
                 res.sendRedirect(redirectPath);
+                return;
+            }
+        }else {
+            // If no user is logged in and trying to access a protected page, redirect to the login page
+            if (requestedPath.startsWith("/pages/") && !requestedPath.startsWith(contextPath + Hyperlink.LOGIN_VIEW)) {
+                res.sendRedirect(contextPath + Hyperlink.LOGIN_VIEW);
                 return;
             }
         }

@@ -11,9 +11,7 @@
 </f:view>
 
 <h:form>
-    <h:commandLink action="#{loginBean.logout()}" styleClass="logout" style="float: right; background-color: #b53f3f; color: white">
-        <i class="pi pi-sign-out"/>
-        <h:outputText value=" Logout" />
-    </h:commandLink>
+    <h:commandButton icon="pi pi-sign-out" value="Logout" action="#{loginBean.logout()}" styleClass="logout"
+                     style="float: right; background-color: #b53f3f; color: white"/>
 </h:form>
 </html>
