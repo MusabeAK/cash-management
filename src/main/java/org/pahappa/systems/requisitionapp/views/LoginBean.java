@@ -50,7 +50,7 @@ public class LoginBean {
             ExternalContext externalContext = context.getExternalContext();
             externalContext.getSessionMap().put("currentUser", user);
             if (user.getRole().equals(Role.ADMIN)) {
-                return "/pages/admin/dashboard.xhtml?faces-redirect=true";
+                return "/pages/admin/budgetlines.xhtml?faces-redirect=true";
             } else
                 return "/pages/login/login.xhtml?faces-redirect=true";
         } else {

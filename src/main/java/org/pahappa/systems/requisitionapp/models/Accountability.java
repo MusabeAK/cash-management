@@ -8,7 +8,7 @@ import java.util.Objects;
 @Table(name = "accountabilities")
 public class Accountability {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "accountability_id")
     private long id;
 
