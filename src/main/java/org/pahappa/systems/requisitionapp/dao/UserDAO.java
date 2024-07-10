@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,6 +48,18 @@ public class UserDAO {
             String hql = "from User where username=:username";
             user = (User) session.createQuery(hql, User.class).setParameter("username", username).getSingleResult();
         }catch(Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public User getUserByEmail(String email) {
+        Session session = sessionFactory.getCurrentSession();
+        User user = null;
+        try {
+            String hql = "from User where email=:email";
+            user = (User) session.createQuery(hql).setParameter("email", email).getSingleResult();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return user;

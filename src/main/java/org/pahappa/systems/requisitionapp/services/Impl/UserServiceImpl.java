@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service("UserService")
@@ -25,11 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-        List<User> users = userDAO.getAllUsers();
-        if(users == null || users.isEmpty()){
-            throw new NullUserException("No users found in the database");
-        }
-        return users;
+        return userDAO.getAllUsers();
     }
 
     public User getUserById(Long id) throws UserDoesNotExistException {
@@ -81,4 +78,21 @@ public class UserServiceImpl implements UserService {
 
         userDAO.delete(user);
     }
+
+    public User loginUser(String identifier, String password) throws UserDoesNotExistException {
+        User existingUserWithUsername = userDAO.getUserByUsername(identifier);
+        User existingUserWithEmail = userDAO.getUserByEmail(identifier);
+        if (existingUserWithUsername != null){
+            if (existingUserWithUsername.getPassword().equals(password)){
+                return existingUserWithUsername;
+            }
+        }
+        if (existingUserWithEmail != null){
+            if (existingUserWithEmail.getPassword().equals(password)){
+                return existingUserWithEmail;
+            }
+        }
+        return null;
+    }
+
 }
