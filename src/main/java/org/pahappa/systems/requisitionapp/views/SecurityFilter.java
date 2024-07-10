@@ -37,8 +37,18 @@ public class SecurityFilter implements Filter {
         String contextPath = req.getContextPath();
 
         HttpSession session = req.getSession(false);
-//        User currentUser = (session != null) ? (User) session.getAttribute("currentUser") : null;
         Boolean logoutFlag = (session != null) ? (Boolean) session.getAttribute("logout") : null;
+
+
+        // Allow access to static resources
+        if (requestedPath.startsWith("/javax.faces.resource/")
+                || requestedPath.startsWith("/resources/")
+                || requestedPath.startsWith("/static/")
+                || requestedPath.startsWith("/public/")
+                || requestedPath.startsWith("/WEB-INF/")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
 
         // Handle logout flag
@@ -47,7 +57,6 @@ public class SecurityFilter implements Filter {
             res.sendRedirect(contextPath + Hyperlink.LOGIN_VIEW);
             return;
         }
-
 
         // Allow access to login page
         if (requestedPath.equals(contextPath+Hyperlink.LOGIN_VIEW) || requestedPath.equals(contextPath + "/pages/login/login.xhtml")) {
