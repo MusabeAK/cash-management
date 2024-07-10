@@ -140,5 +140,18 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         return budgetLineDAO.getBudgetLineById(id);
     }
 
+    @Override
+    @Transactional
+    public BudgetLine getBudgetLineByTitle(String title){
+        if(title == null || title.trim().isEmpty()){
+            throw new RuntimeException("Title cannot be empty");
+        }
+        BudgetLine budgetLine = budgetLineDAO.getBudgetLineByTitle(title);
+        if(budgetLine == null){
+            throw new RuntimeException("No budget line found");
+        }
+        return budgetLine;
+    }
+
 
 }

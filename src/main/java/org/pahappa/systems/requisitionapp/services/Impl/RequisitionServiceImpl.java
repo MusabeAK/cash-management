@@ -1,27 +1,34 @@
 package org.pahappa.systems.requisitionapp.services.Impl;
 
+import org.pahappa.systems.requisitionapp.dao.BudgetLineDAO;
 import org.pahappa.systems.requisitionapp.dao.RequisitionDAO;
 import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
+import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class RequisitionServiceImpl implements RequisitionService {
 
     private final RequisitionDAO requisitionDAO;
+    private final BudgetLineDAO budgetLineDAO;
 
     @Autowired
-    public RequisitionServiceImpl(RequisitionDAO requisitionDAO) {
+    public RequisitionServiceImpl(RequisitionDAO requisitionDAO, BudgetLineDAO budgetLineDAO) {
         this.requisitionDAO = requisitionDAO;
+        this.budgetLineDAO = budgetLineDAO;
     }
 
     @Override
@@ -80,4 +87,16 @@ public class RequisitionServiceImpl implements RequisitionService {
         }
         return requisitionDAO.searchRequisitions(searchTerm);
     }
+
+    @Override
+    public List<BudgetLine> searchBudgetLines(String query){
+        List<BudgetLine> budgetLines = budgetLineDAO.getAllBudgetLines();
+        if (query == null || query.trim().isEmpty()) {
+            return budgetLines;
+        }
+        return budgetLines.stream()
+                .filter(budgetLine -> budgetLine.getTitle().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
 }

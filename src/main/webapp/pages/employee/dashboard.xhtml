@@ -4,8 +4,39 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
+<h:head>
+    <title>Requisition</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:messages id="messages" showDetail="false" closable="true">
+            <p:autoUpdate/>
+        </p:messages>
+        <h:outputLabel for="subject">Reason: </h:outputLabel>
+        <h:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true">
+        </h:inputText>
+        <h:message for="subject" styleClass="error"/>
+
+        <h:outputLabel for="description">Description: </h:outputLabel>
+        <h:inputText id="description" value="#{requisitionBean.newRequisition.description}" required="true">
+        </h:inputText>
+        <h:message for="description" styleClass="error" />
+
+        <h:outputLabel for="amount">Amount: </h:outputLabel>
+        <h:inputText id="amount" value="#{requisitionBean.newRequisition.amount}" required="true">
+        </h:inputText>
+        <h:message for="amount" styleClass="error" />
+
+        <p:outputLabel for="budgetLineName" value="Budget Line Category: "/>
+        <p:autoComplete id="budgetLineName" value="#{requisitionBean.budgetLineName}" completeMethod="#{requisitionBean.searchBudgetLines}" required="true">
+        </p:autoComplete>
+
+        <p:outputLabel for="editBudgetLineStartDate" value="Date Needed: "  />
+        <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+
+        <h:commandButton value="Make" action="#{requisitionBean.makeRequisition}"/>
+    </h:form>
+</h:body>
 </html>

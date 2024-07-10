@@ -52,4 +52,18 @@ public class BudgetLineDAO {
         return budgetLines;
     }
 
+    public BudgetLine getBudgetLineByTitle(String title) {
+        Session session = sessionFactory.getCurrentSession();
+        BudgetLine budgetLine = null;
+        try {
+            String hql = "FROM BudgetLine bl WHERE bl.title = :title";
+            budgetLine = (BudgetLine) session.createQuery(hql, BudgetLine.class)
+                    .setParameter("title", title)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return budgetLine;
+    }
+
 }

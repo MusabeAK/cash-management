@@ -51,6 +51,8 @@ public class LoginBean {
             externalContext.getSessionMap().put("currentUser", user);
             if (user.getRole().equals(Role.ADMIN)) {
                 return "/pages/admin/budgetlines.xhtml?faces-redirect=true";
+            } else if (user.getRole().equals(Role.EMPLOYEE)){
+                return "/pages/employee/dashboard.xhtml?faces-redirect=true";
             } else
                 return "/pages/login/login.xhtml?faces-redirect=true";
         } else {
