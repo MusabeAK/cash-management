@@ -26,6 +26,15 @@
         <param-value>Development</param-value>
     </context-param>
 
+    <filter>
+        <filter-name>SecurityFilter</filter-name>
+        <filter-class>org.pahappa.systems.requisitionapp.views.SecurityFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SecurityFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- Welcome page -->
     <welcome-file-list>
         <welcome-file>pages/login/login.xhtml</welcome-file>

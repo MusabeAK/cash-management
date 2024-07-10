@@ -6,6 +6,13 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
-    <h:outputLabel value="Hello, world"/>
+
+    <h:form>
+        <h:commandLink action="#{loginBean.logout()}" styleClass="logout" style="float: right; background-color: #b53f3f; color: white">
+            <i class="pi pi-sign-out"/>
+            <h:outputText value=" Logout" />
+        </h:commandLink>
+    </h:form>
+
 </f:view>
 </html>

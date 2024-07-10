@@ -7,9 +7,13 @@ import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ManagedBean(name="userBean")
 @Component
@@ -20,6 +24,72 @@ public class UserBean implements Serializable {
     private String password;
     private String firstName;
     private String lastName;
+    private String email;
+    private Role role;
+    private List<String> availableRoles;
+    private String phoneNumber;
+    private Gender gender;
+    private List<String> availableGenders;
+
+    @PostConstruct
+    public void init() {
+        availableRoles = Arrays.stream(Role.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+
+        availableGenders = Arrays.stream(Gender.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<String> getAvailableGenders() {
+        return availableGenders;
+    }
+
+    public void setAvailableGenders(List<String> availableGenders) {
+        this.availableGenders = availableGenders;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<String> getAvailableRoles() {
+        return availableRoles;
+    }
+
+    public void setAvailableRoles(List<String> availableRoles) {
+        this.availableRoles = availableRoles;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 
     private final UserService userService;
 
@@ -67,10 +137,10 @@ public class UserBean implements Serializable {
             user.setPassword(password);
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            user.setEmail("aaaaaa");
+            user.setEmail(email);
             user.setGender(Gender.MALE);
-            user.setRole(Role.ADMIN);
-            user.setPhoneNumber("999");
+            user.setRole(role);
+            user.setPhoneNumber(phoneNumber);
             userService.addUser(user);
         } catch (Exception e) {
             throw new RuntimeException(e);
