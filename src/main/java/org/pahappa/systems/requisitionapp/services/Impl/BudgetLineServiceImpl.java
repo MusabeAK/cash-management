@@ -4,17 +4,19 @@ import org.pahappa.systems.requisitionapp.dao.BudgetLineCategoryDAO;
 import org.pahappa.systems.requisitionapp.dao.BudgetLineDAO;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @Service("BudgetLineService")
-@Transactional
+
 public class BudgetLineServiceImpl implements BudgetLineService {
 
     private final BudgetLineDAO budgetLineDAO;
@@ -27,6 +29,7 @@ public class BudgetLineServiceImpl implements BudgetLineService {
     }
 
     @Override
+    @Transactional
     public void createBudgetLine(BudgetLine budgetLine, BudgetLineCategory budgetLineCategory){
         List<BudgetLineCategory> budgetLineCategories = budgetLineCategoryDAO.getAllBudgetLineCategories();
         if(budgetLineCategories.isEmpty()){
@@ -47,12 +50,17 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         if(budgetLine.getTitle().trim().isEmpty()){
             throw new RuntimeException("Title cannot be empty");
         }
+
+        budgetLineCategoryDAO.detach(budgetLineCategory);
+        budgetLineCategory = budgetLineCategoryDAO.merge(budgetLineCategory);
+
         budgetLine.setStatus(BudgetLineStatus.DRAFT);
         budgetLine.setBalance(budgetLine.getInitialAmount());
         budgetLineDAO.addBudgetLineToBudgetLineCategory(budgetLine, budgetLineCategory);
     }
 
     @Override
+    @Transactional
     public void updateBudgetLine(BudgetLine budgetLine){
         BudgetLine budgetLineToUpdate = budgetLineDAO.getBudgetLineById(budgetLine.getId());
         List<BudgetLineCategory> budgetLineCategories = budgetLineCategoryDAO.getAllBudgetLineCategories();
@@ -88,24 +96,39 @@ public class BudgetLineServiceImpl implements BudgetLineService {
     }
 
     @Override
+    @Transactional
     public void deleteBudgetLine(BudgetLine budgetLine){
-        BudgetLine existingBudgetLine = budgetLineDAO.getBudgetLineById(budgetLine.getId());
-        if(existingBudgetLine == null){
+        BudgetLine managedBudgetLine = budgetLineDAO.getBudgetLineById(budgetLine.getId());
+        if(managedBudgetLine == null){
             throw new RuntimeException("No budget line found");
         }
-        budgetLineDAO.deleteBudgetLine(existingBudgetLine);
+        BudgetLineCategory category = managedBudgetLine.getBudgetLineCategory();
+        if (category != null) {
+            category.getBudgetLines().remove(managedBudgetLine);
+            budgetLineCategoryDAO.updateBudgetLineCategory(category);
+        }
+        if (managedBudgetLine.getRequisitions() != null) {
+            for (Requisition requisition : managedBudgetLine.getRequisitions()) {
+                requisition.setBudgetLine(null);
+                // You might need to update the requisition in the database here
+                // requisitionDAO.updateRequisition(requisition);
+            }
+        }
+        budgetLineDAO.deleteBudgetLine(managedBudgetLine);
     }
 
     @Override
+    @Transactional
     public List<BudgetLine> getAllBudgetLines(){
         List<BudgetLine> budgetLines = budgetLineDAO.getAllBudgetLines();
         if(budgetLines.isEmpty()){
-            throw new RuntimeException("No budget line found");
+            return Collections.emptyList();
         }
         return budgetLineDAO.getAllBudgetLines();
     }
 
     @Override
+    @Transactional
     public BudgetLine getBudgetLineById(long id){
         if(id <= 0){
             throw new RuntimeException("ID cannot be negative");

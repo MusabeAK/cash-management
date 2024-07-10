@@ -15,4 +15,8 @@ public interface BudgetLineCategoryService {
     BudgetLineCategory getBudgetLineCategory(int id);
 
     List<BudgetLineCategory> getAllBudgetLineCategories();
+
+    BudgetLineCategory getBudgetLineCategoryByName(String categoryName);
+
+    List<BudgetLineCategory> searchBudgetLineCategoriesByName(String query);
 }

@@ -16,5 +16,4 @@ public interface BudgetLineService {
     List<BudgetLine> getAllBudgetLines();
 
     BudgetLine getBudgetLineById(long id);
-
 }
