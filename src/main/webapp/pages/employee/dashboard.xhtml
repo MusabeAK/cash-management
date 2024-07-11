@@ -38,5 +38,74 @@
 
         <h:commandButton value="Make" action="#{requisitionBean.makeRequisition}"/>
     </h:form>
+
+    <h:form id="userRequisitions">
+        <h:panelGroup id="userRequisitionsTable">
+            <p:dataTable value="#{requisitionBean.userRequisitions}" var="requisition">
+                <p:column headerText="Subject">
+                    <h:outputText value="#{requisition.subject}"/>
+                </p:column>
+                <p:column headerText="Amount">
+                    <h:outputText value="#{requisition.amount}"/>
+                </p:column>
+                <p:column headerText="Date Needed">
+                    <h:outputText value="#{requisition.dateNeeded}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Status">
+                    <h:outputText value="#{requisition.status}"/>
+                </p:column>
+                <p:column headerText="Actions">
+                    <p:commandButton value="Update" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable"/>
+                    <p:commandButton value="Delete" action="#{requisitionBean.deleteRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable"/>
+                </p:column>
+            </p:dataTable>
+        </h:panelGroup>
+    </h:form>
+
+    <!-- Dialogs -->
+
+    <h:form id="updateRequisition">
+        <p:dialog header="Edit your requisition"
+                  widgetVar="updateRequisitionDialog"
+                  modal="true"
+                  resizable="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  closable="true"
+                  width="800px"
+                  visible="#{facesContext.validationFailed}">
+            <p:outputPanel id="updateRequisitionPanel" rendered="true">
+                <p:messages id="updateRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:panelGrid columns="2" styleClass="custom-grid">
+                    <p:outputLabel for="editRequisitionSubject" value="Reason: "/>
+                    <p:inputText id="editRequisitionSubject" value="#{requisitionBean.selectedRequisition.subject}" required="true">
+
+                    </p:inputText>
+
+                    <p:outputLabel for="editRequisitionAmount" value="Amount"/>
+                    <p:inputText id="editRequisitionAmount" value="#{requisitionBean.selectedRequisition.amount}" required="true">
+
+                    </p:inputText>
+
+                    <p:outputLabel for="editRequisitionDescription" value="Description"/>
+                    <p:inputTextarea id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true">
+
+                    </p:inputTextarea>
+
+                    <p:outputLabel for="editRequisitionDateNeeded" value="Date Needed"/>
+                    <p:datePicker id="editRequisitionDateNeeded" value="#{requisitionBean.selectedRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+
+                </p:panelGrid>
+
+                <p:commandButton value="Update" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
+                <p:commandButton value="Cancel" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+
 </h:body>
 </html>

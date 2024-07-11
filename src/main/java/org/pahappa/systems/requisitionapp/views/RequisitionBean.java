@@ -3,6 +3,7 @@ package org.pahappa.systems.requisitionapp.views;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
 import org.pahappa.systems.requisitionapp.services.UserService;
@@ -17,6 +18,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,11 +34,15 @@ public class RequisitionBean implements Serializable {
     private User currentUser;
     private Requisition newRequisition;
     private String budgetLineName;
-    private BudgetLine budgetLine;
+    private List<Requisition> requisitions;
+    private List<Requisition> userRequisitions;
+    private Requisition selectedRequisition;
 
     @PostConstruct
     public void init() {
         newRequisition = new Requisition();
+        requisitions = requisitionService.getAllRequisitions();
+        userRequisitions = new ArrayList<>();
     }
 
     public void makeRequisition() {
@@ -71,6 +77,11 @@ public class RequisitionBean implements Serializable {
                               new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
                       return;
                   }
+                  if (newRequisition.getAmount() <= 0){
+                      FacesContext.getCurrentInstance().addMessage(null,
+                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be less than or equal 0", null));
+                      return;
+                  }
                   newRequisition.setBudgetLine(budgetLine);
                   newRequisition.setUser(currentUser);
                   userRequisitions.add(newRequisition);
@@ -90,8 +101,70 @@ public class RequisitionBean implements Serializable {
         }
     }
 
+    public void updateRequisition(){
+        if (selectedRequisition.getAmount() > selectedRequisition.getBudgetLine().getBalance()){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
+            return;
+        }
+        if (selectedRequisition.getDateNeeded().after(selectedRequisition.getBudgetLine().getEndDate())){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be after budget line end date", null));
+            return;
+        }
+        if (selectedRequisition.getDateNeeded().before(selectedRequisition.getBudgetLine().getStartDate())){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
+            return;
+        }
+        if (selectedRequisition.getAmount() <= 0){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be less than or equal 0", null));
+            return;
+        }
+        try {
+            requisitionService.updateRequisition(selectedRequisition);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
+            loadUserRequisitions();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
+        }
+    }
+
+    public void deleteRequisition(Requisition requisition){
+        try {
+            requisitionService.deleteRequisition(requisition);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
+            loadUserRequisitions();
+        } catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
+        }
+    }
+
+    public void selectRequisition(Requisition requisition){
+        if (requisition.getStatus().equals(RequisitionStatus.DRAFT)){
+            this.selectedRequisition = requisition;
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot edit a requisition that is not in draft.", null));
+        }
+    }
+
     public List<BudgetLine> searchBudgetLines(String query){
         return requisitionService.searchBudgetLines(query);
+    }
+
+    public void loadUserRequisitions(){
+        try {
+            userRequisitions = getUserRequisitions();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+        }
     }
 
     // getters and setters
@@ -126,5 +199,39 @@ public class RequisitionBean implements Serializable {
 
     public void setBudgetLineName(String budgetLineName) {
         this.budgetLineName = budgetLineName;
+    }
+
+    public List<Requisition> getRequisitions() {
+        return requisitions;
+    }
+
+    public void setRequisitions(List<Requisition> requisitions) {
+        this.requisitions = requisitions;
+    }
+
+    public List<Requisition> getUserRequisitions() {
+        currentUser = getCurrentUser();
+        try {
+            if (currentUser != null) {
+                userRequisitions = requisitionService.getRequisitionsByUser(currentUser);
+                return userRequisitions;
+            }
+        } catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+        }
+        return userRequisitions;
+    }
+
+    public void setUserRequisitions(List<Requisition> userRequisitions) {
+        this.userRequisitions = userRequisitions;
+    }
+
+    public Requisition getSelectedRequisition() {
+        return selectedRequisition;
+    }
+
+    public void setSelectedRequisition(Requisition selectedRequisition) {
+        this.selectedRequisition = selectedRequisition;
     }
 }
