@@ -149,14 +149,6 @@ public class BudgetLine {
 
     @Override
     public String toString() {
-        return "BudgetLine{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", initialAmount=" + initialAmount +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", status=" + status +
-                ", budgetLineCategory=" + budgetLineCategory +
-                '}';
+        return title;
     }
 }

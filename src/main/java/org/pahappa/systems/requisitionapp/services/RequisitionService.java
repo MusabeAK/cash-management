@@ -1,6 +1,7 @@
 package org.pahappa.systems.requisitionapp.services;
 
 import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
 
@@ -21,4 +22,5 @@ public interface RequisitionService {
 
     List<Requisition> searchRequisitions(String searchTerm);
 
+    List<BudgetLine> searchBudgetLines(String query);
 }
