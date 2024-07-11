@@ -4,8 +4,85 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Review</title>
+</h:head>
+<h:body>
+    <h:form id="allRequisitions">
+        <h:panelGroup id="allRequisitionsTable">
+            <p:dataTable value="#{requisitionBean.requisitions}" var="requisition">
+                <p:column headerText="User">
+                    <h:outputText value="#{requisition.user}"/>
+                </p:column>
+                <p:column headerText="Subject">
+                    <h:outputText value="#{requisition.subject}"/>
+                </p:column>
+                <p:column headerText="Amount">
+                    <h:outputText value="#{requisition.amount}"/>
+                </p:column>
+                <p:column headerText="Date Needed">
+                    <h:outputText value="#{requisition.dateNeeded}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Comment">
+                    <h:outputText value="#{requisition.comment}"/>
+                </p:column>
+                <p:column headerText="Status">
+                    <h:outputText value="#{requisition.status}"/>
+                </p:column>
+                <p:column headerText="Actions">
+                    <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('reviewRequisitionDialog').show()" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel"/>
+                </p:column>
+            </p:dataTable>
+        </h:panelGroup>
+    </h:form>
+
+    <h:form id="reviewRequisition">
+        <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+                  widgetVar="reviewRequisitionDialog"
+                  modal="true"
+                  resizable="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  closeOnEscape="true"
+                  width="800px"
+                  visible="#{facesContext.validationFailed}">
+            <p:outputPanel id="reviewRequisitionPanel" rendered="true">
+                <p:messages id="reviewRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:panelGrid columns="2" styleClass="custom-grid">
+                    <p:outputLabel for="requisitionSubject" value="Reason: "/>
+                    <h:outputText id="requisitionSubject" value="#{requisitionBean.selectedRequisition.subject}">
+                    </h:outputText>
+
+                    <p:outputLabel for="requisitionAmount" value="Amount: "/>
+                    <h:outputText id="requisitionAmount" value="#{requisitionBean.selectedRequisition.amount}">
+                    </h:outputText>
+
+                    <p:outputLabel for="requisitionDescription" value="Description: "/>
+                    <h:outputText id="requisitionDescription" value="#{requisitionBean.selectedRequisition.description}">
+                    </h:outputText>
+
+                    <p:outputLabel for="requisitionDate" value="Date Needed: "/>
+                    <h:outputText id="requisitionDate" value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                    </h:outputText>
+
+                    <p:outputLabel for="requisitionComment" value="Add Comment: "/>
+                    <p:inputText id="requisitionComment" value="#{requisitionBean.comment}">
+
+                    </p:inputText>
+
+                </p:panelGrid>
+
+                <p:commandButton value="Approve" actionListener="#{requisitionBean.reviewAndApproveRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-times" onclick="PF('reviewRequisitionDialog').hide()"/>
+                <p:commandButton value="Reject" actionListener="#{requisitionBean.reviewAndRejectRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-minus" onclick="PF('reviewRequisitionDialog').hide()"/>
+
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+</h:body>
 </html>

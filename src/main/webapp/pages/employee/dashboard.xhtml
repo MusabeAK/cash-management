@@ -56,8 +56,11 @@
                 <p:column headerText="Status">
                     <h:outputText value="#{requisition.status}"/>
                 </p:column>
+                <p:column headerText="Comment">
+                    <h:outputText value="#{requisition.comment}"/>
+                </p:column>
                 <p:column headerText="Actions">
-                    <p:commandButton value="Update" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable"/>
+                    <p:commandButton value="Update" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
                     <p:commandButton value="Delete" action="#{requisitionBean.deleteRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable"/>
                 </p:column>
             </p:dataTable>

@@ -38,12 +38,14 @@ public class RequisitionBean implements Serializable {
     private List<Requisition> requisitions;
     private List<Requisition> userRequisitions;
     private Requisition selectedRequisition;
+    private String comment;
 
     @PostConstruct
     public void init() {
         newRequisition = new Requisition();
         requisitions = requisitionService.getAllRequisitions();
         userRequisitions = new ArrayList<>();
+        comment = "";
     }
 
     public void makeRequisition() {
@@ -155,7 +157,28 @@ public class RequisitionBean implements Serializable {
             this.selectedRequisition = requisition;
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot edit a requisition that is not in draft.", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot select a requisition that is not in draft.", null));
+        }
+    }
+
+    public void reviewAndApproveRequisition(){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.DRAFT)){
+            selectedRequisition.setComment(comment);
+            selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
+            requisitionService.updateRequisition(selectedRequisition);
+        } else
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot approve a requisition that is not in draft.", null));
+    }
+
+    public void reviewAndRejectRequisition(){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.DRAFT)) {
+            selectedRequisition.setComment(comment);
+            selectedRequisition.setStatus(RequisitionStatus.REJECTED);
+            requisitionService.updateRequisition(selectedRequisition);
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot reject a requisition that is not in draft.", null));
         }
     }
 
@@ -248,4 +271,13 @@ public class RequisitionBean implements Serializable {
     public void setSelectedRequisition(Requisition selectedRequisition) {
         this.selectedRequisition = selectedRequisition;
     }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
 }

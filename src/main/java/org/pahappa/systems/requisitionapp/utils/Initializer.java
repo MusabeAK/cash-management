@@ -25,6 +25,7 @@ public class Initializer {
     public void init() {
         createAdminUser();
         createEmployeeUser();
+        createOperationsUser();
     }
 
     private void createAdminUser(){
@@ -67,6 +68,29 @@ public class Initializer {
             user.setPhoneNumber("+256772461761");
             user.setGender(Gender.MALE);
             user.setRole(Role.EMPLOYEE);
+            userService.addUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createOperationsUser(){
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            if(user.getUsername().equals("Operations")){
+                return;
+            }
+        }
+        try {
+            User user = new User();
+            user.setUsername("Operations");
+            user.setPassword("Oper@tions");
+            user.setEmail("operations@gmail.com");
+            user.setFirstName("Operations");
+            user.setLastName("Operations");
+            user.setPhoneNumber("+256701461762");
+            user.setGender(Gender.FEMALE);
+            user.setRole(Role.OPERATIONS);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();

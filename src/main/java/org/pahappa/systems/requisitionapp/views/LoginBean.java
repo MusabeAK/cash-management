@@ -53,6 +53,8 @@ public class LoginBean {
                 return "/pages/admin/budgetlines.xhtml?faces-redirect=true";
             } else if (user.getRole().equals(Role.EMPLOYEE)){
                 return "/pages/employee/dashboard.xhtml?faces-redirect=true";
+            } else if (user.getRole().equals(Role.OPERATIONS)) {
+                return "/pages/operations/dashboard.xhtml?faces-redirect=true";
             } else
                 return "/pages/login/login.xhtml?faces-redirect=true";
         } else {
