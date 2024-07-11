@@ -10,12 +10,15 @@
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="Dashoard" styleClass="top-bar-title" />
         </h:panelGroup>
 
         <div class="content">
             <h:form id="mainView">
-                <p:growl id="growl" showDetail="true" life="5000" />
+                <p:messages id="messages" showDetail="false" closable="true" severity="info, error">
+                    <p:autoUpdate/>
+                </p:messages>
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true"
                                  width="350">
                     <p:commandButton value="No" type="button"
