@@ -126,7 +126,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             loadBudgetLineCategories();
         } catch (RuntimeException e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
         }
     }
 

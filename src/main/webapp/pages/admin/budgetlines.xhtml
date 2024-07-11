@@ -1,224 +1,226 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:head>
-    <title>Budget Line Category</title>
-</h:head>
-<h:body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
 
-    <h:form id="budgetLineCategoryForm">
+    <ui:define name="content" class="form-container">
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
-        <h:panelGroup id="budgetLineCategoryTable">
-        <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLineCategories}" var="category">
-            <p:column headerText="ID">
-                <h:outputText value="#{category.id}"/>
-            </p:column>
-            <p:column headerText="Category Name">
-                <h:outputText value="#{category.categoryName}"/>
-            </p:column>
-            <p:column headerText="Actions">
-                <p:commandButton value="Update" action="#{budgetLineCategoryManagedBean.selectBudgetLineCategory(category)}" oncomplete="PF('editBudgetLineCategoryDialog').show();" update=":budgetLine:budgetLineTable :budgetLineCategoryForm:budgetLineCategoryTable"/>
-                <p:commandButton value="Delete" action="#{budgetLineCategoryManagedBean.deleteBudgetLineCategory(category)}" update="@form budgetLineCategoryForm :budgetLine:budgetLineTable"/>
-            </p:column>
-        </p:dataTable>
+        <h:panelGroup layout="block" styleClass="top-bar">
+            <h:outputText value="Budget Lines" styleClass="top-bar-title" />
         </h:panelGroup>
 
-    </h:form>
+        <div class="content">
+            <h:form id="budgetLineCategoryForm">
 
-    <h:form>
-        <p:commandButton value="addBudgetLineCategory"
-                         icon="pi pi-plus"
-                         oncomplete="PF('addBudgetLineCategoryDialog').show()">
-        </p:commandButton>
-    </h:form>
+                <h:panelGroup id="budgetLineCategoryTable">
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLineCategories}" var="category">
+                        <p:column headerText="ID">
+                            <h:outputText value="#{category.id}"/>
+                        </p:column>
+                        <p:column headerText="Category Name">
+                            <h:outputText value="#{category.categoryName}"/>
+                        </p:column>
+                        <p:column headerText="Actions">
+                            <p:commandButton value="Update" action="#{budgetLineCategoryManagedBean.selectBudgetLineCategory(category)}" oncomplete="PF('editBudgetLineCategoryDialog').show();" update=":budgetLine:budgetLineTable :budgetLineCategoryForm:budgetLineCategoryTable"/>
+                            <p:commandButton value="Delete" action="#{budgetLineCategoryManagedBean.deleteBudgetLineCategory(category)}" update="@form budgetLineCategoryForm :budgetLine:budgetLineTable"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
 
-    <h:form id="budgetLine">
-        <h:panelGroup id="budgetLineTable">
-        <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}" var="budgetLine">
-            <p:column headerText="Title">
-                <h:outputText value="#{budgetLine.title}"/>
-            </p:column>
+            </h:form>
 
-            <p:column headerText="Initial Amount">
-                <h:outputText value="#{budgetLine.initialAmount}"/>
-            </p:column>
+            <h:form>
+                <p:commandButton value="addBudgetLineCategory"
+                                 icon="pi pi-plus"
+                                 oncomplete="PF('addBudgetLineCategoryDialog').show()">
+                </p:commandButton>
+            </h:form>
 
-            <p:column headerText="Current Balance">
-                <h:outputText value="#{budgetLine.balance}"/>
-            </p:column>
+            <h:form id="budgetLine">
+                <h:panelGroup id="budgetLineTable">
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}" var="budgetLine">
+                        <p:column headerText="Title">
+                            <h:outputText value="#{budgetLine.title}"/>
+                        </p:column>
 
-            <p:column headerText="Start Date">
-                <h:outputText value="#{budgetLine.startDate}">
-                    <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                </h:outputText>
-            </p:column>
+                        <p:column headerText="Initial Amount">
+                            <h:outputText value="#{budgetLine.initialAmount}"/>
+                        </p:column>
 
-            <p:column headerText="End Date">
-                <h:outputText value="#{budgetLine.endDate}">
-                    <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                </h:outputText>
-            </p:column>
+                        <p:column headerText="Current Balance">
+                            <h:outputText value="#{budgetLine.balance}"/>
+                        </p:column>
 
-            <p:column headerText="Budget Line Category">
-                <h:outputText value="#{budgetLine.budgetLineCategory}"/>
-            </p:column>
+                        <p:column headerText="Start Date">
+                            <h:outputText value="#{budgetLine.startDate}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                            </h:outputText>
+                        </p:column>
 
-            <p:column headerText="Actions">
-                <p:commandButton value="Update" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable"/>
-                <p:commandButton value="Delete" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable"/>
-            </p:column>
+                        <p:column headerText="End Date">
+                            <h:outputText value="#{budgetLine.endDate}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                            </h:outputText>
+                        </p:column>
 
-        </p:dataTable>
-        </h:panelGroup>
-    </h:form>
+                        <p:column headerText="Budget Line Category">
+                            <h:outputText value="#{budgetLine.budgetLineCategory}"/>
+                        </p:column>
 
-    <h:form>
-        <p:commandButton value="addBudgetLine"
-                         icon="pi pi-plus"
-                         oncomplete="PF('addBudgetLineDialog').show()">
-        </p:commandButton>
-    </h:form>
+                        <p:column headerText="Actions">
+                            <p:commandButton value="Update" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable"/>
+                            <p:commandButton value="Delete" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable"/>
+                        </p:column>
 
-    <!-- Dialogs -->
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
 
-    <h:form id="addBudgetLineForm">
-        <p:dialog header="Add New Budget Line."
-                  widgetVar="addBudgetLineDialog"
-                  modal="true"
-                  resizable="true"
-                  showEffect="fade"
-                  hideEffect="fade"
-                  closable="true"
-                  width="800px"
-                  visible="#{facesContext.validationFailed}">
-            <p:outputPanel id="addBudgetPanel" rendered="true">
+            <h:form>
+                <p:commandButton value="addBudgetLine"
+                                 icon="pi pi-plus"
+                                 oncomplete="PF('addBudgetLineDialog').show()">
+                </p:commandButton>
+            </h:form>
 
-                <p:messages id="addBudgetPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                    <p:autoUpdate/>
-                </p:messages>
+            <!-- Dialogs -->
 
-                <p:panelGrid columns="2" styleClass="custom-grid" >
-                    <p:outputLabel for="budgetLineCategoryName" value="Budget Line Category: "/>
-                    <p:autoComplete id="budgetLineCategoryName" value="#{budgetLineCategoryManagedBean.budgetLineCategoryName}" completeMethod="#{budgetLineCategoryManagedBean.budgetLineCategoryList}" required="true">
-                    </p:autoComplete>
+            <h:form id="addBudgetLineForm">
+                <p:dialog header="Add New Budget Line."
+                          widgetVar="addBudgetLineDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="addBudgetPanel" rendered="true">
 
-                    <p:outputLabel for="budgetLineName" value="Budget Line Title: "/>
-                    <p:inputText id="budgetLineName" value="#{budgetLineCategoryManagedBean.newBudgetLine.title}" required="true">
-                    </p:inputText>
+                        <p:messages id="addBudgetPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
 
-                    <p:outputLabel for="budgetLineAmount" value="Budget Line Amount: "/>
-                    <p:inputText id="budgetLineAmount" value="#{budgetLineCategoryManagedBean.newBudgetLine.initialAmount}" required="true">
-                    </p:inputText>
+                        <p:panelGrid columns="2" styleClass="custom-grid" >
+                            <p:outputLabel for="budgetLineCategoryName" value="Budget Line Category: "/>
+                            <p:autoComplete id="budgetLineCategoryName" value="#{budgetLineCategoryManagedBean.budgetLineCategoryName}" completeMethod="#{budgetLineCategoryManagedBean.budgetLineCategoryList}" required="true">
+                            </p:autoComplete>
 
-                    <p:outputLabel for="budgetLineStartDate" value="Start Date: "  />
-                    <p:datePicker id="budgetLineStartDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:outputLabel for="budgetLineName" value="Budget Line Title: "/>
+                            <p:inputText id="budgetLineName" value="#{budgetLineCategoryManagedBean.newBudgetLine.title}" required="true">
+                            </p:inputText>
 
-                    <p:outputLabel for="budgetLineEndDate" value="End Date: "  />
-                    <p:datePicker id="budgetLineEndDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:outputLabel for="budgetLineAmount" value="Budget Line Amount: "/>
+                            <p:inputText id="budgetLineAmount" value="#{budgetLineCategoryManagedBean.newBudgetLine.initialAmount}" required="true">
+                            </p:inputText>
 
-                </p:panelGrid>
+                            <p:outputLabel for="budgetLineStartDate" value="Start Date: "  />
+                            <p:datePicker id="budgetLineStartDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
 
-                <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineToBudgetLineCategory}" icon="pi pi-check"/>
-                <p:commandButton value="Cancel" onclick="PF('addBudgetLineDialog').hide();" icon="pi pi-times"/>
-            </p:outputPanel>
-        </p:dialog>
+                            <p:outputLabel for="budgetLineEndDate" value="End Date: "  />
+                            <p:datePicker id="budgetLineEndDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
 
-    </h:form>
+                        </p:panelGrid>
 
-    <h:form id="addBudgetLineCategoryForm">
-        <p:dialog header="Add New Budget Line Category."
-                  widgetVar="addBudgetLineCategoryDialog"
-                  modal="true"
-                  resizable="true"
-                  showEffect="fade"
-                  hideEffect="fade"
-                  closable="true"
-                  width="800px"
-                  visible="#{facesContext.validationFailed}">
-            <p:outputPanel id="addBudgetLineCategoryPanel" rendered="true">
-                <p:messages id="addBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                    <p:autoUpdate/>
-                </p:messages>
-                <p:panelGrid columns="2" styleClass="custom-grid">
-                    <p:outputLabel for="newBudgetLineCategoryName" value="Budget Line Category Name"/>
-                    <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}">
-                    </p:inputText>
-                </p:panelGrid>
+                        <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineToBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" onclick="PF('addBudgetLineDialog').hide();" icon="pi pi-times"/>
+                    </p:outputPanel>
+                </p:dialog>
 
-                <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
-                <p:commandButton value="Cancel" onclick="PF('addBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
-            </p:outputPanel>
-        </p:dialog>
-    </h:form>
+            </h:form>
 
-    <h:form id="updateBudgetLineCategoryForm">
-        <p:dialog header="Edit Budget Line Category Name."
-                  widgetVar="editBudgetLineCategoryDialog"
-                  modal="true"
-                  resizable="true"
-                  showEffect="fade"
-                  hideEffect="fade"
-                  closable="true"
-                  width="800px"
-                  visible="#{facesContext.validationFailed}">
-            <p:outputPanel id="editBudgetLineCategoryPanel" rendered="true">
-            <p:messages id="editBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                <p:autoUpdate/>
-            </p:messages>
-                <p:panelGrid columns="2" styleClass="custom-grid">
-                    <p:outputLabel for="editedBudgetLineCategoryName" value="Budget Line Category Name"/>
-                    <p:inputText id="editedBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.selectedBudgetLineCategory.categoryName}">
-                    </p:inputText>
-                </p:panelGrid>
+            <h:form id="addBudgetLineCategoryForm">
+                <p:dialog header="Add New Budget Line Category."
+                          widgetVar="addBudgetLineCategoryDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="addBudgetLineCategoryPanel" rendered="true">
+                        <p:messages id="addBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="newBudgetLineCategoryName" value="Budget Line Category Name"/>
+                            <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}">
+                            </p:inputText>
+                        </p:panelGrid>
 
-                <p:commandButton value="Edit" update=":budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-check"/>
-                <p:commandButton value="Cancel" onclick="PF('editBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
-            </p:outputPanel>
+                        <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" onclick="PF('addBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
 
-        </p:dialog>
-    </h:form>
+            <h:form id="updateBudgetLineCategoryForm">
+                <p:dialog header="Edit Budget Line Category Name."
+                          widgetVar="editBudgetLineCategoryDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="editBudgetLineCategoryPanel" rendered="true">
+                        <p:messages id="editBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="editedBudgetLineCategoryName" value="Budget Line Category Name"/>
+                            <p:inputText id="editedBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.selectedBudgetLineCategory.categoryName}">
+                            </p:inputText>
+                        </p:panelGrid>
 
-    <h:form id="updateBudgetLineForm">
-        <p:dialog header="Edit Budget Line."
-                  widgetVar="editBudgetLineDialog"
-                  modal="true"
-                  resizable="true"
-                  showEffect="fade"
-                  hideEffect="fade"
-                  closable="true"
-                  width="800px"
-                  visible="#{facesContext.validationFailed}">
-            <p:outputPanel id="editBudgetLinePanel" rendered="true">
-                <p:messages id="editBudgetLineMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                    <p:autoUpdate/>
-                </p:messages>
-                <p:panelGrid columns="2" styleClass="custom-grid">
-                    <p:outputLabel for="editBudgetLineName" value="Budget Line Title: "/>
-                    <p:inputText id="editBudgetLineName" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}" required="true">
-                    </p:inputText>
+                        <p:commandButton value="Edit" update=":budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" onclick="PF('editBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
+                    </p:outputPanel>
 
-                    <p:outputLabel for="editBudgetLineAmount" value="Budget Line Amount: "/>
-                    <p:inputText id="editBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}" required="true">
-                    </p:inputText>
+                </p:dialog>
+            </h:form>
 
-                    <p:outputLabel for="editBudgetLineStartDate" value="Start Date: "  />
-                    <p:datePicker id="editBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+            <h:form id="updateBudgetLineForm">
+                <p:dialog header="Edit Budget Line."
+                          widgetVar="editBudgetLineDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="editBudgetLinePanel" rendered="true">
+                        <p:messages id="editBudgetLineMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="editBudgetLineName" value="Budget Line Title: "/>
+                            <p:inputText id="editBudgetLineName" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}" required="true">
+                            </p:inputText>
 
-                    <p:outputLabel for="ediBudgetLineEndDate" value="End Date: "  />
-                    <p:datePicker id="ediBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:outputLabel for="editBudgetLineAmount" value="Budget Line Amount: "/>
+                            <p:inputText id="editBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}" required="true">
+                            </p:inputText>
 
-                </p:panelGrid>
+                            <p:outputLabel for="editBudgetLineStartDate" value="Start Date: "  />
+                            <p:datePicker id="editBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
 
-                <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
-                <p:commandButton value="Cancel" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times"/>
-            </p:outputPanel>
-        </p:dialog>
-    </h:form>
+                            <p:outputLabel for="ediBudgetLineEndDate" value="End Date: "  />
+                            <p:datePicker id="ediBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
 
-</h:body>
-</html>
+                        </p:panelGrid>
+
+                        <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

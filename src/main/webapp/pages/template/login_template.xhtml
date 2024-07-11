@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Login</title>
+    <style type="text/css">
+
+        body{
+            margin: 0;
+        }
+        .centered-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fafafa;
+        }
+        .form-container {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 70vh;
+            max-width: 70vh;
+        }
+        .form-container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 24px;
+        }
+        .form-container h|messages {
+            margin-bottom: 20px;
+        }
+        .form-container h|panelGrid {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .form-container .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+            font-family: 'Arial', sans-serif;
+        }
+        .form-container .form-input {
+            width: 60vh;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            background-color: #fafafa;
+            transition: border-color 0.3s ease;
+
+        }
+        .form-container .form-input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .form-container .form-button {
+            width: 60vh;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        .form-container .form-button:hover {
+            background-color: #0056b3;
+        }
+        .form-container .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .form-container .register-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-family: 'Arial', sans-serif;
+        }
+        .form-container .register-link a:hover {
+            color: #0056b3;
+        }
+    </style>
+
+</h:head>
+<h:body>
+    <div class="flexDisplay">
+        <ui:insert name="content"/>
+    </div>
+
+</h:body>
+</html>
