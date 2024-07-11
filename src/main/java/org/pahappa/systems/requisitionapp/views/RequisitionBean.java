@@ -3,6 +3,7 @@ package org.pahappa.systems.requisitionapp.views;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
@@ -50,44 +51,48 @@ public class RequisitionBean implements Serializable {
         try {
           if (currentUser != null) {
               BudgetLine budgetLine = budgetLineService.getBudgetLineByTitle(budgetLineName);
-              if (budgetLine != null) {
-                  List<Requisition> currentUserRequisitions = requisitionService.getRequisitionsByUser(currentUser);
-                  List<Requisition> userRequisitions = currentUser.getRequisitions();
-                  if (!currentUserRequisitions.isEmpty() || !userRequisitions.isEmpty()) {
-                      for (Requisition requisition : currentUserRequisitions) {
-                          if (requisition.getAccountability() == null) {
-                              FacesContext.getCurrentInstance().addMessage(null,
-                                      new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
-                              return;
+              if (budgetLine != null ) {
+                  if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)) {
+                      List<Requisition> currentUserRequisitions = requisitionService.getRequisitionsByUser(currentUser);
+                      List<Requisition> userRequisitions = currentUser.getRequisitions();
+                      if (!currentUserRequisitions.isEmpty() || !userRequisitions.isEmpty()) {
+                          for (Requisition requisition : currentUserRequisitions) {
+                              if (requisition.getAccountability() == null) {
+                                  FacesContext.getCurrentInstance().addMessage(null,
+                                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
+                                  return;
+                              }
                           }
                       }
-                  }
-                  if (budgetLine.getBalance() < newRequisition.getAmount()){
+                      if (budgetLine.getBalance() < newRequisition.getAmount()){
+                          FacesContext.getCurrentInstance().addMessage(null,
+                                  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
+                          return;
+                      }
+                      if (newRequisition.getDateNeeded().after(budgetLine.getEndDate())){
+                          FacesContext.getCurrentInstance().addMessage(null,
+                                  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be after budget line end date", null));
+                          return;
+                      }
+                      if (newRequisition.getDateNeeded().before(budgetLine.getStartDate())){
+                          FacesContext.getCurrentInstance().addMessage(null,
+                                  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
+                          return;
+                      }
+                      if (newRequisition.getAmount() <= 0){
+                          FacesContext.getCurrentInstance().addMessage(null,
+                                  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be less than or equal 0", null));
+                          return;
+                      }
+                      newRequisition.setBudgetLine(budgetLine);
+                      newRequisition.setUser(currentUser);
+                      userRequisitions.add(newRequisition);
+                      requisitionService.makeRequisition(newRequisition, currentUser);
                       FacesContext.getCurrentInstance().addMessage(null,
-                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
-                      return;
-                  }
-                  if (newRequisition.getDateNeeded().after(budgetLine.getEndDate())){
+                              new FacesMessage(FacesMessage.SEVERITY_INFO, "Success.", null));
+                  } else
                       FacesContext.getCurrentInstance().addMessage(null,
-                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be after budget line end date", null));
-                      return;
-                  }
-                  if (newRequisition.getDateNeeded().before(budgetLine.getStartDate())){
-                      FacesContext.getCurrentInstance().addMessage(null,
-                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
-                      return;
-                  }
-                  if (newRequisition.getAmount() <= 0){
-                      FacesContext.getCurrentInstance().addMessage(null,
-                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be less than or equal 0", null));
-                      return;
-                  }
-                  newRequisition.setBudgetLine(budgetLine);
-                  newRequisition.setUser(currentUser);
-                  userRequisitions.add(newRequisition);
-                  requisitionService.makeRequisition(newRequisition, currentUser);
-                  FacesContext.getCurrentInstance().addMessage(null,
-                          new FacesMessage(FacesMessage.SEVERITY_INFO, "Success.", null));
+                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line currently", null));
               } else
                   FacesContext.getCurrentInstance().addMessage(null,
                           new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line currently", null));
@@ -161,6 +166,15 @@ public class RequisitionBean implements Serializable {
     public void loadUserRequisitions(){
         try {
             userRequisitions = getUserRequisitions();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+        }
+    }
+
+    public void loadAllRequisitions(){
+        try {
+            requisitions = requisitionService.getAllRequisitions();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
