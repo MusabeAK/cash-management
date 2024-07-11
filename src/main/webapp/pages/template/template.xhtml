@@ -76,9 +76,11 @@
         }
         body .container .left-nav ul li a:hover {
             border: 2px solid #343C6A;
+            font-weight: bold;
             transition: 0.1s ease;
         }
         body .container .left-nav ul li a.active {
+            font-weight: bold;
             color: #2D60FF;
         }
 
@@ -232,22 +234,18 @@
             gap: 10px;
         }
 
-        body .container .content .table-header .table-header-buttons .add-button,
-        body .container .content .table-header .table-header-buttons .delete-all-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 0 5px;
-            border: 1px solid transparent;
-            border-radius: 12px;
-            background-color: #00B087;
-            color: #008767;
+        body .container .content .edit-button, .delete-button {
+            border: none !important;
+            font-size: 8px !important;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            margin: 1px !important;
+            background-color: #e7f3f2 !important;
         }
 
         body .container .content .table-header .table-header-buttons .add-button:hover,
         body .container .content .table-header .table-header-buttons .delete-all-button:hover {
-            background-color: #0056b3;
+            background-color: #e7f3f2;
+            transition: font-weight 0.3s ease;
         }
 
         body .container .content .table-header .table-header-buttons .add-button .ui-button-text,
@@ -256,12 +254,25 @@
         }
 
         body .container .content .table-header .table-header-buttons .delete-all-button {
-            background-color: #dc3545;
+            background-color: #e7f3f2;
+            color:#c82333;
+            border: none;
         }
 
         body .container .content .table-header .table-header-buttons  .delete-all-button:hover {
-            background-color: #c82333;
+            font-weight: bold;
         }
+
+        body .container .content .table-header .table-header-buttons .add-button {
+            background-color: #e7f3f2;
+            color: #16C098;
+            border: none;
+        }
+
+        body .container .content .table-header .table-header-buttons  .add-button:hover {
+            font-weight: bold;
+        }
+
 
         body .container .content .search-container {
             display: flex;
@@ -271,6 +282,10 @@
             /*border-bottom: 1px solid #ddd;*/
             margin-bottom: 0;
             background-color: white;
+        }
+
+        body .container .content .search-container h3 {
+            color: #718EBF;
         }
 
 
@@ -324,14 +339,11 @@
 
 
         body .container .content .edit-button, .delete-button {
-            /*margin: 5px;*/
             border: none !important;
-            /*background: none;*/
             font-size: 8px !important;
             cursor: pointer;
             margin: 0 1px !important;
             background-color: #f4f4f4 !important;
-            /*border-radius: 50px !important;*/
         }
         body .container .content .edit-button:hover, .delete-button:hover{
             background-color: #ddd !important;
@@ -365,8 +377,12 @@
             margin-bottom: 0;
             width: 100%;
         }
+        body .container .form-container body .container .form-container form{
+            display: flex;
+            background-color: blue;
+        }
         body .container .form-container .form-label {
-            display: block;
+            display: inline;
             margin-bottom: 3px;
             font-weight: bold;
             color: #555;
@@ -383,6 +399,7 @@
             font-size: 14px;
             background-color: #fafafa;
             transition: border-color 0.3s ease;
+            display: inline;
 
         }
         body .container .form-container .form-input:focus {
@@ -426,7 +443,6 @@
         }
 
     </style>
-
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             // Toggle navigation function
@@ -453,7 +469,6 @@
             });
         });
     </script>
-
 
 </h:head>
 <h:body>

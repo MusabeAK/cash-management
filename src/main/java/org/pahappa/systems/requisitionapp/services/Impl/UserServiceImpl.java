@@ -95,4 +95,8 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    public List<User> searchUsers(String searchTerm) {
+        return userDAO.searchUsers(searchTerm);
+    }
+
 }

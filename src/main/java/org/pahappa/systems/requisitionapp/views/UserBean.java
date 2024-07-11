@@ -32,6 +32,8 @@ public class UserBean implements Serializable {
     private Gender gender;
     private List<String> availableGenders;
     private List<User> users;
+    private List<User> filteredUsers;
+    private String searchQuery;
 
 
     @PostConstruct
@@ -44,6 +46,7 @@ public class UserBean implements Serializable {
                 .map(Enum::name)
                 .collect(Collectors.toList());
 
+        filteredUsers = userService.getAllUsers();
     }
 
 
@@ -98,6 +101,9 @@ public class UserBean implements Serializable {
             user.setRole(role);
             user.setPhoneNumber(phoneNumber);
             userService.addUser(user);
+
+            filteredUsers = userService.getAllUsers();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -105,7 +111,21 @@ public class UserBean implements Serializable {
 
     public void deleteUser(User user){
         userService.deleteUser(user);
+        filteredUsers = userService.getAllUsers();
     }
+
+
+    public void searchUsers() {
+        if (!(searchQuery == null || searchQuery.isEmpty())) {
+            filteredUsers = userService.searchUsers(searchQuery);
+            return;
+        }
+        filteredUsers = userService.getAllUsers();
+
+    }
+
+
+
 
 
     public List<User> getUsers() {
@@ -165,5 +185,20 @@ public class UserBean implements Serializable {
         this.gender = gender;
     }
 
+    public List<User> getFilteredUsers() {
+        return filteredUsers;
+    }
+
+    public void setFilteredUsers(List<User> filteredUsers) {
+        this.filteredUsers = filteredUsers;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
 
 }
