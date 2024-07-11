@@ -37,6 +37,8 @@ public class RequisitionBean implements Serializable {
     private String budgetLineName;
     private List<Requisition> requisitions;
     private List<Requisition> userRequisitions;
+    private List<Requisition> reviewedRequisitions;
+    private List<Requisition> draftRequisitions;
     private Requisition selectedRequisition;
     private String comment;
 
@@ -45,7 +47,19 @@ public class RequisitionBean implements Serializable {
         newRequisition = new Requisition();
         requisitions = requisitionService.getAllRequisitions();
         userRequisitions = new ArrayList<>();
+        reviewedRequisitions = new ArrayList<>();
+        draftRequisitions = new ArrayList<>();
         comment = "";
+        for (Requisition requisition : requisitions) {
+            if (requisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+                reviewedRequisitions.add(requisition);
+            }
+        }
+        for (Requisition requisition : requisitions) {
+            if (requisition.getStatus().equals(RequisitionStatus.DRAFT)){
+                draftRequisitions.add(requisition);
+            }
+        }
     }
 
     public void makeRequisition() {
@@ -129,6 +143,11 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be less than or equal 0", null));
             return;
         }
+        if (!selectedRequisition.getStatus().equals(RequisitionStatus.DRAFT)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot update a requisition that is not in draft", null));
+            return;
+        }
         try {
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -153,11 +172,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void selectRequisition(Requisition requisition){
-        if (requisition.getStatus().equals(RequisitionStatus.DRAFT)){
+        try {
             this.selectedRequisition = requisition;
-        } else {
+        }catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot select a requisition that is not in draft.", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: "+ e.getMessage(), null));
         }
     }
 
@@ -180,6 +199,24 @@ public class RequisitionBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot reject a requisition that is not in draft.", null));
         }
+    }
+
+    public void approveRequisition(){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+            selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
+            requisitionService.updateRequisition(selectedRequisition);
+        } else
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot approve a requisition that is not reviewed.", null));
+    }
+
+    public void rejectRequisition(){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+            selectedRequisition.setStatus(RequisitionStatus.REJECTED);
+            requisitionService.updateRequisition(selectedRequisition);
+        } else
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot reject a requisition that is not reviewed.", null));
     }
 
     public List<BudgetLine> searchBudgetLines(String query){
@@ -280,4 +317,19 @@ public class RequisitionBean implements Serializable {
         this.comment = comment;
     }
 
+    public List<Requisition> getReviewedRequisitions() {
+        return reviewedRequisitions;
+    }
+
+    public void setReviewedRequisitions(List<Requisition> reviewedRequisitions) {
+        this.reviewedRequisitions = reviewedRequisitions;
+    }
+
+    public List<Requisition> getDraftRequisitions() {
+        return draftRequisitions;
+    }
+
+    public void setDraftRequisitions(List<Requisition> draftRequisitions) {
+        this.draftRequisitions = draftRequisitions;
+    }
 }

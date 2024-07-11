@@ -11,7 +11,7 @@
 <h:body>
     <h:form id="allRequisitions">
         <h:panelGroup id="allRequisitionsTable">
-            <p:dataTable value="#{requisitionBean.requisitions}" var="requisition">
+            <p:dataTable value="#{requisitionBean.draftRequisitions}" var="requisition">
                 <p:column headerText="User">
                     <h:outputText value="#{requisition.user}"/>
                 </p:column>
