@@ -20,4 +20,11 @@
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 
+    <managed-bean>
+        <managed-bean-name>accountabilityBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.AccountabilityBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+
 </faces-config>

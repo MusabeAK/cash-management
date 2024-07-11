@@ -15,6 +15,8 @@ public class Accountability {
     @Column(name = "description")
     private String description;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
     @Column(name = "amount_used")

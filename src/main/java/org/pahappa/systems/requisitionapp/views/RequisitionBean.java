@@ -165,10 +165,12 @@ public class RequisitionBean implements Serializable {
 
     public void deleteRequisition(Requisition requisition){
         try {
-            requisitionService.deleteRequisition(requisition);
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
-            loadUserRequisitions();
+            if (requisition.getStatus().equals(RequisitionStatus.DRAFT) || requisition.getStatus().equals(RequisitionStatus.REJECTED)){
+                requisitionService.deleteRequisition(requisition);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
+                loadUserRequisitions();
+            }
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -190,7 +192,8 @@ public class RequisitionBean implements Serializable {
             selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Requisition reviewed.", null));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition reviewed.", null));
+            reviewedRequisitions.add(selectedRequisition);
             draftRequisitions.remove(selectedRequisition);
         } else
             FacesContext.getCurrentInstance().addMessage(null,
@@ -216,7 +219,8 @@ public class RequisitionBean implements Serializable {
             selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Requisition approved.", null));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition approved.", null));
+            approvedRequisitions.add(selectedRequisition);
             reviewedRequisitions.remove(selectedRequisition);
         } else
             FacesContext.getCurrentInstance().addMessage(null,

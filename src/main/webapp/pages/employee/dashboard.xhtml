@@ -62,6 +62,7 @@
                 <p:column headerText="Actions">
                     <p:commandButton value="Update" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
                     <p:commandButton value="Delete" action="#{requisitionBean.deleteRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable"/>
+                    <p:commandButton value="Accountability" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
                 </p:column>
             </p:dataTable>
         </h:panelGroup>
@@ -106,6 +107,47 @@
 
                 <p:commandButton value="Update" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
                 <p:commandButton value="Cancel" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+
+    <h:form id="addAccountability" enctype="multipart/form-data">
+        <p:dialog header="Accountability"
+                  widgetVar="addAccountabilityDialog"
+                  modal="true"
+                  resizable="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  closable="true"
+                  width="800px"
+                  visible="#{facesContext.validationFailed}">
+            <p:outputPanel id="addAccountabilityPanel" rendered="true">
+            <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <p:panelGrid columns="2" styleClass="custom-grid">
+                <p:outputLabel for="accountabilityDescription" value="Description: ">
+                    <p:inputTextarea id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
+
+                    </p:inputTextarea>
+                </p:outputLabel>
+
+                <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: ">
+                    <p:inputText id="accountabilityAmountUsed" value="#{accountabilityBean.newAccountability.amountUsed}" required="true">
+
+                    </p:inputText>
+                </p:outputLabel>
+
+                <p:outputLabel for="accountabilityImage" value="Image ">
+                    <p:fileUpload id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
+                                  mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
+                    </p:fileUpload>
+                </p:outputLabel>
+
+            </p:panelGrid>
+
+                <p:commandButton value="Add" actionListener="#{accountabilityBean.addAccountability}" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-check"/>
+                <p:commandButton value="Cancel" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
             </p:outputPanel>
         </p:dialog>
     </h:form>
