@@ -27,6 +27,7 @@ public class Initializer {
         createEmployeeUser();
         createOperationsUser();
         createCEOUser();
+        createFinanceUser();
     }
 
     private void createAdminUser(){
@@ -115,6 +116,29 @@ public class Initializer {
             user.setPhoneNumber("+256701461762");
             user.setGender(Gender.FEMALE);
             user.setRole(Role.CEO);
+            userService.addUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createFinanceUser(){
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            if(user.getUsername().equals("Finance")){
+                return;
+            }
+        }
+        try {
+            User user = new User();
+            user.setUsername("Finance");
+            user.setPassword("Money357");
+            user.setEmail("money@gmail.com");
+            user.setFirstName("Finance");
+            user.setLastName("Finance");
+            user.setPhoneNumber("+256701461762");
+            user.setGender(Gender.MALE);
+            user.setRole(Role.FINANCE);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();

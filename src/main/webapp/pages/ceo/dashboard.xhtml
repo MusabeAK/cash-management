@@ -71,6 +71,14 @@
                         <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                     </h:outputText>
 
+                    <p:outputLabel for="requisitionBudgetLine" value="Budget Line: "/>
+                    <h:outputText id="requisitionBudgetLine" value="#{requisitionBean.selectedRequisition.budgetLine}">
+                    </h:outputText>
+
+                    <p:outputLabel for="requisitionBudgetLineBalance" value="Budget Line Balance: "/>
+                    <h:outputText id="requisitionBudgetLineBalance" value="#{requisitionBean.selectedRequisition.budgetLine.balance}">
+                    </h:outputText>
+
                     <p:outputLabel for="requisitionComment" value="Add Comment: "/>
                     <p:inputText id="requisitionComment" value="#{requisitionBean.selectedRequisition.comment}">
 

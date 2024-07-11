@@ -77,6 +77,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void updateBudgetLine() {
         try {
+            if (!selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot update a budget line that is not in draft", null));
+                return;
+            }
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));

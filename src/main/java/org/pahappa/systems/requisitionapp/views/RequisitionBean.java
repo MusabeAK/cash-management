@@ -7,13 +7,10 @@ import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
-import org.pahappa.systems.requisitionapp.services.UserService;
-import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -37,8 +34,9 @@ public class RequisitionBean implements Serializable {
     private String budgetLineName;
     private List<Requisition> requisitions;
     private List<Requisition> userRequisitions;
-    private List<Requisition> reviewedRequisitions;
     private List<Requisition> draftRequisitions;
+    private List<Requisition> reviewedRequisitions;
+    private List<Requisition> approvedRequisitions;
     private Requisition selectedRequisition;
     private String comment;
 
@@ -47,6 +45,7 @@ public class RequisitionBean implements Serializable {
         newRequisition = new Requisition();
         requisitions = requisitionService.getAllRequisitions();
         userRequisitions = new ArrayList<>();
+        approvedRequisitions = new ArrayList<>();
         reviewedRequisitions = new ArrayList<>();
         draftRequisitions = new ArrayList<>();
         comment = "";
@@ -58,6 +57,11 @@ public class RequisitionBean implements Serializable {
         for (Requisition requisition : requisitions) {
             if (requisition.getStatus().equals(RequisitionStatus.DRAFT)){
                 draftRequisitions.add(requisition);
+            }
+        }
+        for (Requisition requisition : requisitions) {
+            if (requisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
+                approvedRequisitions.add(requisition);
             }
         }
     }
@@ -185,6 +189,9 @@ public class RequisitionBean implements Serializable {
             selectedRequisition.setComment(comment);
             selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
             requisitionService.updateRequisition(selectedRequisition);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Requisition reviewed.", null));
+            draftRequisitions.remove(selectedRequisition);
         } else
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot approve a requisition that is not in draft.", null));
@@ -195,6 +202,9 @@ public class RequisitionBean implements Serializable {
             selectedRequisition.setComment(comment);
             selectedRequisition.setStatus(RequisitionStatus.REJECTED);
             requisitionService.updateRequisition(selectedRequisition);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Requisition rejected.", null));
+            draftRequisitions.remove(selectedRequisition);
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot reject a requisition that is not in draft.", null));
@@ -205,6 +215,9 @@ public class RequisitionBean implements Serializable {
         if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
             selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
             requisitionService.updateRequisition(selectedRequisition);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Requisition approved.", null));
+            reviewedRequisitions.remove(selectedRequisition);
         } else
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot approve a requisition that is not reviewed.", null));
@@ -214,9 +227,33 @@ public class RequisitionBean implements Serializable {
         if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
             selectedRequisition.setStatus(RequisitionStatus.REJECTED);
             requisitionService.updateRequisition(selectedRequisition);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Requisition rejected.", null));
+            reviewedRequisitions.remove(selectedRequisition);
         } else
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot reject a requisition that is not reviewed.", null));
+    }
+
+    public void disburseRequisition(){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
+            try {
+                selectedRequisition.setStatus(RequisitionStatus.DISBURSED);
+                int currentBalance = selectedRequisition.getBudgetLine().getBalance();
+                int amountUsed = selectedRequisition.getAmount();
+                int newBalance = currentBalance - amountUsed;
+                BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
+                budgetLine.setBalance(newBalance);
+                budgetLineService.updateBudgetLine(budgetLine);
+                requisitionService.updateRequisition(selectedRequisition);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition disbursed.", null));
+                approvedRequisitions.remove(selectedRequisition);
+            } catch (Exception e){
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error disbursing requisition." + e.getMessage(), null));
+            }
+        }
     }
 
     public List<BudgetLine> searchBudgetLines(String query){
@@ -331,5 +368,13 @@ public class RequisitionBean implements Serializable {
 
     public void setDraftRequisitions(List<Requisition> draftRequisitions) {
         this.draftRequisitions = draftRequisitions;
+    }
+
+    public List<Requisition> getApprovedRequisitions() {
+        return approvedRequisitions;
+    }
+
+    public void setApprovedRequisitions(List<Requisition> approvedRequisitions) {
+        this.approvedRequisitions = approvedRequisitions;
     }
 }
