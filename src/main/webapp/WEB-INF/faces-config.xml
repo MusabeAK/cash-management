@@ -7,4 +7,17 @@
 <application>
 <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
 </application>
+
+    <managed-bean>
+        <managed-bean-name>budgetLineCategoryManagedBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.BudgetLineCategoryManagedBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>requisitionBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.RequisitionBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
 </faces-config>

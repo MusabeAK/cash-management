@@ -10,7 +10,7 @@ import java.util.Objects;
 @Table(name = "requisitions")
 public class Requisition {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "requisition_id")
     private int id;
 

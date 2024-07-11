@@ -1,11 +1,121 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
+    <ui:define name="content" class="form-container">
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+
+        <h:panelGroup layout="block" styleClass="top-bar">
+            <h:outputText value="Users" styleClass="top-bar-title" />
+        </h:panelGroup>
+
+        <div class="content">
+            <h:form id="usersForm">
+<!--                <p:growl id="growl" showDetail="true" life="2000"  />-->
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true"
+                                 width="350">
+                    <p:commandButton value="No" type="button"
+                                     styleClass="ui-confirmdialog-no ui-button-flat"/>
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
+                </p:confirmDialog>
+
+                <div class="cards-container">
+                    <div class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Total Amount Disbursed" styleClass="card-title"/>
+                            <h:outputText value="20" styleClass="card-number"/>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Number of Registered Users" styleClass="card-title"/>
+                            <h:outputText value="30" styleClass="card-number"/>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <i class="pi pi-users card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Active Budget Lines" styleClass="card-title"/>
+                            <h:outputText value="5" styleClass="card-number"/>
+                        </div>
+                    </div>
+                </div>
+
+                <h:panelGroup id="usersTable">
+
+                    <div class="search-container">
+                        <h3>All users</h3>
+                        <div class="search-and-filter">
+                            <div class="search">
+                                <p:inputText id="searchBar" value="#" styleClass="search-bar" placeholder="Search...">
+                                    <p:ajax event="keyup" />
+                                </p:inputText>
+                            </div>
+                            <div class="filter">
+                                <h:selectOneMenu value="#" styleClass="gender-filter">
+                                    <f:selectItem itemLabel="Gender" itemValue="" />
+                                    <f:selectItem itemLabel="Male" itemValue="Male" />
+                                    <f:selectItem itemLabel="Female" itemValue="Female" />
+                                </h:selectOneMenu>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-header">
+                        <h:outputText value="30 User(s)" styleClass="total-users"/>
+                        <div class="table-header-buttons">
+                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button"/>
+
+                            <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
+                                <p:confirm header="Confirm Deletion" message="Do you want to delete all Users?"
+                                           icon="pi pi-info-circle"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+
+                    <p:dataTable value="#{userBean.users}" var="user">
+                        <p:column headerText="Title">
+                            <h:outputText value="#{user.username}"/>
+                        </p:column>
+
+                        <p:column headerText="Initial Amount">
+                            <h:outputText value="#{user.firstName}"/>
+                        </p:column>
+
+                        <p:column headerText="Current Balance">
+                            <h:outputText value="#{user.lastName}"/>
+                        </p:column>
+
+                        <p:column headerText="Start Date">
+                            <h:outputText value="#{user.email}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="End Date">
+                            <h:outputText value="#{user.phoneNumber}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Budget Line Category">
+                            <h:outputText value="#{user.role}"/>
+                        </p:column>
+
+                        <p:column headerText="Actions">
+                            <p:commandButton value="Update" action="#"/>
+                            <p:commandButton value="Delete" action="#{userBean.deleteUser(user)}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+
+        </div>
+    </ui:define>
+</ui:composition>
