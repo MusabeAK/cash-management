@@ -35,31 +35,26 @@ public class NavigationBean implements Serializable {
                 break;
             case CEO:
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
-                links.add(new NavLink("Users", "users", "pi pi-users"));
                 links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
-                links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
             case OPERATIONS:
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
-                links.add(new NavLink("Users", "users", "pi pi-users"));
                 links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
-                links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
             case FINANCE:
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
-                links.add(new NavLink("Users", "users", "pi pi-users"));
-                links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
-                links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
+                links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
             case EMPLOYEE:
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
-                links.add(new NavLink("Past Requisitions", "pastrequisitions", "pi pi-file"));
+                links.add(new NavLink("Past Requisitions", "requisitions", "pi pi-file"));
+                links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
         }

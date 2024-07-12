@@ -63,7 +63,7 @@ public class Initializer {
         try {
             User user = new User();
             user.setUsername("Employee");
-            user.setPassword("empl0y3e");
+            user.setPassword("employee");
             user.setEmail("ariyo@gmail.com");
             user.setFirstName("Employee");
             user.setLastName("Employee");
@@ -86,7 +86,7 @@ public class Initializer {
         try {
             User user = new User();
             user.setUsername("Operations");
-            user.setPassword("Oper@tions");
+            user.setPassword("operations");
             user.setEmail("operations@gmail.com");
             user.setFirstName("Operations");
             user.setLastName("Operations");
@@ -109,7 +109,7 @@ public class Initializer {
         try {
             User user = new User();
             user.setUsername("CEO");
-            user.setPassword("CEO0O");
+            user.setPassword("ceo");
             user.setEmail("ceo@gmail.com");
             user.setFirstName("CEO");
             user.setLastName("CEO");
@@ -132,7 +132,7 @@ public class Initializer {
         try {
             User user = new User();
             user.setUsername("Finance");
-            user.setPassword("Money357");
+            user.setPassword("finance");
             user.setEmail("money@gmail.com");
             user.setFirstName("Finance");
             user.setLastName("Finance");
