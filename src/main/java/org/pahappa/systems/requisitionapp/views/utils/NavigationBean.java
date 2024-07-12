@@ -1,5 +1,8 @@
 package org.pahappa.systems.requisitionapp.views.utils;
 
+import org.pahappa.systems.requisitionapp.models.utils.Role;
+import org.pahappa.systems.requisitionapp.views.LoginBean;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -7,6 +10,8 @@ import javax.faces.event.ComponentSystemEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.primefaces.component.panelgrid.PanelGridBase.PropertyKeys.role;
 
 @ManagedBean(name = "navigationBean")
 @SessionScoped
@@ -18,12 +23,47 @@ public class NavigationBean implements Serializable {
 
     public NavigationBean() {
         links = new ArrayList<>();
-        links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
-        links.add(new NavLink("Users", "users", "pi pi-users"));
-        links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
-        links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
-        links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
-        links.add(new NavLink("Settings", "settings", "pi pi-cog"));
+        Role role = LoginBean.getCurrentUser().getRole();
+        switch (role){
+            case ADMIN:
+                links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
+                links.add(new NavLink("Users", "users", "pi pi-users"));
+                links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
+                links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
+                links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
+                links.add(new NavLink("Settings", "settings", "pi pi-cog"));
+                break;
+            case CEO:
+                links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
+                links.add(new NavLink("Users", "users", "pi pi-users"));
+                links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
+                links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
+                links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
+                links.add(new NavLink("Settings", "settings", "pi pi-cog"));
+                break;
+            case OPERATIONS:
+                links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
+                links.add(new NavLink("Users", "users", "pi pi-users"));
+                links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
+                links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
+                links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
+                links.add(new NavLink("Settings", "settings", "pi pi-cog"));
+                break;
+            case FINANCE:
+                links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
+                links.add(new NavLink("Users", "users", "pi pi-users"));
+                links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
+                links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
+                links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
+                links.add(new NavLink("Settings", "settings", "pi pi-cog"));
+                break;
+            case EMPLOYEE:
+                links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
+                links.add(new NavLink("Past Requisitions", "pastrequisitions", "pi pi-file"));
+                links.add(new NavLink("Settings", "settings", "pi pi-cog"));
+                break;
+        }
+
         activePage = "dashboard"; // Default active page
     }
 

@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,6 +74,15 @@ public class UserDAO {
                 .createQuery(query, User.class)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
+    }
+
+    public List<User> filterUsersByRole(Role role) {
+        String query = "FROM User WHERE role = :role";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, User.class)
+                .setParameter("role", role)
+                .getResultList();
+
     }
 
 }

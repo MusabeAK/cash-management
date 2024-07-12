@@ -44,14 +44,15 @@
 
         body .container {
             display: flex;
-            height: 100vh;
+            /*height: 100vh;*/
+            height: auto;
         }
         body .container .left-nav {
             background-color: #ffffff;
+            /*width: 30vh;*/
             padding: 0 20px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            height: 100%;
-            width: 35vh;
+            height: 125vh;
         }
 
         body .container .left-nav h2{
@@ -61,7 +62,7 @@
         body .container .left-nav ul {
             list-style: none;
             padding: 0;
-            width: 100%;
+            width: 30vh;
         }
         body .container .left-nav ul li {
             margin: 10px 0;
@@ -75,19 +76,18 @@
 
         }
         body .container .left-nav ul li a:hover {
+            /*background-color: #ddd;*/
             border: 2px solid #343C6A;
-            font-weight: bold;
             transition: 0.1s ease;
         }
         body .container .left-nav ul li a.active {
-            font-weight: bold;
+            /*background-color: #333;*/
             color: #2D60FF;
         }
 
         body .container .wrapper{
             background-color: #f6f6fb;
             width: 100%;
-            overflow-y: auto;
 
         }
 
@@ -99,7 +99,6 @@
         /* Card container styling */
         body .container .content .cards-container {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             margin-bottom: 20px;
         }
@@ -114,7 +113,7 @@
             align-items: center;
             width: 30%;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px;
+            margin-right: 10px;
         }
 
         body .container .content .cards-container .card:last-child {
@@ -146,71 +145,6 @@
             color: #232323;
         }
 
-        body .container .top-bar .menu-icon {
-            visibility: hidden;
-            margin-right: 20px;
-            color: #343C6A;
-            background-color: #e7f3f2;
-            padding: 10px;
-            border-radius: 40px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        /* Responsive styles */
-        @media (max-width: 1200px) {
-            body .container .content .cards-container .card {
-                width: 48%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body .container .content .cards-container .card {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 600px) {
-            body .container .left-nav {
-                position: absolute;
-                width: 200px;
-                left: -200px;
-                transition: left 0.3s ease;
-                padding: 10px;
-            }
-
-            body .container .left-nav.open {
-                left: 0;
-            }
-
-            body .container .left-nav ul {
-                padding: 10px 0;
-            }
-
-            body .container .left-nav ul li {
-                margin: 0;
-            }
-
-            body .container .left-nav ul li a {
-                padding: 15px 20px;
-                font-size: 18px;
-            }
-
-            body .container .top-bar {
-                justify-content: space-between;
-            }
-
-            body .container .top-bar .menu-icon {
-                display: block;
-                cursor: pointer;
-                font-size: 24px;
-                visibility: visible;
-            }
-
-            body .container .top-bar .top-bar-title {
-                margin-left: 10px;
-            }
-        }
 
         /* Style the table header row */
         body .container .content .table-header {
@@ -234,18 +168,22 @@
             gap: 10px;
         }
 
-        body .container .content .edit-button, .delete-button {
-            border: none !important;
-            font-size: 8px !important;
+        body .container .content .table-header .table-header-buttons .add-button,
+        body .container .content .table-header .table-header-buttons .delete-all-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 5px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            background-color: #00B087;
+            color: #008767;
             cursor: pointer;
-            margin: 1px !important;
-            background-color: #e7f3f2 !important;
+            transition: background-color 0.3s ease;
         }
 
         body .container .content .table-header .table-header-buttons .add-button:hover,
         body .container .content .table-header .table-header-buttons .delete-all-button:hover {
-            background-color: #e7f3f2;
-            transition: font-weight 0.4s ease;
+            background-color: #0056b3;
         }
 
         body .container .content .table-header .table-header-buttons .add-button .ui-button-text,
@@ -254,25 +192,12 @@
         }
 
         body .container .content .table-header .table-header-buttons .delete-all-button {
-            background-color: #e7f3f2;
-            color:#c82333;
-            border: none;
+            background-color: #dc3545;
         }
 
         body .container .content .table-header .table-header-buttons  .delete-all-button:hover {
-            font-weight: bold;
+            background-color: #c82333;
         }
-
-        body .container .content .table-header .table-header-buttons .add-button {
-            background-color: #e7f3f2;
-            color: #16C098;
-            border: none;
-        }
-
-        body .container .content .table-header .table-header-buttons  .add-button:hover {
-            font-weight: bold;
-        }
-
 
         body .container .content .search-container {
             display: flex;
@@ -282,10 +207,6 @@
             /*border-bottom: 1px solid #ddd;*/
             margin-bottom: 0;
             background-color: white;
-        }
-
-        body .container .content .search-container h3 {
-            color: #718EBF;
         }
 
 
@@ -339,11 +260,14 @@
 
 
         body .container .content .edit-button, .delete-button {
+            /*margin: 5px;*/
             border: none !important;
+            /*background: none;*/
             font-size: 8px !important;
             cursor: pointer;
             margin: 0 1px !important;
             background-color: #f4f4f4 !important;
+            /*border-radius: 50px !important;*/
         }
         body .container .content .edit-button:hover, .delete-button:hover{
             background-color: #ddd !important;
@@ -377,12 +301,8 @@
             margin-bottom: 0;
             width: 100%;
         }
-        body .container .form-container body .container .form-container form{
-            display: flex;
-            background-color: blue;
-        }
         body .container .form-container .form-label {
-            display: inline;
+            display: block;
             margin-bottom: 3px;
             font-weight: bold;
             color: #555;
@@ -399,7 +319,6 @@
             font-size: 14px;
             background-color: #fafafa;
             transition: border-color 0.3s ease;
-            display: inline;
 
         }
         body .container .form-container .form-input:focus {
@@ -440,36 +359,9 @@
         .nav-link .active {
             color: blue;
             font-weight: bold;
-            transition: font-weight 0.5s ease-in-out;
         }
 
     </style>
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            // Toggle navigation function
-            function toggleNav() {
-                var nav = document.querySelector('.left-nav');
-                nav.classList.toggle('open');
-            }
-
-            // Click outside navigation to close
-            document.addEventListener('click', function (event) {
-                var nav = document.querySelector('.left-nav');
-                var menuIcon = document.querySelector('.menu-icon');
-
-                if (!nav.contains(event.target) &amp;&amp; event.target !== menuIcon) {
-                    nav.classList.remove('open');
-                }
-            });
-
-            // Click menu icon to toggle navigation
-            var menuIcon = document.querySelector('.menu-icon');
-            menuIcon.addEventListener('click', function (event) {
-                event.stopPropagation(); // Prevents the click event from triggering the document click listener immediately
-                toggleNav();
-            });
-        });
-    </script>
 
 </h:head>
 <h:body>
@@ -482,12 +374,11 @@
             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
         </p:confirmDialog>
         <div class="left-nav">
-            <h2><i class="pi pi-server"/> Admin</h2>
+            <h2><i class="pi pi-user"/> Employee</h2>
             <ul>
-
                 <ui:repeat value="#{navigationBean.links}" var="link">
                     <li>
-                        <h:link outcome="/pages/admin/#{link.outcome}.xhtml"
+                        <h:link outcome="/pages/employee/#{link.outcome}.xhtml"
                                 styleClass="nav-link #{navigationBean.activePage == link.outcome ? 'active' : ''}">
                             <f:param name="activePage" value="#{link.outcome}" />
                             <span><i class="#{link.icon}"/></span> #{link.label}

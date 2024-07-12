@@ -8,6 +8,7 @@
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="Users" styleClass="top-bar-title" />
         </h:panelGroup>
 
@@ -18,7 +19,7 @@
                                  width="350">
                     <p:commandButton value="No" type="button"
                                      styleClass="ui-confirmdialog-no ui-button-flat"/>
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" update=":usersForm:usersTable"/>
                 </p:confirmDialog>
 
                 <div class="cards-container">
@@ -52,15 +53,15 @@
                         <h3>All users</h3>
                         <div class="search-and-filter">
                             <div class="search">
-                                <p:inputText id="searchBar" value="#" styleClass="search-bar" placeholder="Search...">
-                                    <p:ajax event="keyup" />
+                                <p:inputText id="searchBar" value="#{userBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
+                                    <p:ajax event="keyup" update=":usersForm:usersTable" listener="#{userBean.searchUsers}"/>
                                 </p:inputText>
                             </div>
                             <div class="filter">
-                                <h:selectOneMenu value="#" styleClass="gender-filter">
-                                    <f:selectItem itemLabel="Gender" itemValue="" />
-                                    <f:selectItem itemLabel="Male" itemValue="Male" />
-                                    <f:selectItem itemLabel="Female" itemValue="Female" />
+                                <h:selectOneMenu value="#{userBean.selectedRole}" styleClass="gender-filter">
+                                    <f:selectItem itemLabel="ROLE" itemValue="" />
+                                    <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}" />
+                                    <p:ajax event="change" update=":usersForm:usersTable" listener="#{userBean.filterUsersByRole}"/>
                                 </h:selectOneMenu>
                             </div>
                         </div>
@@ -69,7 +70,7 @@
                     <div class="table-header">
                         <h:outputText value="30 User(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" oncomplete="PF('addUserDialog').show()"/>
 
                             <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Users?"
@@ -78,38 +79,46 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{userBean.users}" var="user">
-                        <p:column headerText="Title">
+                    <p:dataTable value="#{userBean.filteredUsers}" var="user" paginator="true" rows="5" paginatorPosition="bottom">
+                        <p:column headerText="User Name">
                             <h:outputText value="#{user.username}"/>
                         </p:column>
 
-                        <p:column headerText="Initial Amount">
+                        <p:column headerText="First Name">
                             <h:outputText value="#{user.firstName}"/>
                         </p:column>
 
-                        <p:column headerText="Current Balance">
+                        <p:column headerText="Last Name">
                             <h:outputText value="#{user.lastName}"/>
                         </p:column>
 
-                        <p:column headerText="Start Date">
+                        <p:column headerText="Email">
                             <h:outputText value="#{user.email}">
                                 <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                             </h:outputText>
                         </p:column>
 
-                        <p:column headerText="End Date">
+                        <p:column headerText="Phone Number">
                             <h:outputText value="#{user.phoneNumber}">
                                 <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                             </h:outputText>
                         </p:column>
 
-                        <p:column headerText="Budget Line Category">
+                        <p:column headerText="Gender">
+                            <h:outputText value="#{user.gender}"/>
+                        </p:column>
+
+                        <p:column headerText="Role">
                             <h:outputText value="#{user.role}"/>
                         </p:column>
 
                         <p:column headerText="Actions">
-                            <p:commandButton value="Update" action="#"/>
-                            <p:commandButton value="Delete" action="#{userBean.deleteUser(user)}"/>
+                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" onclick="PF('editDialog').show(); return false;"/>
+
+                            <p:commandButton icon="pi pi-trash" action="#{userBean.deleteUser(user)}" title="Delete" styleClass="delete-button" style="color:red" >
+                                <p:confirm header="Confirm Deletion" message="Do you want to delete this User?"
+                                           icon="pi pi-info-circle"/>
+                            </p:commandButton>
                         </p:column>
 
                     </p:dataTable>
@@ -117,5 +126,63 @@
             </h:form>
 
         </div>
+
+
+        <h:form id="addUserForm">
+            <p:dialog header="Add New User."
+                      widgetVar="addUserDialog"
+                      modal="true"
+                      resizable="true"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closable="true"
+                      width="800px"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="addUserPanel" rendered="true">
+                    <p:messages id="addUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="newUserName" value="User Name"/>
+                        <p:inputText id="newUserName" value="#{userBean.username}" >
+                        </p:inputText>
+
+                        <p:outputLabel for="firstName" value="First Name"/>
+                        <p:inputText id="firstName" value="#{userBean.firstName}" >
+                        </p:inputText>
+
+                        <p:outputLabel for="lastName" value="Last Name"/>
+                        <p:inputText id="lastName" value="#{userBean.lastName}" rendered="true">
+                        </p:inputText>
+
+                        <h:outputLabel for="email" value="Email:"/>
+                        <h:inputText id="email" value="#{userBean.email}" >
+                        </h:inputText>
+
+                        <h:outputLabel for="password" value="Password:"/>
+                        <h:inputSecret id="password" value="#{userBean.password}"  />
+
+
+                        <h:outputLabel for="role" value="Role:"/>
+                        <h:selectOneMenu id="role" value="#{userBean.role}"  >
+                            <f:selectItem itemLabel="Select Role" itemValue="" />
+                            <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="gender" value="Gender:"/>
+                        <h:selectOneMenu id="gender" value="#{userBean.gender}"  >
+                            <f:selectItem itemLabel="Select Gender" itemValue="" />
+                            <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="phone" value="Phone Number:"/>
+                        <h:inputText id="phone" value="#{userBean.phoneNumber}"  />
+                    </p:panelGrid>
+
+                    <p:commandButton value="Add" update=":usersForm:usersTable" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Cancel" onclick="PF('addUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
     </ui:define>
 </ui:composition>

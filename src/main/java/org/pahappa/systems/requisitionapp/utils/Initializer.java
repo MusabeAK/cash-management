@@ -25,6 +25,9 @@ public class Initializer {
     public void init() {
         createAdminUser();
         createEmployeeUser();
+        createOperationsUser();
+        createCEOUser();
+        createFinanceUser();
     }
 
     private void createAdminUser(){
@@ -67,6 +70,75 @@ public class Initializer {
             user.setPhoneNumber("+256772461761");
             user.setGender(Gender.MALE);
             user.setRole(Role.EMPLOYEE);
+            userService.addUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createOperationsUser(){
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            if(user.getUsername().equals("Operations")){
+                return;
+            }
+        }
+        try {
+            User user = new User();
+            user.setUsername("Operations");
+            user.setPassword("Oper@tions");
+            user.setEmail("operations@gmail.com");
+            user.setFirstName("Operations");
+            user.setLastName("Operations");
+            user.setPhoneNumber("+256701461762");
+            user.setGender(Gender.FEMALE);
+            user.setRole(Role.OPERATIONS);
+            userService.addUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createCEOUser(){
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            if(user.getUsername().equals("CEO")){
+                return;
+            }
+        }
+        try {
+            User user = new User();
+            user.setUsername("CEO");
+            user.setPassword("CEO0O");
+            user.setEmail("ceo@gmail.com");
+            user.setFirstName("CEO");
+            user.setLastName("CEO");
+            user.setPhoneNumber("+256701461762");
+            user.setGender(Gender.FEMALE);
+            user.setRole(Role.CEO);
+            userService.addUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createFinanceUser(){
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            if(user.getUsername().equals("Finance")){
+                return;
+            }
+        }
+        try {
+            User user = new User();
+            user.setUsername("Finance");
+            user.setPassword("Money357");
+            user.setEmail("money@gmail.com");
+            user.setFirstName("Finance");
+            user.setLastName("Finance");
+            user.setPhoneNumber("+256701461762");
+            user.setGender(Gender.MALE);
+            user.setRole(Role.FINANCE);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();

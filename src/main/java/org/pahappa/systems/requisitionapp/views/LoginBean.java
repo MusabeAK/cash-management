@@ -93,4 +93,11 @@ public class LoginBean {
         externalContext.redirect(externalContext.getRequestContextPath() + Hyperlink.LOGIN_VIEW);
     }
 
+    public static User getCurrentUser() {
+        // Used to fetch currently logged in user
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        return (User) externalContext.getSessionMap().get("currentUser");
+    }
+
 }

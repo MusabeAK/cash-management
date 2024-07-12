@@ -8,10 +8,8 @@
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
-            <h:outputText value="Dashoard" styleClass="top-bar-title" />
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
+            <h:outputText value="Disburse" styleClass="top-bar-title" />
         </h:panelGroup>
-        <f:view>
-            <h3>Dashoard</h3>
-        </f:view>
     </ui:define>
 </ui:composition>
