@@ -378,7 +378,7 @@ Add custom styles here
          <ul>
             <ui:repeat value="#{navigationBean.links}" var="link">
                <li>
-                  <h:link outcome="/pages/employee/#{link.outcome}.xhtml"
+                  <h:link outcome="/pages/ceo/#{link.outcome}.xhtml"
                           styleClass="nav-link #{navigationBean.activePage == link.outcome ? 'active' : ''}">
                      <f:param name="activePage" value="#{link.outcome}" />
                      <span><i class="#{link.icon}"/></span> #{link.label}
