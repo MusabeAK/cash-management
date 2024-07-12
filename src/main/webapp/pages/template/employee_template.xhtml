@@ -44,15 +44,14 @@
 
         body .container {
             display: flex;
-            /*height: 100vh;*/
-            height: auto;
+            height: 100vh;
         }
         body .container .left-nav {
             background-color: #ffffff;
-            /*width: 30vh;*/
             padding: 0 20px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            height: 125vh;
+            height: 100%;
+            width: 35vh;
         }
 
         body .container .left-nav h2{
@@ -62,7 +61,7 @@
         body .container .left-nav ul {
             list-style: none;
             padding: 0;
-            width: 30vh;
+            width: 100%;
         }
         body .container .left-nav ul li {
             margin: 10px 0;
@@ -76,18 +75,19 @@
 
         }
         body .container .left-nav ul li a:hover {
-            /*background-color: #ddd;*/
             border: 2px solid #343C6A;
+            font-weight: bold;
             transition: 0.1s ease;
         }
         body .container .left-nav ul li a.active {
-            /*background-color: #333;*/
+            font-weight: bold;
             color: #2D60FF;
         }
 
         body .container .wrapper{
             background-color: #f6f6fb;
             width: 100%;
+            overflow-y: auto;
 
         }
 
@@ -99,6 +99,7 @@
         /* Card container styling */
         body .container .content .cards-container {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             margin-bottom: 20px;
         }
@@ -113,7 +114,7 @@
             align-items: center;
             width: 30%;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-right: 10px;
+            margin-bottom: 10px;
         }
 
         body .container .content .cards-container .card:last-child {
@@ -145,6 +146,71 @@
             color: #232323;
         }
 
+        body .container .top-bar .menu-icon {
+            visibility: hidden;
+            margin-right: 20px;
+            color: #343C6A;
+            background-color: #e7f3f2;
+            padding: 10px;
+            border-radius: 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 1200px) {
+            body .container .content .cards-container .card {
+                width: 48%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body .container .content .cards-container .card {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body .container .left-nav {
+                position: absolute;
+                width: 200px;
+                left: -200px;
+                transition: left 0.3s ease;
+                padding: 10px;
+            }
+
+            body .container .left-nav.open {
+                left: 0;
+            }
+
+            body .container .left-nav ul {
+                padding: 10px 0;
+            }
+
+            body .container .left-nav ul li {
+                margin: 0;
+            }
+
+            body .container .left-nav ul li a {
+                padding: 15px 20px;
+                font-size: 18px;
+            }
+
+            body .container .top-bar {
+                justify-content: space-between;
+            }
+
+            body .container .top-bar .menu-icon {
+                display: block;
+                cursor: pointer;
+                font-size: 24px;
+                visibility: visible;
+            }
+
+            body .container .top-bar .top-bar-title {
+                margin-left: 10px;
+            }
+        }
 
         /* Style the table header row */
         body .container .content .table-header {
@@ -168,22 +234,18 @@
             gap: 10px;
         }
 
-        body .container .content .table-header .table-header-buttons .add-button,
-        body .container .content .table-header .table-header-buttons .delete-all-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 0 5px;
-            border: 1px solid transparent;
-            border-radius: 12px;
-            background-color: #00B087;
-            color: #008767;
+        body .container .content .edit-button, .delete-button {
+            border: none !important;
+            font-size: 8px !important;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            margin: 1px !important;
+            background-color: #e7f3f2 !important;
         }
 
         body .container .content .table-header .table-header-buttons .add-button:hover,
         body .container .content .table-header .table-header-buttons .delete-all-button:hover {
-            background-color: #0056b3;
+            background-color: #e7f3f2;
+            transition: font-weight 0.4s ease;
         }
 
         body .container .content .table-header .table-header-buttons .add-button .ui-button-text,
@@ -192,12 +254,25 @@
         }
 
         body .container .content .table-header .table-header-buttons .delete-all-button {
-            background-color: #dc3545;
+            background-color: #e7f3f2;
+            color:#c82333;
+            border: none;
         }
 
         body .container .content .table-header .table-header-buttons  .delete-all-button:hover {
-            background-color: #c82333;
+            font-weight: bold;
         }
+
+        body .container .content .table-header .table-header-buttons .add-button {
+            background-color: #e7f3f2;
+            color: #16C098;
+            border: none;
+        }
+
+        body .container .content .table-header .table-header-buttons  .add-button:hover {
+            font-weight: bold;
+        }
+
 
         body .container .content .search-container {
             display: flex;
@@ -207,6 +282,10 @@
             /*border-bottom: 1px solid #ddd;*/
             margin-bottom: 0;
             background-color: white;
+        }
+
+        body .container .content .search-container h3 {
+            color: #718EBF;
         }
 
 
@@ -260,14 +339,11 @@
 
 
         body .container .content .edit-button, .delete-button {
-            /*margin: 5px;*/
             border: none !important;
-            /*background: none;*/
             font-size: 8px !important;
             cursor: pointer;
             margin: 0 1px !important;
             background-color: #f4f4f4 !important;
-            /*border-radius: 50px !important;*/
         }
         body .container .content .edit-button:hover, .delete-button:hover{
             background-color: #ddd !important;
@@ -301,8 +377,12 @@
             margin-bottom: 0;
             width: 100%;
         }
+        body .container .form-container body .container .form-container form{
+            display: flex;
+            background-color: blue;
+        }
         body .container .form-container .form-label {
-            display: block;
+            display: inline;
             margin-bottom: 3px;
             font-weight: bold;
             color: #555;
@@ -319,6 +399,7 @@
             font-size: 14px;
             background-color: #fafafa;
             transition: border-color 0.3s ease;
+            display: inline;
 
         }
         body .container .form-container .form-input:focus {
@@ -359,6 +440,7 @@
         .nav-link .active {
             color: blue;
             font-weight: bold;
+            transition: font-weight 0.5s ease-in-out;
         }
 
     </style>

@@ -1,96 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <title>Review</title>
-</h:head>
-<h:body>
-    <h:form id="allRequisitions">
-        <h:panelGroup id="allRequisitionsTable">
-            <p:dataTable value="#{requisitionBean.draftRequisitions}" var="requisition">
-                <p:column headerText="User">
-                    <h:outputText value="#{requisition.user}"/>
-                </p:column>
-                <p:column headerText="Subject">
-                    <h:outputText value="#{requisition.subject}"/>
-                </p:column>
-                <p:column headerText="Amount">
-                    <h:outputText value="#{requisition.amount}"/>
-                </p:column>
-                <p:column headerText="Date Needed">
-                    <h:outputText value="#{requisition.dateNeeded}">
-                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                    </h:outputText>
-                </p:column>
-                <p:column headerText="Comment">
-                    <h:outputText value="#{requisition.comment}"/>
-                </p:column>
-                <p:column headerText="Status">
-                    <h:outputText value="#{requisition.status}"/>
-                </p:column>
-                <p:column headerText="Actions">
-                    <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('reviewRequisitionDialog').show()" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel"/>
-                </p:column>
-            </p:dataTable>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/operations_template.xhtml">
+    <ui:define name="content" class="form-container">
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+
+        <h:panelGroup layout="block" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
+            <h:outputText value="Dashboard" styleClass="top-bar-title" />
         </h:panelGroup>
-    </h:form>
-
-    <h:form id="reviewRequisition">
-        <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
-                  widgetVar="reviewRequisitionDialog"
-                  modal="true"
-                  resizable="true"
-                  showEffect="fade"
-                  hideEffect="fade"
-                  closeOnEscape="true"
-                  width="800px"
-                  visible="#{facesContext.validationFailed}">
-            <p:outputPanel id="reviewRequisitionPanel" rendered="true">
-                <p:messages id="reviewRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                    <p:autoUpdate/>
-                </p:messages>
-                <p:panelGrid columns="2" styleClass="custom-grid">
-                    <p:outputLabel for="requisitionSubject" value="Reason: "/>
-                    <h:outputText id="requisitionSubject" value="#{requisitionBean.selectedRequisition.subject}">
-                    </h:outputText>
-
-                    <p:outputLabel for="requisitionAmount" value="Amount: "/>
-                    <h:outputText id="requisitionAmount" value="#{requisitionBean.selectedRequisition.amount}">
-                    </h:outputText>
-
-                    <p:outputLabel for="requisitionDescription" value="Description: "/>
-                    <h:outputText id="requisitionDescription" value="#{requisitionBean.selectedRequisition.description}">
-                    </h:outputText>
-
-                    <p:outputLabel for="requisitionDate" value="Date Needed: "/>
-                    <h:outputText id="requisitionDate" value="#{requisitionBean.selectedRequisition.dateNeeded}">
-                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                    </h:outputText>
-
-                    <p:outputLabel for="requisitionBudgetLine" value="Budget Line: "/>
-                    <h:outputText id="requisitionBudgetLine" value="#{requisitionBean.selectedRequisition.budgetLine}">
-                    </h:outputText>
-
-                    <p:outputLabel for="requisitionBudgetLineBalance" value="Budget Line Balance: "/>
-                    <h:outputText id="requisitionBudgetLineBalance" value="#{requisitionBean.selectedRequisition.budgetLine.balance}">
-                    </h:outputText>
-
-                    <p:outputLabel for="requisitionComment" value="Add Comment: "/>
-                    <p:inputText id="requisitionComment" value="#{requisitionBean.comment}">
-
-                    </p:inputText>
-
-                </p:panelGrid>
-
-                <p:commandButton value="Approve" actionListener="#{requisitionBean.reviewAndApproveRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-times" onclick="PF('reviewRequisitionDialog').hide()"/>
-                <p:commandButton value="Reject" actionListener="#{requisitionBean.reviewAndRejectRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-minus" onclick="PF('reviewRequisitionDialog').hide()"/>
-
-            </p:outputPanel>
-        </p:dialog>
-    </h:form>
-</h:body>
-</html>
+    </ui:define>
+</ui:composition>
