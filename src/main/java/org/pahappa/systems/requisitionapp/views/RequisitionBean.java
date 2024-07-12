@@ -282,6 +282,12 @@ public class RequisitionBean implements Serializable {
         }
     }
 
+    /*
+    to-do
+    get different types of requisitions
+    get requisitions for current user with accountabilities
+     */
+
     // getters and setters
     public User getCurrentUser() {
         if (currentUser == null) {

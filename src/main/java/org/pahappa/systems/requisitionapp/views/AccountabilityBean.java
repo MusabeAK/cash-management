@@ -3,6 +3,7 @@ package org.pahappa.systems.requisitionapp.views;
 import org.pahappa.systems.requisitionapp.models.Accountability;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
+import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.services.AccountabilityService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
@@ -17,6 +18,7 @@ import javax.faces.view.ViewScoped;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.List;
 
 @Component
 @ViewScoped
@@ -31,13 +33,16 @@ public class AccountabilityBean implements Serializable {
     @Autowired
     private BudgetLineService budgetLineService;
 
+    private User currentUser;
     private Accountability newAccountability;
     private Requisition selectedRequisition;
     private UploadedFile uploadedFile;
+    private List<Accountability> allAccountabilities;
 
     @PostConstruct
     public void init() {
         newAccountability = new Accountability();
+        allAccountabilities = accountabilityService.getAllAccountabilities();
     }
 
     public void addAccountability() {
@@ -90,6 +95,11 @@ public class AccountabilityBean implements Serializable {
         }
     }
 
+    /*
+    to-do
+    get all accountabilities (done)
+     */
+
     // getters and setters
     public Accountability getNewAccountability() {
         return newAccountability;
@@ -113,5 +123,13 @@ public class AccountabilityBean implements Serializable {
 
     public void setUploadedFile(UploadedFile uploadedFile) {
         this.uploadedFile = uploadedFile;
+    }
+
+    public List<Accountability> getAllAccountabilities() {
+        return allAccountabilities;
+    }
+
+    public void setAllAccountabilities(List<Accountability> allAccountabilities) {
+        this.allAccountabilities = allAccountabilities;
     }
 }

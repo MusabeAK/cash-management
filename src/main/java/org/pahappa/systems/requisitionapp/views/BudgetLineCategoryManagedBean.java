@@ -2,7 +2,9 @@ package org.pahappa.systems.requisitionapp.views;
 
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
+import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineCategoryService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.persistence.NoResultException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -33,6 +36,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     private BudgetLine newBudgetLine;
     private List<BudgetLine> budgetLines;
+    private List<BudgetLine> approvedBudgetLines;
+    private List<BudgetLine> draftBudgetLines;
     private BudgetLine selectedBudgetLine;
 
     @PostConstruct
@@ -41,6 +46,17 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         budgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
         newBudgetLine = new BudgetLine();
         budgetLines = budgetLineService.getAllBudgetLines();
+        approvedBudgetLines = new ArrayList<>();
+        for (BudgetLine budgetLine : budgetLines) {
+            if (budgetLine.getStatus() == BudgetLineStatus.APPROVED) {
+                approvedBudgetLines.add(budgetLine);
+            }
+        }
+        for (BudgetLine budgetLine : budgetLines) {
+            if (budgetLine.getStatus() == BudgetLineStatus.DRAFT) {
+                draftBudgetLines.add(budgetLine);
+            }
+        }
     }
 
     public void selectBudgetLineCategory(BudgetLineCategory budgetLineCategory) {
@@ -92,8 +108,35 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         }
     }
 
+    /*
+    to-do
+    add a check so that budget line cannot be deleted if there exist any requisitions where accountability has not been provided (done)
+    add approval of budget lines (done)
+    add cron job to expire budget line
+    add pool to collect expired budget line amounts
+     */
+
+    public void approveBudgetLine() {
+        if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
+            selectedBudgetLine.setStatus(BudgetLineStatus.APPROVED);
+            budgetLineService.updateBudgetLine(selectedBudgetLine);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Budget Line approved", null));
+            approvedBudgetLines.add(selectedBudgetLine);
+        }
+    }
+
+
     public void deleteBudgetLine(BudgetLine budgetLine) {
         try {
+            List<Requisition> budgetLineRequisitions = budgetLine.getRequisitions();
+            for (Requisition requisition : budgetLineRequisitions){
+                if (requisition.getStatus().equals(RequisitionStatus.DISBURSED) && requisition.getAccountability() == null){
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
+                    return;
+                }
+            }
             budgetLineService.deleteBudgetLine(budgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
@@ -219,5 +262,21 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void setSelectedBudgetLine(BudgetLine selectedBudgetLine) {
         this.selectedBudgetLine = selectedBudgetLine;
+    }
+
+    public List<BudgetLine> getApprovedBudgetLines() {
+        return approvedBudgetLines;
+    }
+
+    public void setApprovedBudgetLines(List<BudgetLine> approvedBudgetLines) {
+        this.approvedBudgetLines = approvedBudgetLines;
+    }
+
+    public List<BudgetLine> getDraftBudgetLines() {
+        return draftBudgetLines;
+    }
+
+    public void setDraftBudgetLines(List<BudgetLine> draftBudgetLines) {
+        this.draftBudgetLines = draftBudgetLines;
     }
 }
