@@ -67,9 +67,6 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         if(budgetLineToUpdate == null){
             throw new RuntimeException("No budget line found");
         }
-        if(budgetLineToUpdate.getStatus() != BudgetLineStatus.DRAFT){
-            throw new RuntimeException("Budget Line is not in draft");
-        }
         if(budgetLineCategories.isEmpty()){
             throw new RuntimeException("No budget line category found");
         }
