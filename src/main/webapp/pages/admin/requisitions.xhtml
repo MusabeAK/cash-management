@@ -12,5 +12,306 @@
             <h:outputText value="Requisitions" styleClass="top-bar-title" />
         </h:panelGroup>
 
+        <div class="content">
+
+        <div class="cards-container">
+            <div class="card">
+                <i class="pi pi-key card-icon"/>
+                <div class="card-content">
+                    <h:outputText value="Total Amount Disbursed" styleClass="card-title"/>
+                    <h:outputText value="20" styleClass="card-number"/>
+                </div>
+            </div>
+            <div class="card">
+                <i class="pi pi-key card-icon"/>
+                <div class="card-content">
+                    <h:outputText value="Number of Registered Users" styleClass="card-title"/>
+                    <h:outputText value="30" styleClass="card-number"/>
+                </div>
+            </div>
+
+            <div class="card">
+                <i class="pi pi-users card-icon"/>
+                <div class="card-content">
+                    <h:outputText value="Active Budget Lines" styleClass="card-title"/>
+                    <h:outputText value="5" styleClass="card-number"/>
+                </div>
+            </div>
+        </div>
+
+        <h:form id="allRequisitions" style="margin-top: 20px">
+            <h:panelGroup id="allRequisitionsTable">
+
+                <div class="search-container">
+                    <h3>All Requisitions</h3>
+                    <div class="search-and-filter">
+                        <div class="search">
+                            <p:inputText id="searchBar2" value="#" styleClass="search-bar" placeholder="Search...">
+                                <p:ajax event="keyup"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                </div>
+
+
+                <p:dataTable value="#{requisitionBean.requisitions}" var="requisition" paginator="true" rows="5" paginatorPosition="bottom">
+                    <p:column headerText="Id">
+                        <h:outputText value="#{requisition.id}"/>
+                    </p:column>
+
+                    <p:column headerText="User">
+                        <h:outputText value="#{requisition.user}"/>
+                    </p:column>
+
+                    <p:column headerText="Reason">
+                        <h:outputText value="#{requisition.subject}"/>
+                    </p:column>
+
+                    <p:column headerText="Amount">
+                        <h:outputText value="#{requisition.amount}"/>
+                    </p:column>
+
+                    <p:column headerText="Date Needed">
+                        <h:outputText value="#{requisition.dateNeeded}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Budget Line">
+                        <h:outputText value="#{requisition.budgetLine}"/>
+                    </p:column>
+
+                    <p:column headerText="Status">
+                        <h:outputText value="#{requisition.status}"/>
+                    </p:column>
+
+                    <p:column headerText="Actions">
+                        <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}"
+                                         oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable"
+                                         rendered="#{requisition.status == 'DRAFT'}" />
+
+                        <p:commandButton value="Approve" action="#{requisitionBean.selectRequisition(requisition)}"
+                                         update=":allRequisitions:allRequisitionsTable"
+                                         oncomplete="PF('reviewRequisitionDialog').show()"
+                                         rendered="#{requisition.status == 'HR_REVIEWED'}" />
+
+                        <p:commandButton value="Disburse" action="#{requisitionBean.selectRequisition(requisition)}"
+                                         update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance"
+                                         oncomplete="PF('reviewRequisitionDialogFinance').show()"
+                                         rendered="#{requisition.status == 'CEO_APPROVED'}" />
+                        <!-- Work on this  -->
+                        <p:commandButton value="Accountability"
+                                         action="#{accountabilityBean.selectRequisition(requisition)}"
+                                         update=":viewAccountability"
+                                         oncomplete="PF('viewAccountabilityDialog').show()"
+                                         rendered="#{requisition.status == 'DISBURSED'}" />
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        </div>
+
+        <h:form id="reviewRequisitionoperations">
+            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+                      widgetVar="reviewRequisitionDialogoperations"
+                      modal="true"
+                      resizable="true"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closeOnEscape="true"
+                      width="800px"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="reviewRequisitionPaneloperations" rendered="true">
+                    <p:messages id="reviewRequisitionPanelMessagesoperations" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="requisitionSubjectoperations" value="Reason: "/>
+                        <h:outputText id="requisitionSubjectoperations" value="#{requisitionBean.selectedRequisition.subject}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionAmountoperations" value="Amount: "/>
+                        <h:outputText id="requisitionAmountoperations" value="#{requisitionBean.selectedRequisition.amount}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionDescriptionoperations" value="Description: "/>
+                        <h:outputText id="requisitionDescriptionoperations" value="#{requisitionBean.selectedRequisition.description}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionDateoperations" value="Date Needed: "/>
+                        <h:outputText id="requisitionDateoperations" value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionBudgetLineoperations" value="Budget Line: "/>
+                        <h:outputText id="requisitionBudgetLineoperations" value="#{requisitionBean.selectedRequisition.budgetLine}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionBudgetLineBalanceoperations" value="Budget Line Balance: "/>
+                        <h:outputText id="requisitionBudgetLineBalanceoperations" value="#{requisitionBean.selectedRequisition.budgetLine.balance}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionCommentoperations" value="Add Comment: "/>
+                        <p:inputText id="requisitionCommentoperations" value="#{requisitionBean.comment}">
+
+                        </p:inputText>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Approve" actionListener="#{requisitionBean.reviewAndApproveRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-times" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
+                    <p:commandButton value="Reject" actionListener="#{requisitionBean.reviewAndRejectRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-minus" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="reviewRequisition">
+            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+                      widgetVar="reviewRequisitionDialog"
+                      modal="true"
+                      resizable="true"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closeOnEscape="true"
+                      width="800px"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="reviewRequisitionPanel" rendered="true">
+                    <p:messages id="reviewRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="requisitionSubject" value="Reason: "/>
+                        <h:outputText id="requisitionSubject" value="#{requisitionBean.selectedRequisition.subject}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionAmount" value="Amount: "/>
+                        <h:outputText id="requisitionAmount" value="#{requisitionBean.selectedRequisition.amount}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionDescription" value="Description: "/>
+                        <h:outputText id="requisitionDescription" value="#{requisitionBean.selectedRequisition.description}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionDate" value="Date Needed: "/>
+                        <h:outputText id="requisitionDate" value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionBudgetLine" value="Budget Line: "/>
+                        <h:outputText id="requisitionBudgetLine" value="#{requisitionBean.selectedRequisition.budgetLine}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionBudgetLineBalance" value="Budget Line Balance: "/>
+                        <h:outputText id="requisitionBudgetLineBalance" value="#{requisitionBean.selectedRequisition.budgetLine.balance}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionComment" value="Add Comment: "/>
+                        <p:inputText id="requisitionComment" value="#{requisitionBean.selectedRequisition.comment}">
+
+                        </p:inputText>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Approve" actionListener="#{requisitionBean.approveRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-times" onclick="PF('reviewRequisitionDialog').hide()"/>
+                    <p:commandButton value="Reject" actionListener="#{requisitionBean.rejectRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-minus" onclick="PF('reviewRequisitionDialog').hide()"/>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="reviewRequisitionFinance">
+            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+                      widgetVar="reviewRequisitionDialogFinance"
+                      modal="true"
+                      resizable="true"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closeOnEscape="true"
+                      width="800px"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="reviewRequisitionPanelFinance" rendered="true">
+                    <p:messages id="reviewRequisitionPanelMessagesFinance" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="requisitionSubjectFinance" value="Reason: "/>
+                        <h:outputText id="requisitionSubjectFinance" value="#{requisitionBean.selectedRequisition.subject}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionAmountFinance" value="Amount: "/>
+                        <h:outputText id="requisitionAmountFinance" value="#{requisitionBean.selectedRequisition.amount}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionDescriptionFinance" value="Description: "/>
+                        <h:outputText id="requisitionDescriptionFinance" value="#{requisitionBean.selectedRequisition.description}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionDateFinance" value="Date Needed: "/>
+                        <h:outputText id="requisitionDateFinance" value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionBudgetLineFinance" value="Budget Line: "/>
+                        <h:outputText id="requisitionBudgetLineFinance" value="#{requisitionBean.selectedRequisition.budgetLine}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionBudgetLineBalanceFinance" value="Budget Line Balance: "/>
+                        <h:outputText id="requisitionBudgetLineBalanceFinance" value="#{requisitionBean.selectedRequisition.budgetLine.balance}">
+                        </h:outputText>
+
+                        <p:outputLabel for="requisitionCommentFinance" value="Comment: "/>
+                        <h:outputText id="requisitionCommentFinance" value="#{requisitionBean.selectedRequisition.comment}">
+
+                        </h:outputText>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Disburse" onclick="PF('reviewRequisitionDialogFinance').hide()" actionListener="#{requisitionBean.disburseRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance" icon="pi pi-times"/>
+                    <p:commandButton value="Cancel" onclick="PF('reviewRequisitionDialogFinance').hide()"/>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <!-- Work on this  -->
+        <h:form id="viewAccountability">
+            <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
+                      widgetVar="viewAccountabilityDialog"
+                      modal="true"
+                      resizable="true"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closeOnEscape="true"
+                      width="800px"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="viewAccountabilityPanel" rendered="#{accountabilityBean.selectedAccountability != null}">
+                    <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="accountabilityDescription" value="Reason: "/>
+                        <h:outputText id="accountabilityDescription" value="#{accountabilityBean.selectedAccountability.description}">
+                        </h:outputText>
+
+                        <p:outputLabel for="accountabilityAmount" value="Amount Used: "/>
+                        <h:outputText id="accountabilityAmount" value="#{accountabilityBean.selectedAccountability.amountUsed}"/>
+
+                        <p:outputLabel for="accountabilityImage" value="Image: "/>
+                        <p:commandButton id="accountabilityImage" value="Download Image"
+                                         ajax="false"
+                                         onclick="PrimeFaces.monitorDownload(start, stop);"
+                                         icon="pi pi-download"
+                                         rendered="#{accountabilityBean.selectedAccountability != null and accountabilityBean.selectedAccountability.image != null}">
+                            <p:fileDownload value="#{accountabilityBean.imageDownload}" />
+                        </p:commandButton>
+
+                    </p:panelGrid>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
     </ui:define>
 </ui:composition>

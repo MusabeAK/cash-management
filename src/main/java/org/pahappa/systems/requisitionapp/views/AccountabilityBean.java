@@ -7,17 +7,19 @@ import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.services.AccountabilityService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import javax.xml.bind.DatatypeConverter;
+import java.io.*;
 import java.util.List;
 
 @Component
@@ -38,11 +40,13 @@ public class AccountabilityBean implements Serializable {
     private Requisition selectedRequisition;
     private UploadedFile uploadedFile;
     private List<Accountability> allAccountabilities;
+    private Accountability selectedAccountability;
 
     @PostConstruct
     public void init() {
         newAccountability = new Accountability();
         allAccountabilities = accountabilityService.getAllAccountabilities();
+        selectedAccountability = new Accountability();
     }
 
     public void addAccountability() {
@@ -89,12 +93,32 @@ public class AccountabilityBean implements Serializable {
     public void selectRequisition(Requisition requisition) {
         try {
             this.selectedRequisition = requisition;
-        }catch (Exception e){
+            this.selectedAccountability = requisition.getAccountability();
+            if (this.selectedAccountability == null) {
+                this.selectedAccountability = new Accountability();
+            }
+        } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: "+ e.getMessage(), null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
         }
     }
 
+    public void selectAccountability(Accountability accountability){
+        this.selectedAccountability = accountability;
+    }
+
+    // Method to download image
+    public StreamedContent getImageDownload() {
+        if (selectedAccountability != null && selectedAccountability.getImage() != null) {
+            byte[] imageData = selectedAccountability.getImage();
+            return DefaultStreamedContent.builder()
+                    .name(selectedRequisition.getUser().getUsername() + ": " + selectedRequisition.getSubject() + "accountability.png")
+                    .contentType("image/jpeg")
+                    .stream(() -> new ByteArrayInputStream(imageData))
+                    .build();
+        }
+        return null;
+    }
     /*
     to-do
     get all accountabilities (done)
@@ -131,5 +155,17 @@ public class AccountabilityBean implements Serializable {
 
     public void setAllAccountabilities(List<Accountability> allAccountabilities) {
         this.allAccountabilities = allAccountabilities;
+    }
+
+    public Accountability getSelectedAccountability() {
+        return selectedAccountability;
+    }
+
+    public void setSelectedAccountability(Accountability selectedAccountability) {
+        this.selectedAccountability = selectedAccountability;
+    }
+
+    public String getBase64Image(byte[] image) {
+        return DatatypeConverter.printBase64Binary(image);
     }
 }

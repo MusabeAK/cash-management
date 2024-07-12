@@ -103,7 +103,7 @@
             <!-- Dialogs -->
 
             <h:form id="updateRequisition">
-                <p:dialog header="Edit your requisition"
+                <p:dialog header="Submit/Edit your requisition"
                           widgetVar="updateRequisitionDialog"
                           modal="true"
                           resizable="true"
@@ -137,6 +137,7 @@
 
                         </p:panelGrid>
 
+                        <p:commandButton value="Submit" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable" />
                         <p:commandButton value="Update" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
                         <p:commandButton value="Cancel" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
