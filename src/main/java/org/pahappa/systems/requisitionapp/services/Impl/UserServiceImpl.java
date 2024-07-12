@@ -6,6 +6,7 @@ import org.pahappa.systems.requisitionapp.exceptions.NullUserException;
 import org.pahappa.systems.requisitionapp.exceptions.UserAlreadyExistsException;
 import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.Role;
 import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,6 +98,10 @@ public class UserServiceImpl implements UserService {
 
     public List<User> searchUsers(String searchTerm) {
         return userDAO.searchUsers(searchTerm);
+    }
+
+    public List<User> filterUsersByRole(Role role){
+        return userDAO.filterUsersByRole(role);
     }
 
 }

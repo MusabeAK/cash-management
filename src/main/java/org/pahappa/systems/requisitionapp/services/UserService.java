@@ -3,6 +3,7 @@ package org.pahappa.systems.requisitionapp.services;
 import org.pahappa.systems.requisitionapp.exceptions.UserAlreadyExistsException;
 import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.Role;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface UserService {
     User loginUser(String username, String password) throws UserDoesNotExistException;
 
     List<User> searchUsers(String searchTerm);
+
+    List<User> filterUsersByRole(Role role);
 }

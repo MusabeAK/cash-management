@@ -7,51 +7,6 @@
     <ui:define name="content" class="form-container">
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
-
-        <!--        User Registration Form    -->
-        <p:dialog header="Create User" widgetVar="registerDialog" modal="true" width="400px" styleClass="form-container">
-            <h:form >
-                <p:messages id="messages" showDetail="false" closable="true" severity="info, error"/>
-                <h:panelGrid columns="1">
-                    <h:outputLabel for="username" value="Username:" styleClass="form-label"/>
-                    <h:inputText id="username" value="#{userBean.username}" required="true" styleClass="form-input"/>
-
-                    <h:outputLabel for="email" value="Email:" styleClass="form-label"/>
-                    <h:inputText id="email" value="#{userBean.email}" required="true" styleClass="form-input"/>
-
-                    <h:outputLabel for="password" value="Password:" styleClass="form-label"/>
-                    <h:inputSecret id="password" value="#{userBean.password}" required="true" styleClass="form-input"/>
-
-                    <h:outputLabel for="firstname" value="First Name:" styleClass="form-label"/>
-                    <h:inputText id="firstname" value="#{userBean.firstName}" required="true" styleClass="form-input"/>
-
-                    <h:outputLabel for="lastname" value="Last Name:" styleClass="form-label"/>
-                    <h:inputText id="lastname" value="#{userBean.lastName}" required="true" styleClass="form-input"/>
-
-                    <h:outputLabel for="role" value="Role:" styleClass="form-label"/>
-                    <h:selectOneMenu id="role" value="#{userBean.role}" required="true" styleClass="form-input">
-                        <f:selectItem itemLabel="Select Role" itemValue="" />
-                        <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
-                    </h:selectOneMenu>
-
-                    <h:outputLabel for="gender" value="Gender:" styleClass="form-label"/>
-                    <h:selectOneMenu id="gender" value="#{userBean.gender}" required="true" styleClass="form-input">
-                        <f:selectItem itemLabel="Select Gender" itemValue="" />
-                        <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
-                    </h:selectOneMenu>
-
-
-                    <h:outputLabel for="phone" value="Phone Number:" styleClass="form-label"/>
-                    <h:inputText id="phone" value="#{userBean.phoneNumber}" required="true" styleClass="form-input"/>
-                </h:panelGrid>
-
-                <h:commandButton value="Register" action="#{userBean.registerUser()}" styleClass="form-button"/>
-
-            </h:form>
-        </p:dialog>
-
-
-
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="Users" styleClass="top-bar-title" />
@@ -103,13 +58,10 @@
                                 </p:inputText>
                             </div>
                             <div class="filter">
-                                <h:selectOneMenu value="#" styleClass="gender-filter">
+                                <h:selectOneMenu value="#{userBean.selectedRole}" styleClass="gender-filter">
                                     <f:selectItem itemLabel="ROLE" itemValue="" />
-                                    <f:selectItem itemLabel="ADMIN" itemValue="ADMIN" />
-                                    <f:selectItem itemLabel="CEO" itemValue="CEO" />
-                                    <f:selectItem itemLabel="FINANCE" itemValue="FINANCE" />
-                                    <f:selectItem itemLabel="OPERATIONS" itemValue="OPERATIONS" />
-                                    <f:selectItem itemLabel="EMPLOYEE" itemValue="EMPLOYEE" />
+                                    <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}" />
+                                    <p:ajax event="change" update=":usersForm:usersTable" listener="#{userBean.filterUsersByRole}"/>
                                 </h:selectOneMenu>
                             </div>
                         </div>
@@ -118,7 +70,7 @@
                     <div class="table-header">
                         <h:outputText value="30 User(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" onclick="PF('registerDialog').show(); return false;"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" oncomplete="PF('addUserDialog').show()"/>
 
                             <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Users?"
@@ -174,5 +126,63 @@
             </h:form>
 
         </div>
+
+
+        <h:form id="addUserForm">
+            <p:dialog header="Add New User."
+                      widgetVar="addUserDialog"
+                      modal="true"
+                      resizable="true"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closable="true"
+                      width="800px"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="addUserPanel" rendered="true">
+                    <p:messages id="addUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="newUserName" value="User Name"/>
+                        <p:inputText id="newUserName" value="#{userBean.username}" >
+                        </p:inputText>
+
+                        <p:outputLabel for="firstName" value="First Name"/>
+                        <p:inputText id="firstName" value="#{userBean.firstName}" >
+                        </p:inputText>
+
+                        <p:outputLabel for="lastName" value="Last Name"/>
+                        <p:inputText id="lastName" value="#{userBean.lastName}" rendered="true">
+                        </p:inputText>
+
+                        <h:outputLabel for="email" value="Email:"/>
+                        <h:inputText id="email" value="#{userBean.email}" >
+                        </h:inputText>
+
+                        <h:outputLabel for="password" value="Password:"/>
+                        <h:inputSecret id="password" value="#{userBean.password}"  />
+
+
+                        <h:outputLabel for="role" value="Role:"/>
+                        <h:selectOneMenu id="role" value="#{userBean.role}"  >
+                            <f:selectItem itemLabel="Select Role" itemValue="" />
+                            <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="gender" value="Gender:"/>
+                        <h:selectOneMenu id="gender" value="#{userBean.gender}"  >
+                            <f:selectItem itemLabel="Select Gender" itemValue="" />
+                            <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="phone" value="Phone Number:"/>
+                        <h:inputText id="phone" value="#{userBean.phoneNumber}"  />
+                    </p:panelGrid>
+
+                    <p:commandButton value="Add" update=":usersForm:usersTable" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Cancel" onclick="PF('addUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
     </ui:define>
 </ui:composition>
