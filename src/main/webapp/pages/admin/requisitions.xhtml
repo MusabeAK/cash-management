@@ -12,36 +12,6 @@
             <h:outputText value="Dashboard" styleClass="top-bar-title" />
         </h:panelGroup>
         <div class="content">
-            <h:form>
-                <p:messages id="messages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                    <p:autoUpdate/>
-                </p:messages>
-                <h:outputLabel for="subject" >Reason: </h:outputLabel>
-                <h:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true">
-                </h:inputText>
-                <h:message for="subject" styleClass="error"/>
-
-                <h:outputLabel for="description">Description: </h:outputLabel>
-                <h:inputText id="description" value="#{requisitionBean.newRequisition.description}" required="true">
-                </h:inputText>
-                <h:message for="description" styleClass="error" />
-
-                <h:outputLabel for="amount">Amount: </h:outputLabel>
-                <h:inputText id="amount" value="#{requisitionBean.newRequisition.amount}" required="true">
-                </h:inputText>
-                <h:message for="amount" styleClass="error" />
-
-                <p:outputLabel for="budgetLineName" value="Budget Line Category: "/>
-                <p:autoComplete id="budgetLineName" value="#{requisitionBean.budgetLineName}" completeMethod="#{requisitionBean.searchBudgetLines}" required="true">
-                </p:autoComplete>
-
-                <p:outputLabel for="editBudgetLineStartDate" value="Date Needed: "  />
-                <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
-
-                <h:commandButton value="Make" action="#{requisitionBean.makeRequisition}"/>
-            </h:form>
-
-
             <h:form id="userRequisitions" style="margin-top: 30px">
                 <h:panelGroup id="userRequisitionsTable">
                     <div class="search-container">
@@ -58,7 +28,7 @@
                     <div class="table-header">
                         <h:outputText value="10 Requisition(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" action="#{requisitionBean.makeRequisition}"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":createRequisition:createRequisitionPanel"/>
 
                             <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Requisitions?"
@@ -66,7 +36,6 @@
                             </p:commandButton>
                         </div>
                     </div>
-
 
                     <p:dataTable value="#{requisitionBean.userRequisitions}" var="requisition">
                         <p:column headerText="Subject">
@@ -101,6 +70,47 @@
             </h:form>
 
             <!-- Dialogs -->
+
+            <h:form id="createRequisition">
+                <p:dialog header="Create a Requisition"
+                          widgetVar="createRequisitionDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="createRequisitionPanel" rendered="true">
+                    <p:messages id="createRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="subject" >Reason: </p:outputLabel>
+                            <p:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true">
+                            </p:inputText>
+
+                            <p:outputLabel for="description">Description: </p:outputLabel>
+                            <p:inputText id="description" value="#{requisitionBean.newRequisition.description}" required="true">
+                            </p:inputText>
+
+                            <p:outputLabel for="amount">Amount: </p:outputLabel>
+                            <p:inputText id="amount" value="#{requisitionBean.newRequisition.amount}" required="true">
+                            </p:inputText>
+
+                            <p:outputLabel for="budgetLineName" value="Budget Line: "/>
+                            <p:autoComplete id="budgetLineName" value="#{requisitionBean.budgetLineName}" completeMethod="#{requisitionBean.searchBudgetLines}" required="true">
+                            </p:autoComplete>
+
+                            <p:outputLabel for="editBudgetLineStartDate" value="Date Needed: "  />
+                            <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                        </p:panelGrid>
+
+                        <p:commandButton value="Create" actionListener="#{requisitionBean.makeRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
+                        <p:commandButton value="Cancel" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
 
             <h:form id="updateRequisition">
                 <p:dialog header="Submit/Edit your requisition"
