@@ -64,7 +64,6 @@ public class UserBean implements Serializable {
         users = filteredUsers = userService.getAllUsers();
     }
 
-
     private final UserService userService;
     private final RoleService roleService;
 
@@ -180,8 +179,6 @@ public class UserBean implements Serializable {
         }
     }
 
-
-
     public List<User> getUsers() {
         users = userService.getAllUsers();
         return users;
@@ -240,7 +237,9 @@ public class UserBean implements Serializable {
     }
 
     public List<String> getAvailableRoles() {
-        return availableRoles;
+        return roleService.getAllRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList());
     }
 
     public void setAvailableRoles(List<String> availableRoles) {
