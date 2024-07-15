@@ -4,6 +4,7 @@ import org.pahappa.systems.requisitionapp.models.Accountability;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.AccountabilityService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
@@ -50,6 +51,11 @@ public class AccountabilityBean implements Serializable {
     }
 
     public void addAccountability() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_ACCOUNTABILITY)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         handleFileUpload();
         if (selectedRequisition.getAccountability() != null){
             FacesContext.getCurrentInstance().addMessage(null,

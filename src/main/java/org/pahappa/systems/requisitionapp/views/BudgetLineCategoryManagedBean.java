@@ -4,6 +4,7 @@ import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
+import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineCategoryService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
@@ -73,6 +74,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public void addBudgetLineToBudgetLineCategory() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_BUDGET_LINE)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         BudgetLineCategory budgetLineCategory = budgetLineCategoryService.getBudgetLineCategoryByName(budgetLineCategoryName);
         try {
             if (budgetLineCategory != null) {
@@ -92,6 +98,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public void updateBudgetLine() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.EDIT_BUDGET_LINE)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         try {
             if (!selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -117,17 +128,45 @@ public class BudgetLineCategoryManagedBean implements Serializable {
      */
 
     public void approveBudgetLine() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_BUDGET_LINE)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
             selectedBudgetLine.setStatus(BudgetLineStatus.APPROVED);
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Budget Line approved", null));
             approvedBudgetLines.add(selectedBudgetLine);
+        } else
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line already approved", null));
+    }
+
+    public void rejectBudgetLine() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_BUDGET_LINE)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
         }
+        if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
+            selectedBudgetLine.setStatus(BudgetLineStatus.REJECTED);
+            budgetLineService.updateBudgetLine(selectedBudgetLine);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Budget Line rejected", null));
+        } else
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line already approved", null));
     }
 
 
     public void deleteBudgetLine(BudgetLine budgetLine) {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.DELETE_BUDGET_LINE)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         try {
             List<Requisition> budgetLineRequisitions = budgetLine.getRequisitions();
             for (Requisition requisition : budgetLineRequisitions){
@@ -166,6 +205,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public void addBudgetLineCategory() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_BUDGET_LINE_CATEGORY)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         try {
             budgetLineCategoryService.createBudgetLineCategory(newBudgetLineCategory);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -179,6 +223,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public void updateBudgetLineCategory() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.EDIT_BUDGET_LINE_CATEGORY)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         try {
             budgetLineCategoryService.updateBudgetLineCategory(selectedBudgetLineCategory);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -191,6 +240,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public void deleteBudgetLineCategory(BudgetLineCategory category) {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.DELETE_BUDGET_LINE_CATEGORY)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         try {
             budgetLineCategoryService.deleteBudgetLineCategory(category);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -241,7 +295,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLine> getBudgetLines() {
-        return budgetLines;
+        return budgetLineService.getAllBudgetLines();
     }
 
     public void setBudgetLines(List<BudgetLine> budgetLines) {

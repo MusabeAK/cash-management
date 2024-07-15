@@ -47,7 +47,7 @@
                     </h:panelGroup>
                 </div>
 
-                <h:panelGroup id="budgetLineCategoryTable">
+                <h:panelGroup id="budgetLineCategoryTable" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
                     <div class="search-container">
                         <h3>All Budget Line Categories</h3>
                         <div class="search-and-filter">
@@ -62,12 +62,12 @@
                     <div class="table-header">
                         <h:outputText value="#{budgetLineCategoryManagedBean.budgetLineCategories.size()} Budget Line Category(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-plus" style="margin-right: 20px" value="Add Category" styleClass="add-button" oncomplete="PF('addBudgetLineCategoryDialog').show()"/>
+                            <p:commandButton icon="pi pi-plus" style="margin-right: 20px" value="Add Category" styleClass="add-button" oncomplete="PF('addBudgetLineCategoryDialog').show()" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}"/>
 
                         </div>
                     </div>
 
-                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLineCategories}" var="category" paginator="true" rows="3" paginatorPosition="bottom">
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLineCategories}" var="category" paginator="true" rows="3" paginatorPosition="bottom" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
                         <p:column headerText="ID">
                             <h:outputText value="#{category.id}"/>
                         </p:column>
@@ -76,9 +76,9 @@
                         </p:column>
 
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLineCategory(category)}" oncomplete="PF('editBudgetLineCategoryDialog').show();" update=":budgetLine:budgetLineTable :budgetLineCategoryForm:budgetLineCategoryTable"/>
+                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLineCategory(category)}" oncomplete="PF('editBudgetLineCategoryDialog').show();" update=":budgetLine:budgetLineTable :budgetLineCategoryForm:budgetLineCategoryTable" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE_CATEGORY')}"/>
 
-                            <p:commandButton icon="pi pi-trash" action="#{budgetLineCategoryManagedBean.deleteBudgetLineCategory(category)}" update="@form budgetLineCategoryForm :budgetLine:budgetLineTable" title="Delete" styleClass="delete-button" style="color:red" >
+                            <p:commandButton icon="pi pi-trash" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE_CATEGORY')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLineCategory(category)}" update="@form budgetLineCategoryForm :budgetLine:budgetLineTable" title="Delete" styleClass="delete-button" style="color:red" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this Budget Line Category?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -90,7 +90,7 @@
 
 
             <h:form id="budgetLine" style="margin-top: 20px">
-                <h:panelGroup id="budgetLineTable">
+                <h:panelGroup id="budgetLineTable" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}">
 
                     <div class="search-container">
                         <h3>All Budget Lines</h3>
@@ -106,13 +106,13 @@
                     <div class="table-header">
                         <h:outputText value="#{budgetLineCategoryManagedBean.budgetLines.size()} BudgetLine(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-plus" style="margin-right: 20px" value="Add Budget Line" styleClass="add-button" oncomplete="PF('addBudgetLineDialog').show()"/>
+                            <p:commandButton icon="pi pi-plus" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}" style="margin-right: 20px" value="Add Budget Line" styleClass="add-button" oncomplete="PF('addBudgetLineDialog').show()"/>
 
                         </div>
                     </div>
 
 
-                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}" var="budgetLine" paginator="true" rows="5" paginatorPosition="bottom">
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}" var="budgetLine" paginator="true" rows="5" paginatorPosition="bottom">
                         <p:column headerText="Title">
                             <h:outputText value="#{budgetLine.title}"/>
                         </p:column>
@@ -142,12 +142,14 @@
                         </p:column>
 
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable"/>
+                            <p:commandButton icon="pi pi-pencil" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE')}" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel"/>
 
-                            <p:commandButton icon="pi pi-trash" styleClass="delete-button" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable" >
+                            <p:commandButton icon="pi pi-trash" styleClass="delete-button" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this Budget Line?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
+
+                            <p:commandButton icon="pi pi-cog" styleClass="edit-button" rendered="#{budgetLine.status == 'DRAFT' and loginBean.hasPermission('APPROVE_BUDGET_LINE')}" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('reviewBudgetLineDialog').show()" update="@form :budgetLine:budgetLineTable :reviewBudgetLineForm:reviewBudgetLinePanel"/>
                         </p:column>
 
                     </p:dataTable>
@@ -289,6 +291,49 @@
                         <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times"/>
                     </p:outputPanel>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="reviewBudgetLineForm">
+                <p:dialog header="Review Budget Line."
+                          widgetVar="reviewBudgetLineDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="reviewBudgetLinePanel" rendered="true">
+                <p:messages id="reviewBudgetLinePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:panelGrid columns="2" styleClass="custom-grid">
+                    <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
+                    <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory}"/>
+
+                    <p:outputLabel for="reviewBudgetLineTitle" value="Title: "/>
+                    <h:outputText id="reviewBudgetLineTitle" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}"/>
+
+                    <p:outputLabel for="reviewBudgetLineAmount" value="Amount: "/>
+                    <h:outputText id="reviewBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}"/>
+
+                    <p:outputLabel for="reviewBudgetLineStartDate" value="Amount: "/>
+                    <h:outputText id="reviewBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                    </h:outputText>
+
+                    <p:outputLabel for="reviewBudgetLineEndDate" value="Amount: "/>
+                    <h:outputText id="reviewBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                    </h:outputText>
+
+                </p:panelGrid>
+
+                    <p:commandButton value="Approve" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.approveBudgetLine}" update=":budgetLine:budgetLineTable"/>
+                    <p:commandButton value="Reject" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}"/>
+
+                </p:outputPanel>
                 </p:dialog>
             </h:form>
         </div>
