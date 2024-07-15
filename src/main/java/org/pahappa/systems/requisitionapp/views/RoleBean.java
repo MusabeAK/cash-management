@@ -25,10 +25,11 @@ public class RoleBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String roleName;
-    private Set<Permission> selectedPermissions;
+    private Set<String> selectedPermissions;
     private Set<String> availablePermissions;
     private List<Role> roles;
     private Role selectedRole;
+    private Set<String> updateSelectedPermissions;
 
     @PostConstruct
     public void init() {
@@ -49,7 +50,7 @@ public class RoleBean implements Serializable {
         try {
             Role role = new Role();
             role.setName(roleName);
-            role.setPermissions(selectedPermissions);
+            role.setPermissions(convertToPermissionSet(selectedPermissions));
             roleService.createRole(role);
 
             roles = roleService.getAllRoles();
@@ -63,22 +64,35 @@ public class RoleBean implements Serializable {
 
     }
 
-    public void updateRole(){
-        try{
-//            selectedRole.setPermissions(selectedPermissions);
+    private Set<Permission> convertToPermissionSet(Set<String> stringPermissions) {
+        return stringPermissions.stream()
+                .map(Permission::valueOf)
+                .collect(Collectors.toSet());
+    }
+
+    public void updateRole() {
+        try {
+            selectedRole.setPermissions(convertToPermissionSet(updateSelectedPermissions));
             roleService.updateRole(selectedRole);
+            roles = roleService.getAllRoles();
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,"Role Update success", null));
-        }catch (Exception e){
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Role Update success", null));
+        } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error Updating role", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating role", null));
             System.out.println("Error Updating role: " + e.getMessage());
         }
     }
 
     public void deleteRole(Role role){
-        roleService.deleteRole(role);
-        roles = roleService.getAllRoles();
+        try {
+            roleService.deleteRole(role);
+            roles = roleService.getAllRoles();
+        } catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting role" + e.getMessage(), null));
+        }
+
     }
 
 
@@ -90,11 +104,11 @@ public class RoleBean implements Serializable {
         this.roleName = roleName;
     }
 
-    public Set<Permission> getSelectedPermissions() {
+    public Set<String> getSelectedPermissions() {
         return selectedPermissions;
     }
 
-    public void setSelectedPermissions(Set<Permission> selectedPermissions) {
+    public void setSelectedPermissions(Set<String> selectedPermissions) {
         this.selectedPermissions = selectedPermissions;
     }
 
@@ -120,5 +134,24 @@ public class RoleBean implements Serializable {
 
     public void setSelectedRole(Role selectedRole) {
         this.selectedRole = selectedRole;
+    }
+
+    public void selectRole(Role role){
+        this.selectedRole = role;
+        this.updateSelectedPermissions = convertToStringSet(role.getPermissions());
+    }
+
+    private Set<String> convertToStringSet(Set<Permission> permissions) {
+        return permissions.stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<String> getUpdateSelectedPermissions() {
+        return updateSelectedPermissions;
+    }
+
+    public void setUpdateSelectedPermissions(Set<String> updateSelectedPermissions) {
+        this.updateSelectedPermissions = updateSelectedPermissions;
     }
 }

@@ -83,7 +83,7 @@
 
 
                         <p:column headerText="Actions">
-                            <p:commandButton value="Edit Role" styleClass="edit-button" action="#{roleBean.setSelectedRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":usersForm:rolesTable " style="font-size: medium !important"/>
+                            <p:commandButton value="Edit Role" styleClass="edit-button" action="#{roleBean.selectRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":usersForm:rolesTable :updateRoleForm:editRolePanel" style="font-size: medium !important"/>
 
                             <p:commandButton value="Delete" action="#{roleBean.deleteRole(role)}" title="Delete" styleClass="delete-button" style="color:red;font-size: medium !important" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this Role?"
@@ -324,20 +324,21 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" update=":usersForm:rolesTable" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Add" onclick="PF('addRoleDialog').hide();" update=":usersForm:rolesTable" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
                     <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" />
                 </p:outputPanel>
             </p:dialog>
         </h:form>
 
         <h:form id="updateRoleForm">
-            <p:dialog header="Update Role."
+            <p:dialog header="Update Role"
                       widgetVar="editRoleDialog"
                       modal="true"
                       resizable="true"
                       showEffect="fade"
                       hideEffect="fade"
                       closable="true"
+                      height="500px"
                       width="800px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="editRolePanel" rendered="true">
@@ -346,19 +347,16 @@
                     </p:messages>
                     <p:panelGrid columns="2" styleClass="custom-grid">
                         <p:outputLabel for="eroleName" value="Role Name"/>
-                        <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" >
-                        </p:inputText>
+                        <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
 
                         <h:outputLabel for="epermissions" value="Permissions:"/>
-                        <p:selectManyCheckbox id="epermissions" value="#{roleBean.selectedRole.permissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
+                        <p:selectManyCheckbox id="epermissions" value="#{roleBean.updateSelectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
                             <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
                         </p:selectManyCheckbox>
-
-
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" update=":usersForm:rolesTable" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button"/>
-                    <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" />
+                    <p:commandButton value="Update" update=":usersForm:rolesTable @form" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="PF('editRoleDialog').hide();"/>
+                    <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" immediate="true" />
                 </p:outputPanel>
             </p:dialog>
         </h:form>

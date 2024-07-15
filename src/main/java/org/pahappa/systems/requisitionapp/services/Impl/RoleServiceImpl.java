@@ -29,6 +29,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public void deleteRole(Role role) {
+        if (!role.getUsers().isEmpty()){
+            throw new RuntimeException("Cannot delete a role that has users. Please delete or change their roles first.");
+        }
         roleDao.delete(role);
     }
 

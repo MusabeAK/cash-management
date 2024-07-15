@@ -157,7 +157,7 @@ public class Initializer {
         try {
             Role role = new Role();
             role.setName("ROLE_FINANCE");
-            role.setPermissions(Set.of(Permission.CREATE_USER, Permission.APPROVE_BUDGET_LINE, Permission.EDIT_USER));
+            role.setPermissions(Set.of(Permission.values()));
             roleService.createRole(role);
 
             User user = new User();

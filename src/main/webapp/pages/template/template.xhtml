@@ -491,7 +491,7 @@
             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
         </p:confirmDialog>
         <div class="left-nav">
-            <h2><i class="pi pi-server"/> Admin</h2>
+            <h2><h:outputText value="#{loginBean.currentUser().username}"/></h2>
             <ul>
 
                 <ui:repeat value="#{navigationBean.links}" var="link">
