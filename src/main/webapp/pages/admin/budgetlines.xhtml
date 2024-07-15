@@ -23,28 +23,28 @@
                 </p:confirmDialog>
 
                 <div class="cards-container">
-                    <div class="card">
+                    <h:panelGroup class="card">
                         <i class="pi pi-key card-icon"/>
                         <div class="card-content">
-                            <h:outputText value="Total Amount Disbursed" styleClass="card-title"/>
+                            <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
                             <h:outputText value="20" styleClass="card-number"/>
                         </div>
-                    </div>
-                    <div class="card">
+                    </h:panelGroup>
+                    <h:panelGroup class="card">
                         <i class="pi pi-key card-icon"/>
                         <div class="card-content">
                             <h:outputText value="Number of Registered Users" styleClass="card-title"/>
-                            <h:outputText value="30" styleClass="card-number"/>
+                            <h:outputText value="#{userBean.users.size()}" styleClass="card-number"/>
                         </div>
-                    </div>
+                    </h:panelGroup>
 
-                    <div class="card">
+                    <h:panelGroup class="card">
                         <i class="pi pi-users card-icon"/>
                         <div class="card-content">
                             <h:outputText value="Active Budget Lines" styleClass="card-title"/>
                             <h:outputText value="5" styleClass="card-number"/>
                         </div>
-                    </div>
+                    </h:panelGroup>
                 </div>
 
                 <h:panelGroup id="budgetLineCategoryTable">
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="30 User(s)" styleClass="total-users"/>
+                        <h:outputText value="#{budgetLineCategoryManagedBean.budgetLineCategories.size()} Budget Line Category(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus" style="margin-right: 20px" value="Add Category" styleClass="add-button" oncomplete="PF('addBudgetLineCategoryDialog').show()"/>
 
@@ -104,7 +104,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="30 User(s)" styleClass="total-users"/>
+                        <h:outputText value="#{budgetLineCategoryManagedBean.budgetLines.size()} BudgetLine(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus" style="margin-right: 20px" value="Add Budget Line" styleClass="add-button" oncomplete="PF('addBudgetLineDialog').show()"/>
 

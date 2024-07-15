@@ -1,7 +1,7 @@
 package org.pahappa.systems.requisitionapp.models;
 
 import org.pahappa.systems.requisitionapp.models.utils.Gender;
-import org.pahappa.systems.requisitionapp.models.utils.Role;
+import org.pahappa.systems.requisitionapp.models.Role;
 
 import javax.persistence.*;
 import java.util.List;
@@ -37,10 +37,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
-
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Requisition> requisitions;

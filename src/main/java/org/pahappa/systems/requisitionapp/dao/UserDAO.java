@@ -4,7 +4,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.User;
-import org.pahappa.systems.requisitionapp.models.utils.Role;
+import org.pahappa.systems.requisitionapp.models.Role;
+import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,14 +76,22 @@ public class UserDAO {
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
     }
-
-    public List<User> filterUsersByRole(Role role) {
-        String query = "FROM User WHERE role = :role";
+/*
+    public List<User> filterUsersByPermission(Permission permission) {
+        String query = "FROM User WHERE role = :permission";
         return sessionFactory.getCurrentSession()
                 .createQuery(query, User.class)
-                .setParameter("role", role)
+                .setParameter("permission", permission)
                 .getResultList();
 
+    }*/
+
+    public List<User> filterUsersByPermission(Permission permission) {
+        String hql = "SELECT u FROM User u JOIN u.role r JOIN r.permissions p WHERE p = :permission";
+
+        return sessionFactory.getCurrentSession().createQuery(hql, User.class)
+                .setParameter("permission", permission)
+                .getResultList();
     }
 
 }

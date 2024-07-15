@@ -85,16 +85,16 @@ public class SecurityFilter implements Filter {
     }
 
     private String determineRedirectPath(User currentUser, String contextPath) {
-        switch (currentUser.getRole()) {
-            case EMPLOYEE:
+        switch (currentUser.getRole().getName()) {
+            case "ROLE_EMPLOYEE":
                 return contextPath + Hyperlink.EMPLOYEE_VIEW;
-            case OPERATIONS:
+            case "ROLE_OPERATIONS":
                 return contextPath + Hyperlink.OPERATIONS_VIEW;
-            case FINANCE:
+            case "ROLE_FINANCE":
                 return contextPath + Hyperlink.FINANCE_VIEW;
-            case CEO:
+            case "ROLE_CEO":
                 return contextPath + Hyperlink.CEO_VIEW;
-            case ADMIN:
+            case "ROLE_ADMIN":
                 return contextPath + Hyperlink.ADMIN_VIEW;
             default:
                 return contextPath + Hyperlink.LOGIN_VIEW;

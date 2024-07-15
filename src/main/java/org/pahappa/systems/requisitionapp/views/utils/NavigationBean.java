@@ -1,5 +1,6 @@
 package org.pahappa.systems.requisitionapp.views.utils;
 
+import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.models.utils.Role;
 import org.pahappa.systems.requisitionapp.views.LoginBean;
 
@@ -23,9 +24,17 @@ public class NavigationBean implements Serializable {
 
     public NavigationBean() {
         links = new ArrayList<>();
-        Role role = LoginBean.getCurrentUser().getRole();
-        switch (role){
-            case ADMIN:
+
+        links.add(new NavLink("Dashboard", "dashboard", "pi pi-home", Permission.VIEW_DASHBOARD));
+        links.add(new NavLink("Users", "users", "pi pi-users", Permission.VIEW_USERS))   ;
+        links.add(new NavLink("Requisitions", "requisitions", "pi pi-file", Permission.VIEW_REQUISITIONS))   ;
+        links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line", Permission.VIEW_BUDGET_LINES))   ;
+        links.add(new NavLink("Disburse", "dispatch", "pi pi-send", Permission.DISBURSE_MONEY))   ;
+        links.add(new NavLink("Settings", "settings", "pi pi-cog", Permission.VIEW_SETTINGS));
+
+        String role = LoginBean.getCurrentUser().getRole().getName();
+        /*switch (role){
+            case "ROLE_ADMIN":
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
                 links.add(new NavLink("Users", "users", "pi pi-users"));
                 links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
@@ -33,31 +42,31 @@ public class NavigationBean implements Serializable {
                 links.add(new NavLink("Disburse", "dispatch", "pi pi-send"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
-            case CEO:
+            case "ROLE_CEO":
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
                 links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
-            case OPERATIONS:
+            case "ROLE_OPERATIONS":
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
                 links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
-            case FINANCE:
+            case "ROLE_FINANCE":
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
                 links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
                 links.add(new NavLink("Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
-            case EMPLOYEE:
+            case "ROLE_EMPLOYEE":
                 links.add(new NavLink("Dashboard", "dashboard", "pi pi-home"));
                 links.add(new NavLink("Past Requisitions", "requisitions", "pi pi-file"));
                 links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line"));
                 links.add(new NavLink("Settings", "settings", "pi pi-cog"));
                 break;
-        }
+        }*/
 
         activePage = "dashboard"; // Default active page
     }
@@ -92,11 +101,13 @@ public class NavigationBean implements Serializable {
         private String label;
         private String outcome;
         private String icon;
+        private Permission permission;
 
-        public NavLink(String label, String outcome, String icon) {
+        public NavLink(String label, String outcome, String icon, Permission permission) {
             this.label = label;
             this.outcome = outcome;
             this.icon = icon;
+            this.permission = permission;
         }
 
         public String getLabel() {
@@ -110,5 +121,10 @@ public class NavigationBean implements Serializable {
         public String getIcon() {
             return icon;
         }
+
+        public Permission getPermission() {
+            return permission;
+        }
+
     }
 }

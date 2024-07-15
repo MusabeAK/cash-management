@@ -3,22 +3,27 @@ package org.pahappa.systems.requisitionapp.utils;
 import org.pahappa.systems.requisitionapp.dao.UserDAO;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Gender;
-import org.pahappa.systems.requisitionapp.models.utils.Role;
+import org.pahappa.systems.requisitionapp.models.Role;
+import org.pahappa.systems.requisitionapp.models.utils.Permission;
+import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class Initializer {
 
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public Initializer(UserService userService) {
+    public Initializer(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @PostConstruct
@@ -38,6 +43,11 @@ public class Initializer {
             }
         }
         try {
+            Role role = new Role();
+            role.setName("ROLE_ADMIN");
+            role.setPermissions(Set.of(Permission.values()));
+            roleService.createRole(role);
+
             User user = new User();
             user.setUsername("Admin");
             user.setPassword("@dmin123");
@@ -46,7 +56,7 @@ public class Initializer {
             user.setLastName("Admin");
             user.setPhoneNumber("+256751461761");
             user.setGender(Gender.MALE);
-            user.setRole(Role.ADMIN);
+            user.setRole(role);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,6 +71,11 @@ public class Initializer {
             }
         }
         try {
+            Role role = new Role();
+            role.setName("ROLE_EMPLOYEE");
+            role.setPermissions(Set.of(Permission.CREATE_USER, Permission.APPROVE_BUDGET_LINE, Permission.EDIT_USER));
+            roleService.createRole(role);
+
             User user = new User();
             user.setUsername("Employee");
             user.setPassword("employee");
@@ -69,7 +84,7 @@ public class Initializer {
             user.setLastName("Employee");
             user.setPhoneNumber("+256772461761");
             user.setGender(Gender.MALE);
-            user.setRole(Role.EMPLOYEE);
+            user.setRole(role);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,6 +99,11 @@ public class Initializer {
             }
         }
         try {
+            Role role = new Role();
+            role.setName("ROLE_OPERATIONS");
+            role.setPermissions(Set.of(Permission.CREATE_USER, Permission.APPROVE_BUDGET_LINE, Permission.EDIT_USER));
+            roleService.createRole(role);
+
             User user = new User();
             user.setUsername("Operations");
             user.setPassword("operations");
@@ -92,7 +112,7 @@ public class Initializer {
             user.setLastName("Operations");
             user.setPhoneNumber("+256701461762");
             user.setGender(Gender.FEMALE);
-            user.setRole(Role.OPERATIONS);
+            user.setRole(role);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,6 +127,11 @@ public class Initializer {
             }
         }
         try {
+            Role role = new Role();
+            role.setName("ROLE_CEO");
+            role.setPermissions(Set.of(Permission.CREATE_USER, Permission.APPROVE_BUDGET_LINE, Permission.EDIT_USER));
+            roleService.createRole(role);
+
             User user = new User();
             user.setUsername("CEO");
             user.setPassword("ceo");
@@ -115,7 +140,7 @@ public class Initializer {
             user.setLastName("CEO");
             user.setPhoneNumber("+256701461762");
             user.setGender(Gender.FEMALE);
-            user.setRole(Role.CEO);
+            user.setRole(role);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,6 +155,11 @@ public class Initializer {
             }
         }
         try {
+            Role role = new Role();
+            role.setName("ROLE_FINANCE");
+            role.setPermissions(Set.of(Permission.CREATE_USER, Permission.APPROVE_BUDGET_LINE, Permission.EDIT_USER));
+            roleService.createRole(role);
+
             User user = new User();
             user.setUsername("Finance");
             user.setPassword("finance");
@@ -138,7 +168,7 @@ public class Initializer {
             user.setLastName("Finance");
             user.setPhoneNumber("+256701461762");
             user.setGender(Gender.MALE);
-            user.setRole(Role.FINANCE);
+            user.setRole(role);
             userService.addUser(user);
         } catch (Exception e) {
             e.printStackTrace();

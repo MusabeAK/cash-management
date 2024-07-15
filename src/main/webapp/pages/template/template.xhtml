@@ -80,7 +80,6 @@
             transition: 0.1s ease;
         }
         body .container .left-nav ul li a.active {
-            font-weight: bold;
             color: #2D60FF;
         }
 
@@ -488,7 +487,7 @@
                 <ui:repeat value="#{navigationBean.links}" var="link">
                     <li>
                         <h:link outcome="/pages/admin/#{link.outcome}.xhtml"
-                                styleClass="nav-link #{navigationBean.activePage == link.outcome ? 'active' : ''}">
+                                styleClass="nav-link #{navigationBean.activePage == link.outcome ? 'active' : ''}" rendered="#{userPermissionBean.hasPermission(link.permission)}">
                             <f:param name="activePage" value="#{link.outcome}" />
                             <span><i class="#{link.icon}"/></span> #{link.label}
                         </h:link>
