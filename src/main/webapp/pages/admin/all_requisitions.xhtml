@@ -88,7 +88,7 @@
                     <p:column headerText="Actions">
                         <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}"
                                          oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable"
-                                         rendered="#{requisition.status == 'DRAFT'}" />
+                                         rendered="#{requisition.status == 'SUBMITTED'}" />
 
                         <p:commandButton value="Approve" action="#{requisitionBean.selectRequisition(requisition)}"
                                          update=":allRequisitions:allRequisitionsTable"

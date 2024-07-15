@@ -142,12 +142,14 @@
                         </p:column>
 
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable"/>
+                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel"/>
 
                             <p:commandButton icon="pi pi-trash" styleClass="delete-button" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this Budget Line?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
+
+                            <p:commandButton icon="pi pi-cog" styleClass="edit-button" rendered="#{budgetLine.status == 'DRAFT'}" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('reviewBudgetLineDialog').show()" update="@form :budgetLine:budgetLineTable :reviewBudgetLineForm:reviewBudgetLinePanel"/>
                         </p:column>
 
                     </p:dataTable>
@@ -289,6 +291,49 @@
                         <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times"/>
                     </p:outputPanel>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="reviewBudgetLineForm">
+                <p:dialog header="Review Budget Line."
+                          widgetVar="reviewBudgetLineDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="reviewBudgetLinePanel" rendered="true">
+                <p:messages id="reviewBudgetLinePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:panelGrid columns="2" styleClass="custom-grid">
+                    <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
+                    <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory}"/>
+
+                    <p:outputLabel for="reviewBudgetLineTitle" value="Title: "/>
+                    <h:outputText id="reviewBudgetLineTitle" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}"/>
+
+                    <p:outputLabel for="reviewBudgetLineAmount" value="Amount: "/>
+                    <h:outputText id="reviewBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}"/>
+
+                    <p:outputLabel for="reviewBudgetLineStartDate" value="Amount: "/>
+                    <h:outputText id="reviewBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                    </h:outputText>
+
+                    <p:outputLabel for="reviewBudgetLineEndDate" value="Amount: "/>
+                    <h:outputText id="reviewBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                    </h:outputText>
+
+                </p:panelGrid>
+
+                    <p:commandButton value="Approve" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.approveBudgetLine}" update=":budgetLine:budgetLineTable"/>
+                    <p:commandButton value="Reject" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}"/>
+
+                </p:outputPanel>
                 </p:dialog>
             </h:form>
         </div>

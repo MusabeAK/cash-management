@@ -363,7 +363,7 @@ public class RequisitionBean implements Serializable {
     }
 
     public List<Requisition> getRequisitions() {
-        return requisitions;
+        return requisitionService.getAllRequisitions();
     }
 
     public void setRequisitions(List<Requisition> requisitions) {

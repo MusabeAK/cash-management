@@ -123,7 +123,20 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Budget Line approved", null));
             approvedBudgetLines.add(selectedBudgetLine);
-        }
+        } else
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line already approved", null));
+    }
+
+    public void rejectBudgetLine() {
+        if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
+            selectedBudgetLine.setStatus(BudgetLineStatus.REJECTED);
+            budgetLineService.updateBudgetLine(selectedBudgetLine);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Budget Line rejected", null));
+        } else
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line already approved", null));
     }
 
 
@@ -241,7 +254,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLine> getBudgetLines() {
-        return budgetLines;
+        return budgetLineService.getAllBudgetLines();
     }
 
     public void setBudgetLines(List<BudgetLine> budgetLines) {
