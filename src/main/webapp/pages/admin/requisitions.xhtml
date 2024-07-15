@@ -9,13 +9,13 @@
 
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
-            <h:outputText value="Dashboard" styleClass="top-bar-title" />
+            <h:outputText value="My Requisitions" styleClass="top-bar-title" />
         </h:panelGroup>
         <div class="content">
             <h:form id="userRequisitions" style="margin-top: 30px">
-                <h:panelGroup id="userRequisitionsTable">
+                <h:panelGroup id="userRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
                     <div class="search-container">
-                        <h3>All requisitions</h3>
+                        <h3>My requisitions</h3>
                         <div class="search-and-filter">
                             <div class="search">
                                 <p:inputText id="searchBar" value="#" styleClass="search-bar" placeholder="Search...">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{requisitionBean.userRequisitions}" var="requisition">
+                    <p:dataTable value="#{requisitionBean.userRequisitions}" var="requisition" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
                         <p:column headerText="Subject">
                             <h:outputText value="#{requisition.subject}"/>
                         </p:column>
@@ -56,14 +56,16 @@
                             <h:outputText value="#{requisition.comment}"/>
                         </p:column>
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
+                            <p:commandButton icon="pi pi-pencil"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
 
-                            <p:commandButton icon="pi pi-trash" action="#{requisitionBean.deleteRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" title="Delete" styleClass="delete-button" style="color:red" >
-                                <p:confirm header="Confirm Deletion" message="Do you want to delete this User?"
+                            <p:commandButton icon="pi pi-trash" rendered="#{requisition.status == 'DRAFT' or requisition.status == 'REJECTED'}" action="#{requisitionBean.deleteRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" title="Delete" styleClass="delete-button" style="color:red" >
+                                <p:confirm header="Confirm Deletion" message="Do you want to delete this requisition?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton value="Accountability" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null and loginBean.hasPermission('CREATE_ACCOUNTABILITY')}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('viewAccountabilityDialog').show()"/>
+
                         </p:column>
                     </p:dataTable>
                 </h:panelGroup>
@@ -191,6 +193,43 @@
 
                         <p:commandButton value="Add" actionListener="#{accountabilityBean.addAccountability}" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="viewAccountability">
+                <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
+                          widgetVar="viewAccountabilityDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closeOnEscape="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="viewAccountabilityPanel" rendered="#{accountabilityBean.selectedAccountability != null}">
+                        <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="accountabilityDescriptionView" value="Reason: "/>
+                            <h:outputText id="accountabilityDescriptionView" value="#{accountabilityBean.selectedAccountability.description}">
+                            </h:outputText>
+
+                            <p:outputLabel for="accountabilityAmountView" value="Amount Used: "/>
+                            <h:outputText id="accountabilityAmountView" value="#{accountabilityBean.selectedAccountability.amountUsed}"/>
+
+                            <p:outputLabel for="accountabilityImageView" value="Image: "/>
+                            <p:commandButton id="accountabilityImageView" value="Download Image"
+                                             ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(start, stop);"
+                                             icon="pi pi-download"
+                                             rendered="#{accountabilityBean.selectedAccountability != null and accountabilityBean.selectedAccountability.image != null}">
+                                <p:fileDownload value="#{accountabilityBean.imageDownload}" />
+                            </p:commandButton>
+
+                        </p:panelGrid>
+
                     </p:outputPanel>
                 </p:dialog>
             </h:form>

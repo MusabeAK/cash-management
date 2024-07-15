@@ -4,6 +4,7 @@ import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
+import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
@@ -67,6 +68,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void makeRequisition() {
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         currentUser = getCurrentUser();
         try {
           if (currentUser != null) {
@@ -128,6 +134,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void updateRequisition(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.EDIT_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedRequisition.getAmount() > selectedRequisition.getBudgetLine().getBalance()){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
@@ -165,6 +176,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void submitRequisition(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedRequisition.getAmount() > selectedRequisition.getBudgetLine().getBalance()){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
@@ -204,6 +220,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void deleteRequisition(Requisition requisition){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.DELETE_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         try {
             if (requisition.getStatus().equals(RequisitionStatus.DRAFT) || requisition.getStatus().equals(RequisitionStatus.REJECTED)){
                 requisitionService.deleteRequisition(requisition);
@@ -227,6 +248,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void reviewAndApproveRequisition(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REVIEW_REQUISITION) || !LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
             selectedRequisition.setComment(comment);
             selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
@@ -241,6 +267,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void reviewAndRejectRequisition(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REVIEW_REQUISITION) || !LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)) {
             selectedRequisition.setComment(comment);
             selectedRequisition.setStatus(RequisitionStatus.REJECTED);
@@ -255,6 +286,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void approveRequisition(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
             selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
             requisitionService.updateRequisition(selectedRequisition);
@@ -268,6 +304,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void rejectRequisition(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
             selectedRequisition.setStatus(RequisitionStatus.REJECTED);
             requisitionService.updateRequisition(selectedRequisition);
@@ -280,6 +321,11 @@ public class RequisitionBean implements Serializable {
     }
 
     public void disburseRequisition(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.DISBURSE_MONEY)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
             try {
                 selectedRequisition.setStatus(RequisitionStatus.DISBURSED);

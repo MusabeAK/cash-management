@@ -9,7 +9,7 @@
 
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
-            <h:outputText value="Requisitions" styleClass="top-bar-title" />
+            <h:outputText value="All Requisitions" styleClass="top-bar-title" />
         </h:panelGroup>
 
         <div class="content">
@@ -40,7 +40,7 @@
         </div>
 
         <h:form id="allRequisitions" style="margin-top: 20px">
-            <h:panelGroup id="allRequisitionsTable">
+            <h:panelGroup id="allRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_ALL_REQUISITIONS')}">
 
                 <div class="search-container">
                     <h3>All Requisitions</h3>
@@ -54,7 +54,7 @@
                 </div>
 
 
-                <p:dataTable value="#{requisitionBean.requisitions}" var="requisition" paginator="true" rows="5" paginatorPosition="bottom">
+                <p:dataTable value="#{requisitionBean.requisitions}" rendered="#{loginBean.hasPermission('VIEW_ALL_REQUISITIONS')}" var="requisition" paginator="true" rows="5" paginatorPosition="bottom">
                     <p:column headerText="Id">
                         <h:outputText value="#{requisition.id}"/>
                     </p:column>
@@ -88,23 +88,23 @@
                     <p:column headerText="Actions">
                         <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}"
                                          oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable"
-                                         rendered="#{requisition.status == 'SUBMITTED'}" />
+                                         rendered="#{requisition.status == 'SUBMITTED' and loginBean.hasPermission('REVIEW_REQUISITION')}" />
 
                         <p:commandButton value="Approve" action="#{requisitionBean.selectRequisition(requisition)}"
                                          update=":allRequisitions:allRequisitionsTable"
                                          oncomplete="PF('reviewRequisitionDialog').show()"
-                                         rendered="#{requisition.status == 'HR_REVIEWED'}" />
+                                         rendered="#{requisition.status == 'HR_REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' and loginBean.hasPermission('REJECT_REQUISITION'))}" />
 
                         <p:commandButton value="Disburse" action="#{requisitionBean.selectRequisition(requisition)}"
                                          update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance"
                                          oncomplete="PF('reviewRequisitionDialogFinance').show()"
-                                         rendered="#{requisition.status == 'CEO_APPROVED'}" />
+                                         rendered="#{requisition.status == 'CEO_APPROVED' and loginBean.hasPermission('DISBURSE_MONEY')}" />
                         <!-- Work on this  -->
                         <p:commandButton value="Accountability"
                                          action="#{accountabilityBean.selectRequisition(requisition)}"
                                          update=":viewAccountability"
                                          oncomplete="PF('viewAccountabilityDialog').show()"
-                                         rendered="#{requisition.status == 'DISBURSED'}" />
+                                         rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" />
                     </p:column>
 
                 </p:dataTable>

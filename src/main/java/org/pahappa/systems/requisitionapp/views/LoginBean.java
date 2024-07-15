@@ -86,4 +86,9 @@ public class LoginBean {
         return (User) externalContext.getSessionMap().get("currentUser");
     }
 
+    public boolean hasPermission(String permissionName) {
+        return currentUser().getRole().getPermissions().stream()
+                .anyMatch(p -> p.name().equals(permissionName));
+    }
+
 }
