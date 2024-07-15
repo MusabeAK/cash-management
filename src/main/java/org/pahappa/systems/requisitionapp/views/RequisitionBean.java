@@ -55,7 +55,7 @@ public class RequisitionBean implements Serializable {
             }
         }
         for (Requisition requisition : requisitions) {
-            if (requisition.getStatus().equals(RequisitionStatus.DRAFT)){
+            if (requisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
                 draftRequisitions.add(requisition);
             }
         }
@@ -107,6 +107,7 @@ public class RequisitionBean implements Serializable {
                       newRequisition.setBudgetLine(budgetLine);
                       newRequisition.setUser(currentUser);
                       userRequisitions.add(newRequisition);
+                      requisitions.add(newRequisition);
                       requisitionService.makeRequisition(newRequisition, currentUser);
                       FacesContext.getCurrentInstance().addMessage(null,
                               new FacesMessage(FacesMessage.SEVERITY_INFO, "Success.", null));
@@ -163,6 +164,45 @@ public class RequisitionBean implements Serializable {
         }
     }
 
+    public void submitRequisition(){
+        if (selectedRequisition.getAmount() > selectedRequisition.getBudgetLine().getBalance()){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
+            return;
+        }
+        if (selectedRequisition.getDateNeeded().after(selectedRequisition.getBudgetLine().getEndDate())){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be after budget line end date", null));
+            return;
+        }
+        if (selectedRequisition.getDateNeeded().before(selectedRequisition.getBudgetLine().getStartDate())){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
+            return;
+        }
+        if (selectedRequisition.getAmount() <= 0){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be less than or equal 0", null));
+            return;
+        }
+        if (!selectedRequisition.getStatus().equals(RequisitionStatus.DRAFT)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot submit a requisition that is not in draft", null));
+            return;
+        }
+        try {
+            selectedRequisition.setStatus(RequisitionStatus.SUBMITTED);
+            draftRequisitions.add(newRequisition);
+            requisitionService.updateRequisition(selectedRequisition);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Submitted", null));
+            loadUserRequisitions();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
+        }
+    }
+
     public void deleteRequisition(Requisition requisition){
         try {
             if (requisition.getStatus().equals(RequisitionStatus.DRAFT) || requisition.getStatus().equals(RequisitionStatus.REJECTED)){
@@ -187,7 +227,7 @@ public class RequisitionBean implements Serializable {
     }
 
     public void reviewAndApproveRequisition(){
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.DRAFT)){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
             selectedRequisition.setComment(comment);
             selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
             requisitionService.updateRequisition(selectedRequisition);
@@ -201,7 +241,7 @@ public class RequisitionBean implements Serializable {
     }
 
     public void reviewAndRejectRequisition(){
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.DRAFT)) {
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)) {
             selectedRequisition.setComment(comment);
             selectedRequisition.setStatus(RequisitionStatus.REJECTED);
             requisitionService.updateRequisition(selectedRequisition);

@@ -444,6 +444,14 @@
 
     </style>
     <script type="text/javascript">
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             // Toggle navigation function
             function toggleNav() {
@@ -468,6 +476,8 @@
                 toggleNav();
             });
         });
+
+
     </script>
 
 </h:head>
