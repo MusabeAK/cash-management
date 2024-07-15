@@ -63,7 +63,7 @@
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null and loginBean.hasPermission('CREATE_ACCOUNTABILITY')}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
                             <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('viewAccountabilityDialog').show()"/>
 
                         </p:column>

@@ -93,7 +93,7 @@
                         <p:commandButton value="Approve" action="#{requisitionBean.selectRequisition(requisition)}"
                                          update=":allRequisitions:allRequisitionsTable"
                                          oncomplete="PF('reviewRequisitionDialog').show()"
-                                         rendered="#{requisition.status == 'HR_REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' and loginBean.hasPermission('REJECT_REQUISITION'))}" />
+                                         rendered="#{requisition.status == 'HR_REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' )}" />
 
                         <p:commandButton value="Disburse" action="#{requisitionBean.selectRequisition(requisition)}"
                                          update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance"
