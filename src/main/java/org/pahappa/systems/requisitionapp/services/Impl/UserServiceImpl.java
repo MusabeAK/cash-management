@@ -27,7 +27,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-        return userDAO.getAllUsers();
+
+        for(User user : userDAO.getAllUsers()) {
+            if(user.getUsername().equals("Admin")) {
+                return userDAO.getAllUsers();
+            }
+        }
+        return Collections.emptyList();
     }
 
     public User getUserById(Long id) throws UserDoesNotExistException {
@@ -78,6 +84,10 @@ public class UserServiceImpl implements UserService {
         }
 
         userDAO.delete(user);
+    }
+
+    public void deleteAll(){
+        userDAO.deleteAll();
     }
 
     public User loginUser(String identifier, String password) throws UserDoesNotExistException {

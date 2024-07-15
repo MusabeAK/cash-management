@@ -134,7 +134,7 @@ public class UserBean implements Serializable {
 
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "User creation failed", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "User creation failed: "+e.getMessage(), null));
             System.out.println("Error Creating User:  "+e.getMessage());
         }
     }
@@ -155,6 +155,10 @@ public class UserBean implements Serializable {
     public void deleteUser(User user){
         userService.deleteUser(user);
         filteredUsers = userService.getAllUsers();
+    }
+
+    public void deleteAllUsers(){
+        userService.deleteAll();
     }
 
 

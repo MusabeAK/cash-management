@@ -3,6 +3,7 @@ package org.pahappa.systems.requisitionapp.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -63,6 +64,14 @@ public class BudgetLineCategoryDAO {
 
     public BudgetLineCategory merge(BudgetLineCategory budgetLineCategory) {
         return (BudgetLineCategory) sessionFactory.getCurrentSession().merge(budgetLineCategory);
+    }
+
+    public List<BudgetLineCategory> searchBudgetLineCategories(String searchTerm) {
+        String query = "FROM BudgetLineCategory WHERE categoryName LIKE :searchTerm " ;
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, BudgetLineCategory.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
     }
 
 }

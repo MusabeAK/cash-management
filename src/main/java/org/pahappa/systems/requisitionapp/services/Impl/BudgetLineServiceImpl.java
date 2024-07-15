@@ -150,5 +150,9 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         return budgetLine;
     }
 
+    public List<BudgetLine> searchBudgetLines(String searchTerm) {
+        return budgetLineDAO.searchBudgetLines(searchTerm);
+    }
+
 
 }

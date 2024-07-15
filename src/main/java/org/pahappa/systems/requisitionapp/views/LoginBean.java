@@ -56,6 +56,10 @@ public class LoginBean {
 
                 redirectPath = Hyperlink.ADMIN_VIEW;
             }
+            else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "user name or password is incorrect", null));
+            }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));

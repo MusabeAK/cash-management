@@ -11,6 +11,9 @@
                 <h1>Login</h1>
                 <h:messages style="color: red;"/>
                 <h:panelGrid columns="1">
+                    <p:messages  showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
                     <h:outputLabel for="username" value="Username" styleClass="form-label"/>
                     <h:inputText id="username" value="#{loginBean.identifier}" required="true" styleClass="form-input"/>
 

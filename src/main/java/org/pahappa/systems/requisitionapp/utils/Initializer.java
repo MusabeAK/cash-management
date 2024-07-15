@@ -29,10 +29,13 @@ public class Initializer {
     @PostConstruct
     public void init() {
         createAdminUser();
+        /*
         createEmployeeUser();
         createOperationsUser();
         createCEOUser();
         createFinanceUser();
+
+         */
     }
 
     private void createAdminUser(){
@@ -44,7 +47,7 @@ public class Initializer {
         }
         try {
             Role role = new Role();
-            role.setName("ROLE_ADMIN");
+            role.setName("ADMIN");
             role.setPermissions(Set.of(Permission.values()));
             roleService.createRole(role);
 
@@ -62,7 +65,7 @@ public class Initializer {
             e.printStackTrace();
         }
     }
-
+/*
     private void createEmployeeUser(){
         List<User> users = userService.getAllUsers();
         for (User user : users) {
@@ -174,5 +177,5 @@ public class Initializer {
             e.printStackTrace();
         }
     }
-
+*/
 }

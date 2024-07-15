@@ -30,6 +30,8 @@ public class RoleBean implements Serializable {
     private List<Role> roles;
     private Role selectedRole;
     private Set<String> updateSelectedPermissions;
+    private String searchQuery;
+    private List<Role> filteredRoles;
 
     @PostConstruct
     public void init() {
@@ -37,6 +39,7 @@ public class RoleBean implements Serializable {
                 .map(Enum::name)
                 .collect(Collectors.toSet());
         roles = roleService.getAllRoles();
+        filteredRoles = roleService.getAllRoles();
     }
 
     private final RoleService roleService;
@@ -88,10 +91,21 @@ public class RoleBean implements Serializable {
         try {
             roleService.deleteRole(role);
             roles = roleService.getAllRoles();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Role deleted", null));
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting role" + e.getMessage(), null));
         }
+
+    }
+
+    public void searchRoles() {
+        if (!(searchQuery == null || searchQuery.isEmpty())) {
+            filteredRoles = roleService.searchRoles(searchQuery);
+            return;
+        }
+        filteredRoles = roleService.getAllRoles();
 
     }
 
@@ -153,5 +167,22 @@ public class RoleBean implements Serializable {
 
     public void setUpdateSelectedPermissions(Set<String> updateSelectedPermissions) {
         this.updateSelectedPermissions = updateSelectedPermissions;
+    }
+
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public List<Role> getFilteredRoles() {
+        return filteredRoles;
+    }
+
+    public void setFilteredRoles(List<Role> filteredRoles) {
+        this.filteredRoles = filteredRoles;
     }
 }

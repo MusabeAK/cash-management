@@ -2,6 +2,7 @@ package org.pahappa.systems.requisitionapp.dao;
 
 import org.hibernate.SessionFactory;
 import org.pahappa.systems.requisitionapp.models.Role;
+import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -42,5 +43,13 @@ public class RoleDao{
 
     public List<Role> findAll() {
         return sessionFactory.getCurrentSession().createQuery("from Role", Role.class).list();
+    }
+
+    public List<Role> searchRoles(String searchTerm) {
+        String query = "FROM Role WHERE name LIKE :searchTerm ";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, Role.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
     }
 }
