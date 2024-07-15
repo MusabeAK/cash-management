@@ -14,6 +14,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,10 +26,11 @@ public class RoleBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String roleName;
-    private Set<Permission> selectedPermissions;
+    private Set<String> selectedPermissions;
     private Set<String> availablePermissions;
     private List<Role> roles;
     private Role selectedRole;
+    Set<Permission> castedPermissions;
 
     @PostConstruct
     public void init() {
@@ -47,11 +49,11 @@ public class RoleBean implements Serializable {
 
     public void createRole(){
         try {
+            castPermissions();
             Role role = new Role();
             role.setName(roleName);
-            role.setPermissions(selectedPermissions);
+            role.setPermissions(castedPermissions);
             roleService.createRole(role);
-
             roles = roleService.getAllRoles();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,"Role creation success", null));
@@ -63,9 +65,22 @@ public class RoleBean implements Serializable {
 
     }
 
+    public Set<Permission> castPermissions(){
+        if (selectedPermissions != null) {
+            castedPermissions = selectedPermissions.stream()
+                    .map(Permission::valueOf)
+                    .collect(Collectors.toSet());
+        } else {
+            castedPermissions = new HashSet<>();
+        }
+
+        return castedPermissions;
+    }
+
     public void updateRole(){
         try{
-//            selectedRole.setPermissions(selectedPermissions);
+            castPermissions();
+            selectedRole.setPermissions(castedPermissions);
             roleService.updateRole(selectedRole);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,"Role Update success", null));
@@ -90,11 +105,11 @@ public class RoleBean implements Serializable {
         this.roleName = roleName;
     }
 
-    public Set<Permission> getSelectedPermissions() {
+    public Set<String > getSelectedPermissions() {
         return selectedPermissions;
     }
 
-    public void setSelectedPermissions(Set<Permission> selectedPermissions) {
+    public void setSelectedPermissions(Set<String> selectedPermissions) {
         this.selectedPermissions = selectedPermissions;
     }
 

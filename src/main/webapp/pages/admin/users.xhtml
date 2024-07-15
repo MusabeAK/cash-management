@@ -300,7 +300,7 @@
                       widgetVar="addRoleDialog"
                       modal="true"
                       resizable="true"
-                      height="500px"
+                      height="400px"
                       showEffect="fade"
                       hideEffect="fade"
                       closable="true"
@@ -321,7 +321,6 @@
                             <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
                         </p:selectManyCheckbox>
 
-
                     </p:panelGrid>
 
                     <p:commandButton value="Add" update=":usersForm:rolesTable" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
@@ -336,6 +335,7 @@
                       modal="true"
                       resizable="true"
                       showEffect="fade"
+                      height="400px"
                       hideEffect="fade"
                       closable="true"
                       width="800px"
@@ -350,9 +350,14 @@
                         </p:inputText>
 
                         <h:outputLabel for="epermissions" value="Permissions:"/>
-                        <p:selectManyCheckbox id="epermissions" value="#{roleBean.selectedRole.permissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
-                            <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
-                        </p:selectManyCheckbox>
+                        <p:scrollPanel mode="native" >
+                            <h:panelGrid>
+                                <p:selectManyCheckbox id="epermissions" value="#{roleBean.selectedRole.permissions}" layout="grid" columns="1" style="height: 200px; overflow-y: scroll;">
+                                    <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
+                                </p:selectManyCheckbox>
+                            </h:panelGrid>
+                        </p:scrollPanel>
+
 
 
                     </p:panelGrid>
