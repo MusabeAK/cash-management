@@ -65,6 +65,7 @@ public class RoleBean implements Serializable {
 
     public void updateRole(){
         try{
+//            selectedRole.setPermissions(selectedPermissions);
             roleService.updateRole(selectedRole);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,"Role Update success", null));

@@ -300,6 +300,7 @@
                       widgetVar="addRoleDialog"
                       modal="true"
                       resizable="true"
+                      height="500px"
                       showEffect="fade"
                       hideEffect="fade"
                       closable="true"
@@ -330,7 +331,7 @@
         </h:form>
 
         <h:form id="updateRoleForm">
-            <p:dialog header="Add New Role."
+            <p:dialog header="Update Role."
                       widgetVar="editRoleDialog"
                       modal="true"
                       resizable="true"
@@ -349,7 +350,6 @@
                         </p:inputText>
 
                         <h:outputLabel for="epermissions" value="Permissions:"/>
-
                         <p:selectManyCheckbox id="epermissions" value="#{roleBean.selectedRole.permissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
                             <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
                         </p:selectManyCheckbox>
