@@ -63,7 +63,7 @@
                     <div class="table-header">
                         <h:outputText value="#{roleBean.roles.size()} Role(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()" update=":updateRoleForm"/>
 
                             <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Roles?"
@@ -80,7 +80,6 @@
                         <p:column headerText="Permissions">
                             <h:outputText value="#{role.permissions}"/>
                         </p:column>
-
 
                         <p:column headerText="Actions">
                             <p:commandButton value="Edit Role" styleClass="edit-button" action="#{roleBean.selectRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":usersForm:rolesTable :updateRoleForm:editRolePanel" style="font-size: medium !important"/>
@@ -121,9 +120,9 @@
                     <div class="table-header">
                         <h:outputText value="#{userBean.users.size()} User(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" oncomplete="PF('addUserDialog').show()" rendered="#{userPermissionBean.hasPermission('CREATE_USER')}"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" oncomplete="PF('addUserDialog').show()" rendered="#{userPermissionBean.hasPermission('CREATE_USER')}" update=":addUserForm"/>
 
-                            <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
+                            <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button" rendered="#{userPermissionBean.hasPermission('DELETE_USER')}">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Users?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -163,10 +162,10 @@
                             <h:outputText value="#{user.role.getName()}"/>
                         </p:column>
 
-                        <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{userBean.setSelectedUser(user)}" oncomplete="PF('editUserDialog').show();" update=":usersForm:usersTable "/>
+                        <p:column headerText="Actions" rendered="#{userPermissionBean.hasPermission('EDIT_USER') and userPermissionBean.hasPermission('DELETE_USER')}">
+                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{userBean.setSelectedUser(user)}" oncomplete="PF('editUserDialog').show();" update=":usersForm:usersTable " rendered="#{userPermissionBean.hasPermission('EDIT_USER')}"/>
 
-                            <p:commandButton icon="pi pi-trash" action="#{userBean.deleteUser(user)}" title="Delete" styleClass="delete-button" style="color:red" >
+                            <p:commandButton icon="pi pi-trash" action="#{userBean.deleteUser(user)}" title="Delete" styleClass="delete-button" style="color:red" rendered="#{userPermissionBean.hasPermission('DELETE_USER')}">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this User?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -187,49 +186,81 @@
                       modal="true"
                       resizable="true"
                       showEffect="fade"
+                      height="410px"
                       hideEffect="fade"
                       closable="true"
-                      width="800px"
+                      width="600px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="addUserPanel" rendered="true">
                     <p:messages id="addUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                         <p:autoUpdate/>
                     </p:messages>
-                    <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="newUserName" value="User Name"/>
-                        <p:inputText id="newUserName" value="#{userBean.username}" >
-                        </p:inputText>
+                    <p:panelGrid columns="2" styleClass="custom-grid" >
 
-                        <p:outputLabel for="firstName" value="First Name"/>
-                        <p:inputText id="firstName" value="#{userBean.firstName}" >
-                        </p:inputText>
+                        <p:outputLabel for="newUserName" value="User Name" >
+                            <div style="height: 8px">
 
-                        <p:outputLabel for="lastName" value="Last Name"/>
-                        <p:inputText id="lastName" value="#{userBean.lastName}" rendered="true">
-                        </p:inputText>
+                            </div>
+                            <p:inputText id="newUserName" value="#{userBean.username}" />
+                        </p:outputLabel>
 
-                        <h:outputLabel for="email" value="Email:"/>
-                        <h:inputText id="email" value="#{userBean.email}" >
-                        </h:inputText>
+                        <p:outputLabel for="firstName" value="First Name">
+                            <div style="height: 8px">
 
-                        <h:outputLabel for="password" value="Password:"/>
-                        <h:inputSecret id="password" value="#{userBean.password}"  />
+                            </div>
+                            <p:inputText id="firstName" value="#{userBean.firstName}" />
+                        </p:outputLabel>
+
+                        <p:outputLabel for="lastName" value="Last Name">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="lastName" value="#{userBean.lastName}" rendered="true"/>
+                        </p:outputLabel>
+
+                        <p:outputLabel for="email" value="Email:">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="email" value="#{userBean.email}" rendered="true" />
+                        </p:outputLabel>
+
+                        <p:outputLabel for="password" value="Password">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:password id="password" value="#{userBean.password}"  />
+                        </p:outputLabel>
 
 
-                        <h:outputLabel for="role" value="Role:"/>
-                        <h:selectOneMenu id="role" value="#{userBean.roleName}"  >
-                            <f:selectItem itemLabel="Select Role" itemValue="" />
-                            <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
-                        </h:selectOneMenu>
+                        <p:outputLabel for="role" value="Role">
+                            <div style="height: 8px">
 
-                        <h:outputLabel for="gender" value="Gender:"/>
-                        <h:selectOneMenu id="gender" value="#{userBean.gender}"  >
-                            <f:selectItem itemLabel="Select Gender" itemValue="" />
-                            <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
-                        </h:selectOneMenu>
+                            </div>
+                            <p:selectOneMenu id="role" value="#{userBean.roleName}"  >
+                                <f:selectItem itemLabel="Select Role" itemValue="" />
+                                <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
+                            </p:selectOneMenu>
+                        </p:outputLabel>
 
-                        <h:outputLabel for="phone" value="Phone Number:"/>
-                        <h:inputText id="phone" value="#{userBean.phoneNumber}"  />
+                        <p:outputLabel for="phone" value="Phone Number">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="phone" value="#{userBean.phoneNumber}"  />
+                        </p:outputLabel>
+
+                        <p:outputLabel for="gender" value="Gender">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:selectOneMenu id="gender" value="#{userBean.gender}"  >
+                                <f:selectItem itemLabel="Select Gender" itemValue="" />
+                                <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
+                            </p:selectOneMenu>
+                        </p:outputLabel>
+
+
                     </p:panelGrid>
 
                     <p:commandButton value="Add" update=":usersForm:usersTable" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
@@ -245,48 +276,86 @@
                       resizable="true"
                       showEffect="fade"
                       hideEffect="fade"
+                      height="410px"
                       closable="true"
-                      width="800px"
+                      width="600px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="editUserPanel" rendered="true">
                     <p:messages id="editUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                         <p:autoUpdate/>
                     </p:messages>
                     <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="userName" value="User Name"/>
-                        <p:inputText id="userName" value="#{userBean.selectedUser.username}" >
-                        </p:inputText>
+                        <p:outputLabel for="userName" value="User Name">
+                            <div style="height: 8px">
 
-                        <p:outputLabel for="efirstName" value="First Name"/>
-                        <p:inputText id="efirstName" value="#{userBean.selectedUser.firstName}" >
-                        </p:inputText>
-
-                        <p:outputLabel for="elastName" value="Last Name"/>
-                        <p:inputText id="elastName" value="#{userBean.selectedUser.lastName}" rendered="true">
-                        </p:inputText>
-
-                        <h:outputLabel for="eemail" value="Email:"/>
-                        <h:inputText id="eemail" value="#{userBean.selectedUser.email}" >
-                        </h:inputText>
-
-                        <h:outputLabel for="epassword" value="Password:"/>
-                        <h:inputSecret id="epassword" value="#{userBean.selectedUser.password}"  />
+                            </div>
+                            <p:inputText id="userName" value="#{userBean.selectedUser.username}" >
+                            </p:inputText>
+                        </p:outputLabel>
 
 
-                        <h:outputLabel for="erole" value="Role:"/>
-                        <h:selectOneMenu id="erole" value="#{userBean.selectedUser.role.name}"  >
-                            <f:selectItem itemLabel="Select Role" itemValue="" />
-                            <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
-                        </h:selectOneMenu>
+                        <p:outputLabel for="efirstName" value="First Name">
+                            <div style="height: 8px">
 
-                        <h:outputLabel for="egender" value="Gender:"/>
-                        <h:selectOneMenu id="egender" value="#{userBean.selectedUser.gender}"  >
-                            <f:selectItem itemLabel="Select Gender" itemValue="" />
-                            <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
-                        </h:selectOneMenu>
+                            </div>
+                            <p:inputText id="efirstName" value="#{userBean.selectedUser.firstName}" >
+                            </p:inputText>
+                        </p:outputLabel>
 
-                        <h:outputLabel for="ephone" value="Phone Number:"/>
-                        <h:inputText id="ephone" value="#{userBean.selectedUser.phoneNumber}"  />
+
+                        <p:outputLabel for="elastName" value="Last Name">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="elastName" value="#{userBean.selectedUser.lastName}" rendered="true">
+                            </p:inputText>
+                        </p:outputLabel>
+
+
+                        <p:outputLabel for="eemail" value="Email:">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="eemail" value="#{userBean.selectedUser.email}" >
+                            </p:inputText>
+                        </p:outputLabel>
+
+
+                        <p:outputLabel for="epassword" value="Password:">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:password id="epassword" value="#{userBean.selectedUser.password}"  />
+                        </p:outputLabel>
+
+                        <p:outputLabel for="erole" value="Role:">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:selectOneMenu id="erole" value="#{userBean.selectedUser.role.name}"  >
+                                <f:selectItem itemLabel="Select Role" itemValue="" />
+                                <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
+                            </p:selectOneMenu>
+                        </p:outputLabel>
+
+                        <p:outputLabel for="ephone" value="Phone Number:">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="ephone" value="#{userBean.selectedUser.phoneNumber}"  />
+                        </p:outputLabel>
+
+                        <p:outputLabel for="egender" value="Gender:">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:selectOneMenu id="egender" value="#{userBean.selectedUser.gender}"  >
+                                <f:selectItem itemLabel="Select Gender" itemValue="" />
+                                <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
+                            </p:selectOneMenu>
+                        </p:outputLabel>
+
+
                     </p:panelGrid>
 
                     <p:commandButton value="Update" update=":usersForm:usersTable" actionListener="#{userBean.updateUser}" icon="pi pi-check" styleClass="add-button"/>
@@ -300,7 +369,7 @@
                       widgetVar="addRoleDialog"
                       modal="true"
                       resizable="true"
-                      height="500px"
+                      height="400px"
                       showEffect="fade"
                       hideEffect="fade"
                       closable="true"
@@ -311,15 +380,23 @@
                         <p:autoUpdate/>
                     </p:messages>
                     <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="roleName" value="Role Name"/>
-                        <p:inputText id="roleName" value="#{roleBean.roleName}" >
-                        </p:inputText>
+                        <p:outputLabel for="roleName" value="Role Name">
+                            <div style="height: 8px">
 
-                        <h:outputLabel for="permissions" value="Permissions:"/>
+                            </div>
+                            <p:inputText id="roleName" value="#{roleBean.roleName}" >
+                            </p:inputText>
+                        </p:outputLabel>
 
-                        <p:selectManyCheckbox id="permissions" value="#{roleBean.selectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
-                            <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
-                        </p:selectManyCheckbox>
+
+                        <h:outputLabel for="permissions" value="Select Permissions">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:selectManyCheckbox id="permissions" value="#{roleBean.selectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
+                                <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
+                            </p:selectManyCheckbox>
+                        </h:outputLabel>
 
 
                     </p:panelGrid>
@@ -338,7 +415,7 @@
                       showEffect="fade"
                       hideEffect="fade"
                       closable="true"
-                      height="500px"
+                      height="400px"
                       width="800px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="editRolePanel" rendered="true">
@@ -346,13 +423,22 @@
                         <p:autoUpdate/>
                     </p:messages>
                     <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="eroleName" value="Role Name"/>
-                        <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
+                        <p:outputLabel for="eroleName" value="Role Name">
+                            <div style="height: 8px">
 
-                        <h:outputLabel for="epermissions" value="Permissions:"/>
-                        <p:selectManyCheckbox id="epermissions" value="#{roleBean.updateSelectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
-                            <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
-                        </p:selectManyCheckbox>
+                            </div>
+                            <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
+                        </p:outputLabel>
+
+                        <h:outputLabel for="epermissions" value="Select Permissions">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:selectManyCheckbox id="epermissions" value="#{roleBean.updateSelectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
+                                <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
+                            </p:selectManyCheckbox>
+                        </h:outputLabel>
+
                     </p:panelGrid>
 
                     <p:commandButton value="Update" update=":usersForm:rolesTable @form" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="PF('editRoleDialog').hide();"/>

@@ -14,6 +14,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Base64;
 
 @ManagedBean
 @RequestScoped
@@ -49,6 +50,7 @@ public class LoginBean {
         String redirectPath = null;
         try {
             User user = userService.loginUser(identifier, password);
+            identifier = password = "";
             if (user != null) {
                 FacesContext context = FacesContext.getCurrentInstance();
                 ExternalContext externalContext = context.getExternalContext();
@@ -58,7 +60,7 @@ public class LoginBean {
             }
             else {
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "user name or password is incorrect", null));
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "user name or password is incorrect", null));
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,

@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -91,17 +94,28 @@ public class UserServiceImpl implements UserService {
     }
 
     public User loginUser(String identifier, String password) throws UserDoesNotExistException {
-        User existingUserWithUsername = userDAO.getUserByUsername(identifier);
-        User existingUserWithEmail = userDAO.getUserByEmail(identifier);
-        if (existingUserWithUsername != null){
-            if (existingUserWithUsername.getPassword().equals(password)){
-                return existingUserWithUsername;
+        try {
+
+            User existingUserWithUsername = userDAO.getUserByUsername(identifier);
+            User existingUserWithEmail = userDAO.getUserByEmail(identifier);
+            if (existingUserWithUsername != null) {
+//                String storedPassword = existingUserWithEmail.getPassword();
+//                String storedPasswordDecoded = new String(Base64.getDecoder().decode(storedPassword));
+                if (existingUserWithUsername.getPassword().equals(password)) {
+                    return existingUserWithUsername;
+                }
             }
-        }
-        if (existingUserWithEmail != null){
-            if (existingUserWithEmail.getPassword().equals(password)){
-                return existingUserWithEmail;
+            if (existingUserWithEmail != null) {
+//                String storedPassword = existingUserWithEmail.getPassword();
+//                String storedPasswordDecoded = new String(Base64.getDecoder().decode(storedPassword));
+                if (existingUserWithEmail.getPassword().equals(password)) {
+                    return existingUserWithEmail;
+                }
             }
+        }catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: "+e.getMessage(), null));
+            System.out.println("Error: "+e.getMessage());
         }
         return null;
     }

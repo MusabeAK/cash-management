@@ -7,6 +7,7 @@ import org.pahappa.systems.requisitionapp.models.utils.Gender;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.pahappa.systems.requisitionapp.services.UserService;
+import org.pahappa.systems.requisitionapp.services.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ManagedBean(name="userBean")
@@ -117,16 +115,25 @@ public class UserBean implements Serializable {
         try {
             Role role = roleService.getRoleByName(roleName);
             User user = new User();
-            user.setUsername(username);
-            user.setPassword(password);
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setEmail(email);
+            String name = ServiceUtils.testUserNameInput(username);
+            String pass = ServiceUtils.testUserNameInput(password);
+            String first = ServiceUtils.testUserNameInput(firstName);
+            String last = ServiceUtils.testUserNameInput(lastName);
+            String mail = ServiceUtils.testEmailInput(email);
+            String phone = ServiceUtils.testPhoneNumberInput(phoneNumber);
+
+            user.setUsername(name);
+            user.setPassword(pass);
+            user.setFirstName(first);
+            user.setLastName(last);
+            user.setEmail(mail);
             user.setGender(gender);
             user.setRole(role);
-            user.setPhoneNumber(phoneNumber);
-            userService.addUser(user);
+            user.setPhoneNumber(phone);
 
+            username=firstName=lastName=password=email=phoneNumber="";
+
+            userService.addUser(user);
             filteredUsers = userService.getAllUsers();
 
             FacesContext.getCurrentInstance().addMessage(null,
