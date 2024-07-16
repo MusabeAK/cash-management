@@ -5,6 +5,31 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/template/template.xhtml">
     <ui:define name="content" class="form-container">
+        <script type="text/javascript">
+            function handleCreateRequisitionOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('createRequisitionDialog').hide();
+                }
+            }
+            function handleUpdateRequisitionOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('updateRequisitionDialog').hide();
+                }
+            }
+            function handleAddAccountabilityOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('addAccountabilityDialog').hide();
+                }
+            }
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+
+        </script>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
@@ -38,7 +63,7 @@
                     </div>
 
                     <p:dataTable value="#{requisitionBean.userRequisitions}" var="requisition" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
-                        <p:column headerText="Subject">
+                        <p:column headerText="Reason">
                             <h:outputText value="#{requisition.subject}"/>
                         </p:column>
                         <p:column headerText="Amount">
@@ -63,7 +88,7 @@
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null and loginBean.hasPermission('CREATE_ACCOUNTABILITY')}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
                             <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('viewAccountabilityDialog').show()"/>
 
                         </p:column>
@@ -89,27 +114,28 @@
                     </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
                             <p:outputLabel for="subject" >Reason: </p:outputLabel>
-                            <p:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true">
+                            <p:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true" requiredMessage="Add a reason for your requisition">
                             </p:inputText>
 
                             <p:outputLabel for="description">Description: </p:outputLabel>
-                            <p:inputText id="description" value="#{requisitionBean.newRequisition.description}" required="true">
+                            <p:inputText id="description" value="#{requisitionBean.newRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
                             </p:inputText>
 
                             <p:outputLabel for="amount">Amount: </p:outputLabel>
-                            <p:inputText id="amount" value="#{requisitionBean.newRequisition.amount}" required="true">
+                            <p:inputText id="amount" value="#{requisitionBean.newRequisition.amount}" required="true" requiredMessage="No amount given" validatorMessage="Amount should be a number">
+                                <f:convertNumber currencySymbol="Shs" type="currency"/>
                             </p:inputText>
 
                             <p:outputLabel for="budgetLineName" value="Budget Line: "/>
-                            <p:autoComplete id="budgetLineName" value="#{requisitionBean.budgetLineName}" completeMethod="#{requisitionBean.searchBudgetLines}" required="true">
+                            <p:autoComplete id="budgetLineName" value="#{requisitionBean.budgetLineName}" completeMethod="#{requisitionBean.searchBudgetLines}" required="true" requiredMessage="Select a budget line">
                             </p:autoComplete>
 
                             <p:outputLabel for="editBudgetLineStartDate" value="Date Needed: "  />
-                            <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please add a date when you need this requisition"/>
                         </p:panelGrid>
 
-                        <p:commandButton value="Create" actionListener="#{requisitionBean.makeRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
-                        <p:commandButton value="Cancel" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
+                        <p:commandButton value="Create" oncomplete="handleCreateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.makeRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
+                        <p:commandButton value="Cancel" onclick="PF('createRequisitionDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
             </h:form>
@@ -130,27 +156,27 @@
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
                             <p:outputLabel for="editRequisitionSubject" value="Reason: "/>
-                            <p:inputText id="editRequisitionSubject" value="#{requisitionBean.selectedRequisition.subject}" required="true">
+                            <p:inputText id="editRequisitionSubject" value="#{requisitionBean.selectedRequisition.subject}" required="true" requiredMessage="Please add your reason">
 
                             </p:inputText>
 
                             <p:outputLabel for="editRequisitionAmount" value="Amount"/>
-                            <p:inputText id="editRequisitionAmount" value="#{requisitionBean.selectedRequisition.amount}" required="true">
-
+                            <p:inputText id="editRequisitionAmount" value="#{requisitionBean.selectedRequisition.amount}" required="true" requiredMessage="Please add an amount for your requisition" validatorMessage="Amount should be a number">
+                                <f:convertNumber currencySymbol="Shs" type="currency"/>
                             </p:inputText>
 
                             <p:outputLabel for="editRequisitionDescription" value="Description"/>
-                            <p:inputTextarea id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true">
+                            <p:inputTextarea id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
 
                             </p:inputTextarea>
 
                             <p:outputLabel for="editRequisitionDateNeeded" value="Date Needed"/>
-                            <p:datePicker id="editRequisitionDateNeeded" value="#{requisitionBean.selectedRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:datePicker id="editRequisitionDateNeeded" value="#{requisitionBean.selectedRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please select a date for when you need your requisition"/>
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Submit" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable" />
-                        <p:commandButton value="Update" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
+                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable" />
+                        <p:commandButton value="Update" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-check" update=":userRequisitions:userRequisitionsTable"/>
                         <p:commandButton value="Cancel" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
@@ -170,7 +196,7 @@
                         <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                             <p:autoUpdate/>
                         </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:panelGrid columns="3" styleClass="custom-grid">
                             <p:outputLabel for="accountabilityDescription" value="Description: ">
                                 <p:inputTextarea id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
 
@@ -178,20 +204,20 @@
                             </p:outputLabel>
 
                             <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: ">
-                                <p:inputText id="accountabilityAmountUsed" value="#{accountabilityBean.newAccountability.amountUsed}" required="true">
-
+                                <p:inputText id="accountabilityAmountUsed" value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
+                                    <f:convertNumber currencySymbol="Shs" type="currency"/>
                                 </p:inputText>
                             </p:outputLabel>
 
                             <p:outputLabel for="accountabilityImage" value="Image ">
                                 <p:fileUpload id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
-                                              mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
+                                              mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
                                 </p:fileUpload>
                             </p:outputLabel>
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" actionListener="#{accountabilityBean.addAccountability}" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-check"/>
+                        <p:commandButton value="Add" actionListener="#{accountabilityBean.addAccountability}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>

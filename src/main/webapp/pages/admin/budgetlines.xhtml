@@ -6,6 +6,28 @@
                 template="/pages/template/template.xhtml">
 
     <ui:define name="content" class="form-container">
+        <script type="text/javascript">
+            function handleAddBudgetLineOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('addBudgetLineDialog').hide();
+                }
+            }
+            function handleAddBudgetLineCategoryOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('addBudgetLineCategoryDialog').hide();
+                }
+            }
+            function handleEditBudgetLineCategoryOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('editBudgetLineCategoryDialog').hide();
+                }
+            }
+            function handleEditBudgetLineOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('editBudgetLineDialog').hide();
+                }
+            }
+        </script>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
@@ -178,26 +200,28 @@
 
                         <p:panelGrid columns="2" styleClass="custom-grid" >
                             <p:outputLabel for="budgetLineCategoryName" value="Budget Line Category: "/>
-                            <p:autoComplete id="budgetLineCategoryName" value="#{budgetLineCategoryManagedBean.budgetLineCategoryName}" completeMethod="#{budgetLineCategoryManagedBean.budgetLineCategoryList}" required="true">
+                            <p:autoComplete id="budgetLineCategoryName" value="#{budgetLineCategoryManagedBean.budgetLineCategoryName}" completeMethod="#{budgetLineCategoryManagedBean.budgetLineCategoryList}" required="true" requiredMessage="Budget Line Category is required">
                             </p:autoComplete>
 
                             <p:outputLabel for="budgetLineName" value="Budget Line Title: "/>
-                            <p:inputText id="budgetLineName" value="#{budgetLineCategoryManagedBean.newBudgetLine.title}" required="true">
+                            <p:inputText id="budgetLineName" value="#{budgetLineCategoryManagedBean.newBudgetLine.title}" required="true" requiredMessage="Budget Line Title is required" validatorMessage="Invalid Title">
+                                <f:validateLength minimum="3" maximum="32"/>
                             </p:inputText>
 
                             <p:outputLabel for="budgetLineAmount" value="Budget Line Amount: "/>
-                            <p:inputText id="budgetLineAmount" value="#{budgetLineCategoryManagedBean.newBudgetLine.initialAmount}" required="true">
+                            <p:inputText id="budgetLineAmount" value="#{budgetLineCategoryManagedBean.newBudgetLine.initialAmount}" required="true" requiredMessage="Add an amount" validatorMessage="Amount must be a number">
+                                <f:convertNumber currencySymbol="Shs" type="currency"/>
                             </p:inputText>
 
                             <p:outputLabel for="budgetLineStartDate" value="Start Date: "  />
-                            <p:datePicker id="budgetLineStartDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:datePicker id="budgetLineStartDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please add a budget line start date"/>
 
                             <p:outputLabel for="budgetLineEndDate" value="End Date: "  />
-                            <p:datePicker id="budgetLineEndDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:datePicker id="budgetLineEndDate" value="#{budgetLineCategoryManagedBean.newBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please add a budget line end date"/>
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineToBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Add" oncomplete="handleAddBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineToBudgetLineCategory}" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('addBudgetLineDialog').hide();" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
@@ -220,11 +244,11 @@
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
                             <p:outputLabel for="newBudgetLineCategoryName" value="Budget Line Category Name"/>
-                            <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}">
+                            <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
                             </p:inputText>
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Add" oncomplete="handleAddBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('addBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
@@ -246,11 +270,11 @@
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
                             <p:outputLabel for="editedBudgetLineCategoryName" value="Budget Line Category Name"/>
-                            <p:inputText id="editedBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.selectedBudgetLineCategory.categoryName}">
+                            <p:inputText id="editedBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.selectedBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
                             </p:inputText>
                         </p:panelGrid>
 
-                        <p:commandButton value="Edit" update=":budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Edit" oncomplete="handleEditBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('editBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
                     </p:outputPanel>
 
@@ -273,22 +297,24 @@
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
                             <p:outputLabel for="editBudgetLineName" value="Budget Line Title: "/>
-                            <p:inputText id="editBudgetLineName" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}" required="true">
+                            <p:inputText id="editBudgetLineName" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}" required="true" requiredMessage="Budget Line Title is required" validatorMessage="Invalid Title">
+                                <f:validateLength minimum="3" maximum="32"/>
                             </p:inputText>
 
                             <p:outputLabel for="editBudgetLineAmount" value="Budget Line Amount: "/>
-                            <p:inputText id="editBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}" required="true">
+                            <p:inputText id="editBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}" required="true" requiredMessage="Budget Line Amount is required" validatorMessage="Amount must be a number">
+                                <f:convertNumber currencySymbol="Shs" type="currency"/>
                             </p:inputText>
 
                             <p:outputLabel for="editBudgetLineStartDate" value="Start Date: "  />
-                            <p:datePicker id="editBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:datePicker id="editBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Budget Line Start Date is required"/>
 
                             <p:outputLabel for="ediBudgetLineEndDate" value="End Date: "  />
-                            <p:datePicker id="ediBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false"/>
+                            <p:datePicker id="ediBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Budget Line End Date is required"/>
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
+                        <p:commandButton value="Add" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
