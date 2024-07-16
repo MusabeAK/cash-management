@@ -18,6 +18,7 @@ import javax.faces.view.ViewScoped;
 import javax.persistence.NoResultException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -47,6 +48,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         budgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
         newBudgetLine = new BudgetLine();
         budgetLines = budgetLineService.getAllBudgetLines();
+        draftBudgetLines = new ArrayList<>();
         approvedBudgetLines = new ArrayList<>();
         for (BudgetLine budgetLine : budgetLines) {
             if (budgetLine.getStatus() == BudgetLineStatus.APPROVED) {
@@ -247,10 +249,10 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         }
         try {
             List<BudgetLine> budgetLineCategoryBudgetLines = category.getBudgetLines();
-            for (BudgetLine budgetLineCategoryBudgetLine : budgetLineCategoryBudgetLines){
-                if (budgetLineCategoryBudgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
+            for (BudgetLine budgetLine : budgetLineCategoryBudgetLines){
+                if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
                     FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line category with an active budget line.", null));
                     return;
                 }
             }
@@ -303,7 +305,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLine> getBudgetLines() {
-        return budgetLineService.getAllBudgetLines();
+        List<BudgetLine> allBudgetLines = budgetLineService.getAllBudgetLines();
+        Date currentDate = new Date();
+        for (BudgetLine budgetLine : allBudgetLines){
+            if (currentDate.after(budgetLine.getEndDate())){
+                budgetLine.setStatus(BudgetLineStatus.EXPIRED);
+            }
+        }
+        return allBudgetLines;
     }
 
     public void setBudgetLines(List<BudgetLine> budgetLines) {

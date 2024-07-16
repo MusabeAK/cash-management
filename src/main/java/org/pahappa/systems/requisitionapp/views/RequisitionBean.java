@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -120,10 +121,10 @@ public class RequisitionBean implements Serializable {
                       newRequisition = new Requisition();
                   } else
                       FacesContext.getCurrentInstance().addMessage(null,
-                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line currently", null));
+                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid budget line", null));
               } else
                   FacesContext.getCurrentInstance().addMessage(null,
-                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line currently", null));
+                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line in the system", null));
           } else {
               FacesContext.getCurrentInstance().addMessage(null,
                       new FacesMessage(FacesMessage.SEVERITY_ERROR, "No user logged in", null));
@@ -350,7 +351,11 @@ public class RequisitionBean implements Serializable {
     public List<BudgetLine> searchBudgetLines(String query){
         List<BudgetLine> searchedBudgetLines = requisitionService.searchBudgetLines(query);
         List<BudgetLine> returnedBudgetLines = new ArrayList<>();
+        Date currentDate = new Date();
         for(BudgetLine budgetLine : searchedBudgetLines){
+            if (currentDate.after(budgetLine.getEndDate())){
+                budgetLine.setStatus(BudgetLineStatus.EXPIRED);
+            }
             if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
                 returnedBudgetLines.add(budgetLine);
             }
