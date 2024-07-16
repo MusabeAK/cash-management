@@ -53,9 +53,9 @@
                     <div class="table-header">
                         <h:outputText value="10 Requisition(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":createRequisition:createRequisitionPanel"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":createRequisition:createRequisitionPanel :userRequisitions:userRequisitionsTable"/>
 
-                            <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
+                            <p:commandButton icon="pi pi-trash" update=":userRequisitions:userRequisitionsTable" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Requisitions?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -88,8 +88,8 @@
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('viewAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :addAccountability:addAccountabilityPanel" oncomplete="PF('addAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :viewAccountability:viewAccountabilityPanel" oncomplete="PF('viewAccountabilityDialog').show()"/>
 
                         </p:column>
                     </p:dataTable>
@@ -217,7 +217,7 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" actionListener="#{accountabilityBean.addAccountability}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
+                        <p:commandButton value="Add" update=":userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.addAccountability}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>

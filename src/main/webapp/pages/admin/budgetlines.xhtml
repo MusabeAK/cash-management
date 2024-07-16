@@ -84,7 +84,7 @@
                     <div class="table-header">
                         <h:outputText value="#{budgetLineCategoryManagedBean.budgetLineCategories.size()} Budget Line Category(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-plus" style="margin-right: 20px" value="Add Category" styleClass="add-button" oncomplete="PF('addBudgetLineCategoryDialog').show()" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}"/>
+                            <p:commandButton icon="pi pi-plus" update=":budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel" style="margin-right: 20px" value="Add Category" styleClass="add-button" oncomplete="PF('addBudgetLineCategoryDialog').show()" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}"/>
 
                         </div>
                     </div>
@@ -98,9 +98,9 @@
                         </p:column>
 
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLineCategory(category)}" oncomplete="PF('editBudgetLineCategoryDialog').show();" update=":budgetLine:budgetLineTable :budgetLineCategoryForm:budgetLineCategoryTable" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE_CATEGORY')}"/>
+                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLineCategory(category)}" oncomplete="PF('editBudgetLineCategoryDialog').show();" update=":budgetLine:budgetLineTable :budgetLineCategoryForm:budgetLineCategoryTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE_CATEGORY')}"/>
 
-                            <p:commandButton icon="pi pi-trash" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE_CATEGORY')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLineCategory(category)}" update="@form budgetLineCategoryForm :budgetLine:budgetLineTable" title="Delete" styleClass="delete-button" style="color:red" >
+                            <p:commandButton icon="pi pi-trash" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE_CATEGORY')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLineCategory(category)}" update="@form budgetLineCategoryForm :budgetLine:budgetLineTable :budgetLineCategoryForm:budgetLineCategoryTable" title="Delete" styleClass="delete-button" style="color:red" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this Budget Line Category?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -128,11 +128,10 @@
                     <div class="table-header">
                         <h:outputText value="#{budgetLineCategoryManagedBean.budgetLines.size()} BudgetLine(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-plus" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}" style="margin-right: 20px" value="Add Budget Line" styleClass="add-button" oncomplete="PF('addBudgetLineDialog').show()"/>
+                            <p:commandButton icon="pi pi-plus" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE')}" style="margin-right: 20px" value="Add Budget Line" styleClass="add-button" oncomplete="PF('addBudgetLineDialog').show()"/>
 
                         </div>
                     </div>
-
 
                     <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}" var="budgetLine" paginator="true" rows="5" paginatorPosition="bottom">
                         <p:column headerText="Title">
@@ -164,7 +163,7 @@
                         </p:column>
 
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE')}" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel"/>
+                            <p:commandButton icon="pi pi-pencil" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE')}" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :updateBudgetLineForm:editBudgetLinePanel"/>
 
                             <p:commandButton icon="pi pi-trash" styleClass="delete-button" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this Budget Line?"
@@ -177,8 +176,6 @@
                     </p:dataTable>
                 </h:panelGroup>
             </h:form>
-
-
 
             <!-- Dialogs -->
 
