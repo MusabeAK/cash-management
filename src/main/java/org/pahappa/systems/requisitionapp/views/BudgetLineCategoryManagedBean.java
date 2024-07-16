@@ -86,6 +86,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
                 newBudgetLine = new BudgetLine();
+                newBudgetLineCategory = new BudgetLineCategory();
                 loadBudgetLines();
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -159,7 +160,6 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line already approved", null));
     }
-
 
     public void deleteBudgetLine(BudgetLine budgetLine) {
         if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.DELETE_BUDGET_LINE)){
@@ -246,6 +246,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             return;
         }
         try {
+            List<BudgetLine> budgetLineCategoryBudgetLines = category.getBudgetLines();
+            for (BudgetLine budgetLineCategoryBudgetLine : budgetLineCategoryBudgetLines){
+                if (budgetLineCategoryBudgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
+                    return;
+                }
+            }
             budgetLineCategoryService.deleteBudgetLineCategory(category);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Budget Line Category deleted successfully"));
