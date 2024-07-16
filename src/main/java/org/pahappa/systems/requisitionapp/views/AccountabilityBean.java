@@ -76,6 +76,7 @@ public class AccountabilityBean implements Serializable {
             accountabilityService.addAccountabilityToRequisition(newAccountability, selectedRequisition);
             budgetLine.setBalance(newBudgetLineBalance);
             budgetLineService.updateBudgetLine(budgetLine);
+            newAccountability = new Accountability();
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
