@@ -96,11 +96,11 @@
 
                     <p:column headerText="Actions">
                         <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}"
-                                         oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable"
+                                         oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations"
                                          rendered="#{requisition.status == 'SUBMITTED' and loginBean.hasPermission('REVIEW_REQUISITION')}" />
 
                         <p:commandButton value="Approve" action="#{requisitionBean.selectRequisition(requisition)}"
-                                         update=":allRequisitions:allRequisitionsTable"
+                                         update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel"
                                          oncomplete="PF('reviewRequisitionDialog').show()"
                                          rendered="#{requisition.status == 'HR_REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' )}" />
 
@@ -111,7 +111,7 @@
                         <!-- Work on this  -->
                         <p:commandButton value="Accountability"
                                          action="#{accountabilityBean.selectRequisition(requisition)}"
-                                         update=":viewAccountability"
+                                         update=":viewAccountability:viewAccountabilityPanel :allRequisitions:allRequisitionsTable"
                                          oncomplete="PF('viewAccountabilityDialog').show()"
                                          rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" />
                     </p:column>

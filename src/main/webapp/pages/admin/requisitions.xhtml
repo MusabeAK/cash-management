@@ -53,16 +53,21 @@
                     <div class="table-header">
                         <h:outputText value="10 Requisition(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":createRequisition:createRequisitionPanel"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :createRequisition:createRequisitionPanel"/>
 
-                            <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button">
+                            <p:commandButton icon="pi pi-trash" update=":userRequisitions:userRequisitionsTable" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Requisitions?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
                         </div>
                     </div>
 
-                    <p:dataTable value="#{requisitionBean.userRequisitions}" var="requisition" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+                    <p:dataTable value="#{requisitionBean.userRequisitions}"
+                                 var="requisition"
+                                 rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+                        <p:column headerText="Id">
+                            <h:outputText value="#{requisition.id}"/>
+                        </p:column>
                         <p:column headerText="Reason">
                             <h:outputText value="#{requisition.subject}"/>
                         </p:column>
@@ -88,11 +93,12 @@
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('addAccountabilityDialog').show()"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" oncomplete="PF('viewAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :addAccountability:addAccountabilityPanel" oncomplete="PF('addAccountabilityDialog').show()" style="background-color: #32de84; border-color: #32de84;"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :viewAccountability:viewAccountabilityPanel" oncomplete="PF('viewAccountabilityDialog').show()"/>
 
                         </p:column>
                     </p:dataTable>
+
                 </h:panelGroup>
             </h:form>
 
@@ -123,7 +129,7 @@
 
                             <p:outputLabel for="amount">Amount: </p:outputLabel>
                             <p:inputText id="amount" value="#{requisitionBean.newRequisition.amount}" required="true" requiredMessage="No amount given" validatorMessage="Amount should be a number">
-                                <f:convertNumber currencySymbol="Shs" type="currency"/>
+                                <f:convertNumber currencySymbol="Shs " type="currency"/>
                             </p:inputText>
 
                             <p:outputLabel for="budgetLineName" value="Budget Line: "/>
@@ -162,7 +168,7 @@
 
                             <p:outputLabel for="editRequisitionAmount" value="Amount"/>
                             <p:inputText id="editRequisitionAmount" value="#{requisitionBean.selectedRequisition.amount}" required="true" requiredMessage="Please add an amount for your requisition" validatorMessage="Amount should be a number">
-                                <f:convertNumber currencySymbol="Shs" type="currency"/>
+                                <f:convertNumber currencySymbol="Shs " type="currency"/>
                             </p:inputText>
 
                             <p:outputLabel for="editRequisitionDescription" value="Description"/>
@@ -205,7 +211,7 @@
 
                             <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: ">
                                 <p:inputText id="accountabilityAmountUsed" value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
-                                    <f:convertNumber currencySymbol="Shs" type="currency"/>
+                                    <f:convertNumber currencySymbol="Shs " type="currency"/>
                                 </p:inputText>
                             </p:outputLabel>
 
@@ -217,7 +223,7 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" actionListener="#{accountabilityBean.addAccountability}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
+                        <p:commandButton value="Add" update=":userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.addAccountability}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>

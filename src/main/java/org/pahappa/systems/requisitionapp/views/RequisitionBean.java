@@ -121,6 +121,7 @@ public class RequisitionBean implements Serializable {
                       requisitionService.makeRequisition(newRequisition, currentUser);
                       FacesContext.getCurrentInstance().addMessage(null,
                               new FacesMessage(FacesMessage.SEVERITY_INFO, "Success.", null));
+                      newRequisition = new Requisition();
                   } else
                       FacesContext.getCurrentInstance().addMessage(null,
                               new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line currently", null));
@@ -351,7 +352,14 @@ public class RequisitionBean implements Serializable {
     }
 
     public List<BudgetLine> searchBudgetLines(String query){
-        return requisitionService.searchBudgetLines(query);
+        List<BudgetLine> searchedBudgetLines = requisitionService.searchBudgetLines(query);
+        List<BudgetLine> returnedBudgetLines = new ArrayList<>();
+        for(BudgetLine budgetLine : searchedBudgetLines){
+            if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
+                returnedBudgetLines.add(budgetLine);
+            }
+        }
+        return returnedBudgetLines;
     }
 
     public void searchRequisitions(){
@@ -423,7 +431,15 @@ public class RequisitionBean implements Serializable {
     }
 
     public List<Requisition> getRequisitions() {
-        return requisitionService.getAllRequisitions();
+        List<Requisition> allRequisitions = requisitionService.getAllRequisitions();
+        List<Requisition> returnedRequisitions = new ArrayList<>();
+        for(Requisition requisition : allRequisitions){
+            if (!requisition.getStatus().equals(RequisitionStatus.DRAFT)){
+                returnedRequisitions.add(requisition);
+            }
+        }
+        returnedRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
+        return returnedRequisitions;
     }
 
     public void setRequisitions(List<Requisition> requisitions) {
@@ -435,6 +451,8 @@ public class RequisitionBean implements Serializable {
         try {
             if (currentUser != null) {
                 userRequisitions = requisitionService.getRequisitionsByUser(currentUser);
+                userRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
+
                 return userRequisitions;
             }
         } catch (Exception e){
