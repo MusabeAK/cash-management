@@ -3,6 +3,7 @@ package org.pahappa.systems.requisitionapp.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class BudgetLineCategoryDAO {
 
     private final SessionFactory sessionFactory;
 
+    @Autowired
     public BudgetLineCategoryDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

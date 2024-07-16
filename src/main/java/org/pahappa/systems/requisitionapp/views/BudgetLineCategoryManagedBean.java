@@ -170,14 +170,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             return;
         }
         try {
-            List<Requisition> budgetLineRequisitions = budgetLine.getRequisitions();
-            for (Requisition requisition : budgetLineRequisitions){
-                if (requisition.getStatus().equals(RequisitionStatus.DISBURSED) && requisition.getAccountability() == null){
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
-                    return;
-                }
-            }
+//            List<Requisition> budgetLineRequisitions = budgetLine.getRequisitions();
+//            for (Requisition requisition : budgetLineRequisitions){
+//                if (requisition.getStatus().equals(RequisitionStatus.DISBURSED) && requisition.getAccountability() == null){
+//                    FacesContext.getCurrentInstance().addMessage(null,
+//                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
+//                    return;
+//                }
+//            }
             budgetLineService.deleteBudgetLine(budgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
