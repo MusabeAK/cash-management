@@ -19,7 +19,7 @@
                                  width="350">
                     <p:commandButton value="No" type="button"
                                      styleClass="ui-confirmdialog-no ui-button-flat"/>
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" update=":usersForm"/>
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" update=":usersForm:usersTable :usersForm:rolesTable"/>
                 </p:confirmDialog>
 
                 <div class="cards-container">
@@ -47,14 +47,17 @@
                     </div>
                 </div>
 
-                <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
 
+                <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
+                    <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
                     <div class="search-container">
                         <h3>All Roles</h3>
                         <div class="search-and-filter">
                             <div class="search">
-                                <p:inputText id="searchBar2" value="#{userBean.searchQuery}" styleClass="search-bar" placeholder="Search..." rendered="#{loginBean.hasPermission('SEARCH_USERS')}">
-                                    <p:ajax event="keyup" update=":usersForm:rolesTable" listener="#{userBean.searchUsers}"/>
+                                <p:inputText id="searchBar2" value="#{roleBean.searchQuery}" styleClass="search-bar" placeholder="Search..." rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
+                                    <p:ajax event="keyup" update=":usersForm:rolesTable" listener="#{roleBean.searchRoles()}"/>
                                 </p:inputText>
                             </div>
                         </div>
@@ -63,9 +66,8 @@
                     <div class="table-header">
                         <h:outputText value="#{roleBean.roles.size()} Role(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
-
-                            <p:commandButton icon="pi pi-trash" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" value="Delete All" action="#" styleClass="delete-all-button">
+                            <p:commandButton icon="pi pi-plus" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()" update=":usersForm:rolesTable :addRoleForm:addRolePanel"/>
+                            <p:commandButton icon="pi pi-trash" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" value="Delete All" action="#" styleClass="delete-all-button" update=":usersForm:rolesTable :usersForm:usersTable">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Roles?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -85,7 +87,7 @@
                         <p:column headerText="Actions">
                             <p:commandButton value="Edit Role" rendered="#{loginBean.hasPermission('EDIT_ROLE')}" styleClass="edit-button" action="#{roleBean.selectRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":usersForm:rolesTable :updateRoleForm:editRolePanel" style="font-size: medium !important"/>
 
-                            <p:commandButton value="Delete" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" action="#{roleBean.deleteRole(role)}" title="Delete" styleClass="delete-button" style="color:red;font-size: medium !important" >
+                            <p:commandButton value="Delete" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" action="#{roleBean.deleteRole(role)}" title="Delete" styleClass="delete-button" style="color:red;font-size: medium !important" update=":usersForm:rolesTable :usersForm:usersTable">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this Role?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -145,13 +147,11 @@
 
                         <p:column headerText="Email">
                             <h:outputText value="#{user.email}">
-                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                             </h:outputText>
                         </p:column>
 
                         <p:column headerText="Phone Number">
                             <h:outputText value="#{user.phoneNumber}">
-                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                             </h:outputText>
                         </p:column>
 
@@ -163,10 +163,10 @@
                             <h:outputText value="#{user.role.getName()}"/>
                         </p:column>
 
-                        <p:column headerText="Actions" rendered="#{userPermissionBean.hasPermission('EDIT_USER') and userPermissionBean.hasPermission('DELETE_USER')}">
-                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{userBean.setSelectedUser(user)}" oncomplete="PF('editUserDialog').show();" update=":usersForm:usersTable " rendered="#{userPermissionBean.hasPermission('EDIT_USER')}"/>
+                        <p:column headerText="Actions" rendered="#{userPermissionBean.hasPermission('EDIT_USER') or userPermissionBean.hasPermission('DELETE_USER')}">
+                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{userBean.setSelectedUser(user)}" oncomplete="PF('editUserDialog').show();" rendered="#{userPermissionBean.hasPermission('EDIT_USER')}" update=":usersForm:usersTable :editUserForm:editUserPanel"/>
 
-                            <p:commandButton icon="pi pi-trash" action="#{userBean.deleteUser(user)}" title="Delete" styleClass="delete-button" style="color:red" rendered="#{userPermissionBean.hasPermission('DELETE_USER')}">
+                            <p:commandButton icon="pi pi-trash" action="#{userBean.deleteUser(user)}" title="Delete" styleClass="delete-button" style="color:red" rendered="#{userPermissionBean.hasPermission('DELETE_USER')}" update=":usersForm:usersTable">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this User?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -234,7 +234,7 @@
                             <div style="height: 8px">
 
                             </div>
-                            <p:inputText id="email" value="#{userBean.email}" validatorMessage="Invalid email address" >
+                            <p:inputText id="email" value="#{userBean.email}" validatorMessage="Invalid email address" required="true" requiredMessage="Email is required">
                                 <f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)"/>
                             </p:inputText>
                         </p:outputLabel>
@@ -341,14 +341,14 @@
                             </p:inputText>
                         </p:outputLabel>
 
-                        <p:outputLabel for="epassword" value="Password:">
+                        <p:outputLabel for="epassword" value="Password">
                             <div style="height: 8px">
 
                             </div>
                             <p:password id="epassword" value="#{userBean.selectedUser.password}"  />
                         </p:outputLabel>
 
-                        <p:outputLabel for="erole" value="Role:">
+                        <p:outputLabel for="erole" value="Role">
                             <div style="height: 8px">
 
                             </div>
@@ -358,7 +358,7 @@
                             </p:selectOneMenu>
                         </p:outputLabel>
 
-                        <p:outputLabel for="ephone" value="Phone Number:">
+                        <p:outputLabel for="ephone" value="Phone Number">
                             <div style="height: 8px">
 
                             </div>
@@ -419,7 +419,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" oncomplete="addRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable @form" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
                     <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" />
                 </p:outputPanel>
             </p:dialog>

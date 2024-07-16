@@ -11,6 +11,8 @@ public interface UserService {
 
     List<User> getAllUsers();
 
+    boolean adminUserExists();
+
     User getUserById(Long id) throws UserDoesNotExistException;
 
     User getUserByUsername(String username) throws UserDoesNotExistException;

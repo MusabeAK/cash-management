@@ -55,7 +55,6 @@ public class LoginBean {
                 FacesContext context = FacesContext.getCurrentInstance();
                 ExternalContext externalContext = context.getExternalContext();
                 externalContext.getSessionMap().put("currentUser", user);
-
                 redirectPath = Hyperlink.ADMIN_VIEW;
             }
             else {

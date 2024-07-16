@@ -2,6 +2,7 @@ package org.pahappa.systems.requisitionapp.services.Impl;
 
 import org.pahappa.systems.requisitionapp.dao.RoleDao;
 import org.pahappa.systems.requisitionapp.models.Role;
+import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,12 @@ public class RoleServiceImpl implements RoleService {
         if (!role.getUsers().isEmpty()){
             throw new RuntimeException("Cannot delete a role that has users. Please delete or change their roles first.");
         }
+
         roleDao.delete(role);
+    }
+
+    public List<User> findUsersByRole(Role role) {
+        return roleDao.findUsersByRole(role);
     }
 
     public Role getRoleById(Long roleId) {

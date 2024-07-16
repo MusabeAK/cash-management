@@ -2,8 +2,10 @@ package org.pahappa.systems.requisitionapp.views;
 
 import org.pahappa.systems.requisitionapp.models.Role;
 
+import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.RoleService;
+import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,10 +45,12 @@ public class RoleBean implements Serializable {
     }
 
     private final RoleService roleService;
+    private final UserService userService;
 
     @Autowired
-    public RoleBean(RoleService roleService) {
+    public RoleBean(RoleService roleService, UserService userService) {
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     public void createRole(){
@@ -89,14 +93,20 @@ public class RoleBean implements Serializable {
 
     public void deleteRole(Role role){
         try {
-            roleService.deleteRole(role);
+            Role defaultRole = roleService.getRoleByName("DEFAULT");
+            for(User user : roleService.findUsersByRole(role)){
+//                System.out.println(user);
+                user.setRole(defaultRole);
+                userService.updateUser(user);
 
+            }
+            roleService.deleteRole(role);
             roles = roleService.getAllRoles();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Role deleted", null));
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting role" + e.getMessage(), null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting role: " + e.getMessage(), null));
         }
 
     }

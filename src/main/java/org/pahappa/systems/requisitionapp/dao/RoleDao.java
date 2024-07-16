@@ -52,4 +52,12 @@ public class RoleDao{
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
     }
+
+    public List<User> findUsersByRole(Role role) {
+        String hql = "FROM User WHERE role = :role";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, User.class)
+                .setParameter("role", role)
+                .list();
+    }
 }

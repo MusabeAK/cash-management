@@ -116,7 +116,7 @@ public class UserBean implements Serializable {
             Role role = roleService.getRoleByName(roleName);
             User user = new User();
             String name = ServiceUtils.testUserNameInput(username);
-            String pass = ServiceUtils.testUserNameInput(password);
+            String pass = ServiceUtils.testPasswordInput(password);
             String first = ServiceUtils.testUserNameInput(firstName);
             String last = ServiceUtils.testUserNameInput(lastName);
             String mail = ServiceUtils.testEmailInput(email);

@@ -33,10 +33,16 @@ public class UserServiceImpl implements UserService {
 
         for(User user : userDAO.getAllUsers()) {
             if(user.getUsername().equals("Admin")) {
-                return userDAO.getAllUsers();
+                List<User> allUsers = userDAO.getAllUsers();
+                allUsers.remove(user);
+                return allUsers;
             }
         }
         return Collections.emptyList();
+    }
+
+    public boolean adminUserExists() {
+        return !userDAO.checkForAdminUser().isEmpty();
     }
 
     public User getUserById(Long id) throws UserDoesNotExistException {
@@ -97,18 +103,17 @@ public class UserServiceImpl implements UserService {
         try {
 
             User existingUserWithUsername = userDAO.getUserByUsername(identifier);
-            User existingUserWithEmail = userDAO.getUserByEmail(identifier);
+            User existingUserWithEmail = userDAO.getUserByEmail("ahumuzaariyo@gmail.com");
+            String enteredPasswordEncoded = Base64.getEncoder().encodeToString(password.getBytes());
             if (existingUserWithUsername != null) {
-//                String storedPassword = existingUserWithEmail.getPassword();
-//                String storedPasswordDecoded = new String(Base64.getDecoder().decode(storedPassword));
-                if (existingUserWithUsername.getPassword().equals(password)) {
+                String storedPassword = existingUserWithEmail.getPassword();
+                if (storedPassword.equals(enteredPasswordEncoded)) {
                     return existingUserWithUsername;
                 }
             }
             if (existingUserWithEmail != null) {
-//                String storedPassword = existingUserWithEmail.getPassword();
-//                String storedPasswordDecoded = new String(Base64.getDecoder().decode(storedPassword));
-                if (existingUserWithEmail.getPassword().equals(password)) {
+                String storedPassword = existingUserWithEmail.getPassword();
+                if (storedPassword.equals(enteredPasswordEncoded)) {
                     return existingUserWithEmail;
                 }
             }

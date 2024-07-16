@@ -35,6 +35,13 @@ public class UserDAO {
                 .list();
     }
 
+    public List<User> checkForAdminUser() {
+        return sessionFactory.getCurrentSession().createQuery("from User " +
+                        "where username = :admin")
+                .setString("admin", "Admin")
+                .list();
+    }
+
     public void update(User user) {
         sessionFactory.getCurrentSession().update(user);
     }

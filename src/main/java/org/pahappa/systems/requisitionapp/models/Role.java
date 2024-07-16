@@ -17,7 +17,7 @@ public class Role {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role" , fetch = FetchType.EAGER)
     private List<User> users;
 
     @ElementCollection(targetClass = Permission.class, fetch = FetchType.EAGER)

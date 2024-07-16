@@ -13,5 +13,6 @@ public interface RoleService {
     Role getRoleByName(String roleName);
     List<Role> getAllRoles();
     List<Role> searchRoles(String searchTerm);
+    List<User> findUsersByRole(Role role);
 
 }
