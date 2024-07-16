@@ -18,4 +18,6 @@ public interface BudgetLineService {
     BudgetLine getBudgetLineById(long id);
 
     BudgetLine getBudgetLineByTitle(String title);
+
+    int getActiveBudgetLineCount();
 }

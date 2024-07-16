@@ -41,9 +41,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     private List<BudgetLine> approvedBudgetLines;
     private List<BudgetLine> draftBudgetLines;
     private BudgetLine selectedBudgetLine;
+    private int activeBudgetLineCount;
 
     @PostConstruct
     public void init() {
+        activeBudgetLineCount = budgetLineService.getActiveBudgetLineCount();
         newBudgetLineCategory = new BudgetLineCategory();
         budgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
         newBudgetLine = new BudgetLine();
@@ -349,5 +351,13 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void setDraftBudgetLines(List<BudgetLine> draftBudgetLines) {
         this.draftBudgetLines = draftBudgetLines;
+    }
+
+    public int getActiveBudgetLineCount() {
+        return budgetLineService.getActiveBudgetLineCount();
+    }
+
+    public void setActiveBudgetLineCount(int activeBudgetLineCount) {
+        this.activeBudgetLineCount = activeBudgetLineCount;
     }
 }

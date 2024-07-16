@@ -128,8 +128,8 @@
                             </p:inputText>
 
                             <p:outputLabel for="amount">Amount: </p:outputLabel>
-                            <p:inputText id="amount" value="#{requisitionBean.newRequisition.amount}" required="true" requiredMessage="No amount given" validatorMessage="Amount should be a number">
-                                <f:convertNumber currencySymbol="Shs " type="currency"/>
+                            <p:inputText id="amount" placeholder="UGX..." value="#{requisitionBean.newRequisition.amount}" required="true" requiredMessage="No amount given" validatorMessage="Amount should be a number">
+                                <f:convertNumber/>
                             </p:inputText>
 
                             <p:outputLabel for="budgetLineName" value="Budget Line: "/>
@@ -167,8 +167,8 @@
                             </p:inputText>
 
                             <p:outputLabel for="editRequisitionAmount" value="Amount"/>
-                            <p:inputText id="editRequisitionAmount" value="#{requisitionBean.selectedRequisition.amount}" required="true" requiredMessage="Please add an amount for your requisition" validatorMessage="Amount should be a number">
-                                <f:convertNumber currencySymbol="Shs " type="currency"/>
+                            <p:inputText id="editRequisitionAmount" placeholder="UGX..." value="#{requisitionBean.selectedRequisition.amount}" required="true" requiredMessage="Please add an amount for your requisition" validatorMessage="Amount should be a number">
+                                <f:convertNumber/>
                             </p:inputText>
 
                             <p:outputLabel for="editRequisitionDescription" value="Description"/>
@@ -210,8 +210,8 @@
                             </p:outputLabel>
 
                             <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: ">
-                                <p:inputText id="accountabilityAmountUsed" value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
-                                    <f:convertNumber currencySymbol="Shs " type="currency"/>
+                                <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
+                                    <f:convertNumber/>
                                 </p:inputText>
                             </p:outputLabel>
 

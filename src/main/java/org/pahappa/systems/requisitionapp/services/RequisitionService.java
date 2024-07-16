@@ -23,4 +23,6 @@ public interface RequisitionService {
     List<Requisition> searchRequisitions(String searchTerm);
 
     List<BudgetLine> searchBudgetLines(String query);
+
+    double getTotalAmountDisbursed();
 }
