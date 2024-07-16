@@ -444,12 +444,10 @@
 
     </style>
     <script type="text/javascript">
-        function start() {
-            PF('statusDialog').show();
-        }
-
-        function stop() {
-            PF('statusDialog').hide();
+        function handleAddUserOnClick(xhr, status, args) {
+            if (!args.validationFailed) {
+                PF('addUserDialog').hide();
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {

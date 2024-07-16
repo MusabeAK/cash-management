@@ -79,8 +79,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        BudgetLineCategory budgetLineCategory = budgetLineCategoryService.getBudgetLineCategoryByName(budgetLineCategoryName);
         try {
+            BudgetLineCategory budgetLineCategory = budgetLineCategoryService.getBudgetLineCategoryByName(budgetLineCategoryName);
             if (budgetLineCategory != null) {
                 budgetLineService.createBudgetLine(newBudgetLine, budgetLineCategory);
                 FacesContext.getCurrentInstance().addMessage(null,

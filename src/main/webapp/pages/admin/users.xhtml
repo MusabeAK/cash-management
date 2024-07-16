@@ -5,6 +5,28 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/template/template.xhtml">
     <ui:define name="content" class="form-container">
+        <script type="text/javascript">
+            function handleAddUserOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('addUserDialog').hide();
+                }
+            }
+            function handleEditUserOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('editUserDialog').hide();
+                }
+            }
+            function addRoleOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('addRoleDialog').hide();
+                }
+            }
+            function editRoleOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('editRoleDialog').hide();
+                }
+            }
+        </script>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
@@ -196,34 +218,43 @@
                         <p:autoUpdate/>
                     </p:messages>
                     <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="newUserName" value="User Name"/>
-                        <p:inputText id="newUserName" value="#{userBean.username}" >
+                        <p:outputLabel for="newUserName" value="Username"/>
+                        <p:inputText id="newUserName" value="#{userBean.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid username" label="Username">
+                            <f:validateRegex pattern="[a-zA-Z0-9_]*"/>
+                            <f:validateLength minimum="3" maximum="16"/>
+                            <f:validateRequired/>
                         </p:inputText>
 
                         <p:outputLabel for="firstName" value="First Name"/>
-                        <p:inputText id="firstName" value="#{userBean.firstName}" >
+                        <p:inputText id="firstName" value="#{userBean.firstName}" required="true" requiredMessage="First name is required" validatorMessage="Invalid first name" label="First name">
+                            <f:validateRegex pattern="[a-zA-Z]*"/>
+                            <f:validateLength minimum="3" maximum="32"/>
+                            <f:validateRequired/>
                         </p:inputText>
 
                         <p:outputLabel for="lastName" value="Last Name"/>
-                        <p:inputText id="lastName" value="#{userBean.lastName}" rendered="true">
+                        <p:inputText id="lastName" value="#{userBean.lastName}" rendered="true" required="true" requiredMessage="Last name is required" validatorMessage="Invalid last name" label="Last Name">
+                            <f:validateRegex pattern="[a-zA-Z]*"/>
+                            <f:validateLength minimum="3" maximum="32"/>
+                            <f:validateRequired/>
                         </p:inputText>
 
                         <h:outputLabel for="email" value="Email:"/>
-                        <h:inputText id="email" value="#{userBean.email}" >
+                        <h:inputText id="email" value="#{userBean.email}" validatorMessage="Invalid email address" >
+                            <f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)"/>
                         </h:inputText>
 
                         <h:outputLabel for="password" value="Password:"/>
                         <h:inputSecret id="password" value="#{userBean.password}"  />
 
-
                         <h:outputLabel for="role" value="Role:"/>
-                        <h:selectOneMenu id="role" value="#{userBean.roleName}"  >
+                        <h:selectOneMenu id="role" value="#{userBean.roleName}" required="true" requiredMessage="Please choose a role">
                             <f:selectItem itemLabel="Select Role" itemValue="" />
                             <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
                         </h:selectOneMenu>
 
                         <h:outputLabel for="gender" value="Gender:"/>
-                        <h:selectOneMenu id="gender" value="#{userBean.gender}"  >
+                        <h:selectOneMenu id="gender" value="#{userBean.gender}" required="true" requiredMessage="Please choose a gender">
                             <f:selectItem itemLabel="Select Gender" itemValue="" />
                             <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
                         </h:selectOneMenu>
@@ -232,7 +263,7 @@
                         <h:inputText id="phone" value="#{userBean.phoneNumber}"  />
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" update=":usersForm:usersTable" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Add" oncomplete="handleAddUserOnClick(xhr, status, args)" update=":usersForm:usersTable" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
                     <p:commandButton value="Cancel" onclick="PF('addUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
                 </p:outputPanel>
             </p:dialog>
@@ -254,19 +285,29 @@
                     </p:messages>
                     <p:panelGrid columns="2" styleClass="custom-grid">
                         <p:outputLabel for="userName" value="User Name"/>
-                        <p:inputText id="userName" value="#{userBean.selectedUser.username}" >
+                        <p:inputText id="userName" value="#{userBean.selectedUser.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid Username">
+                            <f:validateRegex pattern="[a-zA-Z0-9_]*"/>
+                            <f:validateLength minimum="3" maximum="16"/>
+                            <f:validateRequired/>
                         </p:inputText>
 
                         <p:outputLabel for="efirstName" value="First Name"/>
-                        <p:inputText id="efirstName" value="#{userBean.selectedUser.firstName}" >
+                        <p:inputText id="efirstName" value="#{userBean.selectedUser.firstName}" required="true" requiredMessage="First name is required" validatorMessage="Invalid first name">
+                            <f:validateRegex pattern="[a-zA-Z]*"/>
+                            <f:validateLength minimum="3" maximum="32"/>
+                            <f:validateRequired/>
                         </p:inputText>
 
                         <p:outputLabel for="elastName" value="Last Name"/>
-                        <p:inputText id="elastName" value="#{userBean.selectedUser.lastName}" rendered="true">
+                        <p:inputText id="elastName" value="#{userBean.selectedUser.lastName}" rendered="true" required="true" requiredMessage="Last name is required" validatorMessage="Invalid last name">
+                            <f:validateRegex pattern="[a-zA-Z]*"/>
+                            <f:validateLength minimum="3" maximum="32"/>
+                            <f:validateRequired/>
                         </p:inputText>
 
                         <h:outputLabel for="eemail" value="Email:"/>
-                        <h:inputText id="eemail" value="#{userBean.selectedUser.email}" >
+                        <h:inputText id="eemail" value="#{userBean.selectedUser.email}" required="true" requiredMessage="Email address is required" validatorMessage="Invalid email address">
+                            <f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)"/>
                         </h:inputText>
 
                         <h:outputLabel for="epassword" value="Password:"/>
@@ -274,13 +315,13 @@
 
 
                         <h:outputLabel for="erole" value="Role:"/>
-                        <h:selectOneMenu id="erole" value="#{userBean.selectedUser.role.name}"  >
+                        <h:selectOneMenu id="erole" value="#{userBean.selectedUser.role.name}" required="true" requiredMessage="Please choose a role" >
                             <f:selectItem itemLabel="Select Role" itemValue="" />
                             <f:selectItems value="#{userBean.availableRoles}" var="role" itemLabel="#{role}" itemValue="#{role}"/>
                         </h:selectOneMenu>
 
                         <h:outputLabel for="egender" value="Gender:"/>
-                        <h:selectOneMenu id="egender" value="#{userBean.selectedUser.gender}"  >
+                        <h:selectOneMenu id="egender" value="#{userBean.selectedUser.gender}" required="true" requiredMessage="Please choose a gender">
                             <f:selectItem itemLabel="Select Gender" itemValue="" />
                             <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
                         </h:selectOneMenu>
@@ -289,8 +330,8 @@
                         <h:inputText id="ephone" value="#{userBean.selectedUser.phoneNumber}"  />
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" update=":usersForm:usersTable" actionListener="#{userBean.updateUser}" icon="pi pi-check" styleClass="add-button"/>
-                    <p:commandButton value="Cancel" onclick="PF('addUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
+                    <p:commandButton value="Update" oncomplete="handleEditUserOnClick(xhr, status, args)" update=":usersForm:usersTable" actionListener="#{userBean.updateUser}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Cancel" onclick="PF('editUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
                 </p:outputPanel>
             </p:dialog>
         </h:form>
@@ -317,14 +358,14 @@
 
                         <h:outputLabel for="permissions" value="Permissions:"/>
 
-                        <p:selectManyCheckbox id="permissions" value="#{roleBean.selectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
+                        <p:selectManyCheckbox id="permissions" value="#{roleBean.selectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;" required="true" requiredMessage="Please select at least one permission">
                             <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
                         </p:selectManyCheckbox>
 
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" onclick="PF('addRoleDialog').hide();" update=":usersForm:rolesTable" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Add" oncomplete="addRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
                     <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" />
                 </p:outputPanel>
             </p:dialog>
@@ -350,12 +391,12 @@
                         <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
 
                         <h:outputLabel for="epermissions" value="Permissions:"/>
-                        <p:selectManyCheckbox id="epermissions" value="#{roleBean.updateSelectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;">
+                        <p:selectManyCheckbox id="epermissions" value="#{roleBean.updateSelectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;" required="true" requiredMessage="Please select at least one permission">
                             <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
                         </p:selectManyCheckbox>
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" update=":usersForm:rolesTable @form" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="PF('editRoleDialog').hide();"/>
+                    <p:commandButton value="Update" update=":usersForm:rolesTable @form" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="editRoleOnClick(xhr, status, args)"/>
                     <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" immediate="true" />
                 </p:outputPanel>
             </p:dialog>

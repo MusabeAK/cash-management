@@ -9,7 +9,9 @@
         <div class="centered-form">
             <h:form class="form-container">
                 <h1>Login</h1>
-                <h:messages style="color: red;"/>
+                <p:messages style="color: red;" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
                 <h:panelGrid columns="1">
                     <h:outputLabel for="username" value="Username" styleClass="form-label"/>
                     <h:inputText id="username" value="#{loginBean.identifier}" required="true" styleClass="form-input"/>

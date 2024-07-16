@@ -5,6 +5,15 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/template/template.xhtml">
     <ui:define name="content" class="form-container">
+        <script type="text/javascript">
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+        </script>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
