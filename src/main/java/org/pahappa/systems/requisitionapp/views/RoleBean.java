@@ -46,11 +46,13 @@ public class RoleBean implements Serializable {
 
     private final RoleService roleService;
     private final UserService userService;
+    private final UserBean userBean;
 
     @Autowired
-    public RoleBean(RoleService roleService, UserService userService) {
+    public RoleBean(RoleService roleService, UserService userService, UserBean userBean) {
         this.roleService = roleService;
         this.userService = userService;
+        this.userBean = userBean;
     }
 
     public void createRole(){
@@ -61,6 +63,8 @@ public class RoleBean implements Serializable {
             roleService.createRole(role);
 
             roles = roleService.getAllRoles();
+            userBean.init();
+
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,"Role creation success", null));
         }catch (Exception e){
@@ -82,6 +86,7 @@ public class RoleBean implements Serializable {
             selectedRole.setPermissions(convertToPermissionSet(updateSelectedPermissions));
             roleService.updateRole(selectedRole);
             roles = roleService.getAllRoles();
+            userBean.init();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Role Update success", null));
         } catch (Exception e) {
@@ -102,6 +107,7 @@ public class RoleBean implements Serializable {
             }
             roleService.deleteRole(role);
             roles = roleService.getAllRoles();
+            userBean.init();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Role deleted", null));
         } catch (Exception e){
@@ -119,6 +125,7 @@ public class RoleBean implements Serializable {
         filteredRoles = roleService.getAllRoles();
 
     }
+
 
 
     public String getRoleName() {

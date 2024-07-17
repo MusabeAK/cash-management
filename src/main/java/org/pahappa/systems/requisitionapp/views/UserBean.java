@@ -41,7 +41,10 @@ public class UserBean implements Serializable {
     private String searchQuery;
     private Permission selectedPermission;
     private List<String> availableRoles;
+    private String selectedRole;
     private User selectedUser;
+    private String newRole;
+    private Gender selectedGender;
 
     @PostConstruct
     public void init() {
@@ -154,6 +157,7 @@ public class UserBean implements Serializable {
             ServiceUtils.testStringInput(selectedUser.getLastName(), "Last Name");
             ServiceUtils.testEmailInput(selectedUser.getEmail());
             ServiceUtils.testPhoneNumberInput(selectedUser.getPhoneNumber());
+            selectedUser.setRole(roleService.getRoleByName(newRole));
             userService.updateUser(selectedUser);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "User Update Success", null));
@@ -192,6 +196,40 @@ public class UserBean implements Serializable {
                 for(Permission permission : Permission.values())
                     if(selectedPermission.equals(permission)){
                         filteredUsers = userService.filterUsersByPermission(permission);
+                    }
+            }
+        }catch (Exception e){
+            System.out.println("Error In User Bean: "+e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void filterUsersByRole(){
+        try {
+            if (selectedRole == null || selectedRole.isEmpty()) {
+                filteredUsers = users;
+            } else {
+                for(Role role : roleService.getAllRoles())
+                    if(selectedRole.equals(role.getName())){
+                        filteredUsers = userService.filterUsersByRole(role);
+                    }
+            }
+        }catch (Exception e){
+            System.out.println("Error In User Bean: "+e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void filterUsersByGender(){
+        try {
+            if (selectedGender == null) {
+                filteredUsers = users;
+            } else {
+                for(Gender gender : Gender.values())
+                    if(selectedGender.equals(gender)){
+                        filteredUsers = userService.filterUsersByGender(gender);
                     }
             }
         }catch (Exception e){
@@ -252,9 +290,7 @@ public class UserBean implements Serializable {
 
 
     public List<String> getAvailableRoles() {
-        return roleService.getAllRoles().stream()
-                .map(Role::getName)
-                .collect(Collectors.toList());
+        return availableRoles;
     }
 
     public void setAvailableRoles(List<String> availableRoles) {
@@ -299,5 +335,29 @@ public class UserBean implements Serializable {
 
     public void setSelectedUser(User selectedUser) {
         this.selectedUser = selectedUser;
+    }
+
+    public String getSelectedRole() {
+        return selectedRole;
+    }
+
+    public void setSelectedRole(String selectedRole) {
+        this.selectedRole = selectedRole;
+    }
+
+    public String  getNewRole() {
+        return newRole;
+    }
+
+    public void setNewRole(String newRole) {
+        this.newRole = newRole;
+    }
+
+    public Gender getSelectedGender() {
+        return selectedGender;
+    }
+
+    public void setSelectedGender(Gender selectedGender) {
+        this.selectedGender = selectedGender;
     }
 }

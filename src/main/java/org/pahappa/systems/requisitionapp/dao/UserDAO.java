@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.Role;
+import org.pahappa.systems.requisitionapp.models.utils.Gender;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -92,15 +93,6 @@ public class UserDAO {
                 .setParameter("admin", "Admin")
                 .getResultList();
     }
-/*
-    public List<User> filterUsersByPermission(Permission permission) {
-        String query = "FROM User WHERE role = :permission";
-        return sessionFactory.getCurrentSession()
-                .createQuery(query, User.class)
-                .setParameter("permission", permission)
-                .getResultList();
-
-    }*/
 
     public List<User> filterUsersByPermission(Permission permission) {
         try {
@@ -114,6 +106,23 @@ public class UserDAO {
             e.printStackTrace();
             return Collections.emptyList();
         }
+    }
+
+
+    public List<User> filterUsersByRole(Role role) {
+        String hql = "FROM User WHERE role = :role";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, User.class)
+                .setParameter("role", role)
+                .list();
+    }
+
+    public List<User> filterUsersByGender(Gender gender) {
+        String hql = "FROM User WHERE gender = :gender";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, User.class)
+                .setParameter("gender", gender)
+                .list();
     }
 
 }

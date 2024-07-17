@@ -6,7 +6,9 @@ import org.pahappa.systems.requisitionapp.exceptions.NullUserException;
 import org.pahappa.systems.requisitionapp.exceptions.UserAlreadyExistsException;
 import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.Gender;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
+import org.pahappa.systems.requisitionapp.models.Role;
 import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,6 +79,12 @@ public class UserServiceImpl implements UserService {
         if (userDAO.getUserByUsername(user.getUsername()) != null) {
             throw new UserAlreadyExistsException("User with username " + user.getUsername() + " already exists.");
         }
+
+        for (User usr : userDAO.getAllUsers()) {
+            if(usr.getEmail().equals(user.getEmail())){
+                throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exists.");
+            }
+        }
         userDAO.save(user);
     }
 
@@ -103,7 +111,7 @@ public class UserServiceImpl implements UserService {
         try {
 
             User existingUserWithUsername = userDAO.getUserByUsername(identifier);
-            User existingUserWithEmail = userDAO.getUserByEmail("ahumuzaariyo@gmail.com");
+            User existingUserWithEmail = userDAO.getUserByEmail(identifier);
             String enteredPasswordEncoded = Base64.getEncoder().encodeToString(password.getBytes());
             if (existingUserWithUsername != null) {
                 String storedPassword = existingUserWithUsername.getPassword();
@@ -133,6 +141,38 @@ public class UserServiceImpl implements UserService {
         try {
             User admin = getUserByUsername("Admin");
             List<User> filteredUsers = userDAO.filterUsersByPermission(permission);
+            if(admin != null && !filteredUsers.isEmpty()) {
+                filteredUsers.remove(admin);
+            }
+            return filteredUsers;
+        }catch (Exception e){
+            System.out.println("Error in Service: "+e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+
+    }
+
+    public List<User> filterUsersByRole(Role role){
+        try {
+            User admin = getUserByUsername("Admin");
+            List<User> filteredUsers = userDAO.filterUsersByRole(role);
+            if(admin != null && !filteredUsers.isEmpty()) {
+                filteredUsers.remove(admin);
+            }
+            return filteredUsers;
+        }catch (Exception e){
+            System.out.println("Error in Service: "+e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+
+    }
+
+    public List<User> filterUsersByGender(Gender gender){
+        try {
+            User admin = getUserByUsername("Admin");
+            List<User> filteredUsers = userDAO.filterUsersByGender(gender);
             if(admin != null && !filteredUsers.isEmpty()) {
                 filteredUsers.remove(admin);
             }
