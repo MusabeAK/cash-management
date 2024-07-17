@@ -11,6 +11,8 @@ public interface UserService {
 
     List<User> getAllUsers();
 
+    boolean adminUserExists();
+
     User getUserById(Long id) throws UserDoesNotExistException;
 
     User getUserByUsername(String username) throws UserDoesNotExistException;
@@ -20,6 +22,8 @@ public interface UserService {
     void updateUser(User user);
 
     void deleteUser(User user);
+
+    void deleteAll();
 
     User loginUser(String username, String password) throws UserDoesNotExistException;
 

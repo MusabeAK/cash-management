@@ -2,9 +2,9 @@ package org.pahappa.systems.requisitionapp.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -66,6 +66,15 @@ public class BudgetLineDAO {
             e.printStackTrace();
         }
         return budgetLine;
+    }
+
+    public List<BudgetLine> searchBudgetLines(String searchTerm) {
+        String query = "FROM BudgetLine WHERE comment LIKE :searchTerm " +
+                "OR title LIKE :searchTerm ";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, BudgetLine.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
     }
 
 }

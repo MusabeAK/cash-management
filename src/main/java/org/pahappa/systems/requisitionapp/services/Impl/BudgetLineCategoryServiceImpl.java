@@ -128,4 +128,8 @@ public class BudgetLineCategoryServiceImpl implements BudgetLineCategoryService 
                 .collect(Collectors.toList());
     }
 
+    public List<BudgetLineCategory> searchBudgetLineCategories(String searchTerm) {
+        return budgetLineCategoryDAO.searchBudgetLineCategories(searchTerm);
+    }
+
 }

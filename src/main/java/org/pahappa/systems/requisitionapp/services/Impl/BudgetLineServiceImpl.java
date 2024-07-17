@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -150,6 +151,11 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         }
         return budgetLine;
     }
+
+    public List<BudgetLine> searchBudgetLines(String searchTerm) {
+        return budgetLineDAO.searchBudgetLines(searchTerm);
+    }
+
 
     @Override
     @Transactional

@@ -1,5 +1,6 @@
 package org.pahappa.systems.requisitionapp.views;
 
+import com.sun.faces.application.NavigationHandlerImpl;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
@@ -44,6 +45,8 @@ public class RequisitionBean implements Serializable {
     private List<Requisition> approvedRequisitions;
     private Requisition selectedRequisition;
     private String comment;
+    private String searchQuery;
+    private List<Requisition> filteredRequisitions;
     private double totalAmountDisbursed;
 
     @PostConstruct
@@ -51,6 +54,7 @@ public class RequisitionBean implements Serializable {
         totalAmountDisbursed = requisitionService.getTotalAmountDisbursed();
         newRequisition = new Requisition();
         requisitions = requisitionService.getAllRequisitions();
+        filteredRequisitions = requisitionService.getAllRequisitions();
         userRequisitions = new ArrayList<>();
         approvedRequisitions = new ArrayList<>();
         reviewedRequisitions = new ArrayList<>();
@@ -373,6 +377,16 @@ public class RequisitionBean implements Serializable {
         return returnedBudgetLines;
     }
 
+    public void searchRequisitions(){
+        if (!(searchQuery == null || searchQuery.isEmpty())) {
+            filteredRequisitions = requisitionService.searchRequisitions(searchQuery);
+            return;
+        }
+        filteredRequisitions = requisitionService.getAllRequisitions();
+    }
+
+
+
     public void loadUserRequisitions(){
         try {
             userRequisitions = getUserRequisitions();
@@ -505,6 +519,22 @@ public class RequisitionBean implements Serializable {
 
     public void setApprovedRequisitions(List<Requisition> approvedRequisitions) {
         this.approvedRequisitions = approvedRequisitions;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public List<Requisition> getFilteredRequisitions() {
+        return filteredRequisitions;
+    }
+
+    public void setFilteredRequisitions(List<Requisition> filteredRequisitions) {
+        this.filteredRequisitions = filteredRequisitions;
     }
 
     public double getTotalAmountDisbursed() {

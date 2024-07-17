@@ -55,8 +55,8 @@
                     <h3>All Requisitions</h3>
                     <div class="search-and-filter">
                         <div class="search">
-                            <p:inputText id="searchBar2" value="#" styleClass="search-bar" placeholder="Search...">
-                                <p:ajax event="keyup"/>
+                            <p:inputText id="searchBar2" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
+                                <p:ajax event="keyup" update=":allRequisitions:allRequisitionsTable" listener="#{requisitionBean.searchRequisitions()}"/>
                             </p:inputText>
                         </div>
                     </div>

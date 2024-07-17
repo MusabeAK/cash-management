@@ -19,5 +19,7 @@ public interface BudgetLineService {
 
     BudgetLine getBudgetLineByTitle(String title);
 
+    List<BudgetLine> searchBudgetLines(String searchTerm);
+
     int getActiveBudgetLineCount();
 }

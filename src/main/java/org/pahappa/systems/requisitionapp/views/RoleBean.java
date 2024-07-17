@@ -2,8 +2,10 @@ package org.pahappa.systems.requisitionapp.views;
 
 import org.pahappa.systems.requisitionapp.models.Role;
 
+import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.RoleService;
+import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +32,8 @@ public class RoleBean implements Serializable {
     private List<Role> roles;
     private Role selectedRole;
     private Set<String> updateSelectedPermissions;
+    private String searchQuery;
+    private List<Role> filteredRoles;
 
     @PostConstruct
     public void init() {
@@ -37,13 +41,16 @@ public class RoleBean implements Serializable {
                 .map(Enum::name)
                 .collect(Collectors.toSet());
         roles = roleService.getAllRoles();
+        filteredRoles = roleService.getAllRoles();
     }
 
     private final RoleService roleService;
+    private final UserService userService;
 
     @Autowired
-    public RoleBean(RoleService roleService) {
+    public RoleBean(RoleService roleService, UserService userService) {
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     public void createRole(){
@@ -86,12 +93,30 @@ public class RoleBean implements Serializable {
 
     public void deleteRole(Role role){
         try {
+            Role defaultRole = roleService.getRoleByName("DEFAULT");
+            for(User user : roleService.findUsersByRole(role)){
+//                System.out.println(user);
+                user.setRole(defaultRole);
+                userService.updateUser(user);
+
+            }
             roleService.deleteRole(role);
             roles = roleService.getAllRoles();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Role deleted", null));
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting role" + e.getMessage(), null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting role: " + e.getMessage(), null));
         }
+
+    }
+
+    public void searchRoles() {
+        if (!(searchQuery == null || searchQuery.isEmpty())) {
+            filteredRoles = roleService.searchRoles(searchQuery);
+            return;
+        }
+        filteredRoles = roleService.getAllRoles();
 
     }
 
@@ -153,5 +178,22 @@ public class RoleBean implements Serializable {
 
     public void setUpdateSelectedPermissions(Set<String> updateSelectedPermissions) {
         this.updateSelectedPermissions = updateSelectedPermissions;
+    }
+
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public List<Role> getFilteredRoles() {
+        return filteredRoles;
+    }
+
+    public void setFilteredRoles(List<Role> filteredRoles) {
+        this.filteredRoles = filteredRoles;
     }
 }

@@ -9,12 +9,17 @@ import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 
 @Component
+@Service
+@Transactional
 public class Initializer {
 
     private final UserService userService;
@@ -29,28 +34,34 @@ public class Initializer {
     @PostConstruct
     public void init() {
         createAdminUser();
+        /*
         createEmployeeUser();
         createOperationsUser();
         createCEOUser();
         createFinanceUser();
+
+         */
     }
 
     private void createAdminUser(){
-        List<User> users = userService.getAllUsers();
-        for (User user : users) {
-            if(user.getUsername().equals("Admin")){
-                return;
-            }
+        if(userService.adminUserExists()){
+            return;
         }
         try {
+            Role deafaultRole = new Role();
+            deafaultRole.setName("DEFAULT");
+            deafaultRole.setPermissions(Set.of(Permission.VIEW_SETTINGS));
+            roleService.createRole(deafaultRole);
+
             Role role = new Role();
-            role.setName("ROLE_ADMIN");
+            role.setName("ADMIN");
             role.setPermissions(Set.of(Permission.values()));
             roleService.createRole(role);
+            String password = Base64.getEncoder().encodeToString("@dmin123".getBytes());
 
             User user = new User();
             user.setUsername("Admin");
-            user.setPassword("@dmin123");
+            user.setPassword(password);
             user.setEmail("ahumuzaariyo@gmail.com");
             user.setFirstName("Admin");
             user.setLastName("Admin");
@@ -62,7 +73,7 @@ public class Initializer {
             e.printStackTrace();
         }
     }
-
+/*
     private void createEmployeeUser(){
         List<User> users = userService.getAllUsers();
         for (User user : users) {
@@ -174,5 +185,5 @@ public class Initializer {
             e.printStackTrace();
         }
     }
-
+*/
 }
