@@ -1,6 +1,5 @@
 package org.pahappa.systems.requisitionapp.views;
 
-import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
 import org.pahappa.systems.requisitionapp.models.Role;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Gender;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 public class UserBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-
     private String username;
     private String password;
     private String firstName;
@@ -41,7 +39,7 @@ public class UserBean implements Serializable {
     private List<User> users;
     private List<User> filteredUsers;
     private String searchQuery;
-    private Set<Permission> selectedPermissions;
+    private Permission selectedPermission;
     private List<String> availableRoles;
     private User selectedUser;
 
@@ -117,8 +115,8 @@ public class UserBean implements Serializable {
             User user = new User();
             String name = ServiceUtils.testUserNameInput(username);
             String pass = ServiceUtils.testPasswordInput(password);
-            String first = ServiceUtils.testUserNameInput(firstName);
-            String last = ServiceUtils.testUserNameInput(lastName);
+            String first = ServiceUtils.testStringInput(firstName, "First Name");
+            String last = ServiceUtils.testStringInput(lastName, "Last Name");
             String mail = ServiceUtils.testEmailInput(email);
             String phone = ServiceUtils.testPhoneNumberInput(phoneNumber);
 
@@ -130,8 +128,6 @@ public class UserBean implements Serializable {
             user.setGender(gender);
             user.setRole(role);
             user.setPhoneNumber(phone);
-
-            username=firstName=lastName=password=email=phoneNumber="";
 
             userService.addUser(user);
             filteredUsers = userService.getAllUsers();
@@ -146,14 +142,24 @@ public class UserBean implements Serializable {
         }
     }
 
+    public void resetUserForm(){
+        this.username=this.firstName=this.lastName=this.password=this.email=this.phoneNumber="";
+    }
+
     public void updateUser(){
         try{
+            ServiceUtils.testUserNameInput(selectedUser.getUsername());
+            ServiceUtils.testPasswordInput(selectedUser.getPassword());
+            ServiceUtils.testStringInput(selectedUser.getFirstName(), "First Name");
+            ServiceUtils.testStringInput(selectedUser.getLastName(), "Last Name");
+            ServiceUtils.testEmailInput(selectedUser.getEmail());
+            ServiceUtils.testPhoneNumberInput(selectedUser.getPhoneNumber());
             userService.updateUser(selectedUser);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "User Update Success", null));
         }catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating User", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating User: "+e.getMessage(), null));
             System.out.println("Error Updating User:  "+e.getMessage());
         }
 
@@ -179,15 +185,20 @@ public class UserBean implements Serializable {
     }
 
     public void filterUsersByPermission(){
-        if (selectedPermissions == null || selectedPermissions.isEmpty()) {
-            filteredUsers = users;
-        } else {
-            for(Permission permission : Permission.values())
-                if(selectedPermissions.contains(permission)){
-                    filteredUsers = userService.filterUsersByPermission(permission);
-                }
-
+        try {
+            if (selectedPermission == null) {
+                filteredUsers = users;
+            } else {
+                for(Permission permission : Permission.values())
+                    if(selectedPermission.equals(permission)){
+                        filteredUsers = userService.filterUsersByPermission(permission);
+                    }
+            }
+        }catch (Exception e){
+            System.out.println("Error In User Bean: "+e.getMessage());
+            e.printStackTrace();
         }
+
     }
 
     public List<User> getUsers() {
@@ -231,21 +242,14 @@ public class UserBean implements Serializable {
         this.availablePermissions = availablePermissions;
     }
 
-    public Set<Permission> getSelectedPermission() {
-        return selectedPermissions;
+    public Permission getSelectedPermission() {
+        return selectedPermission;
     }
 
-    public void setSelectedPermission(Set<Permission> selectedPermissions) {
-        this.selectedPermissions = selectedPermissions;
+    public void setSelectedPermission(Permission selectedPermission) {
+        this.selectedPermission = selectedPermission;
     }
 
-    public Set<Permission> getSelectedPermissions() {
-        return selectedPermissions;
-    }
-
-    public void setSelectedPermissions(Set<Permission> selectedPermissions) {
-        this.selectedPermissions = selectedPermissions;
-    }
 
     public List<String> getAvailableRoles() {
         return roleService.getAllRoles().stream()

@@ -103,6 +103,7 @@ public class ServiceUtils {
                         || input.matches("^[a-z]+$")
                         || input.matches("^[0-9]+$"))) {
                     return Base64.getEncoder().encodeToString(input.getBytes());
+
                 } else throw new IllegalArgumentException("Password must contain at least 1 (Uppercase, Lowercase letter and Number)");
             }
             else throw new IllegalArgumentException("Password must contain at least 3 Characters");

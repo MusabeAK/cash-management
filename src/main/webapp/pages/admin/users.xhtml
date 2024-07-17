@@ -70,11 +70,11 @@
                         </div>
                     </div>
                 </div>
-
+                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
                 <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
-                    <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
-                        <p:autoUpdate/>
-                    </p:messages>
+
                     <div class="search-container">
                         <h3>All Roles</h3>
                         <div class="search-and-filter">
@@ -90,15 +90,10 @@
                         <h:outputText value="#{roleBean.roles.size()} Role(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-user-plus" update=":usersForm:rolesTable :addRoleForm:addRolePanel" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
-
-                            <p:commandButton icon="pi pi-trash" update=":usersForm:rolesTable" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" value="Delete All" action="#" styleClass="delete-all-button">
-                                <p:confirm header="Confirm Deletion" message="Do you want to delete all Roles?"
-                                           icon="pi pi-info-circle"/>
-                            </p:commandButton>
                         </div>
                     </div>
 
-                    <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}" value="#{roleBean.roles}" var="role" paginator="true" rows="5" paginatorPosition="bottom">
+                    <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}" value="#{roleBean.roles}" var="role" paginator="true" rows="5" paginatorPosition="bottom" styleClass="customDataTable">
                         <p:column headerText="Role Name">
                             <h:outputText value="#{role.name}"/>
                         </p:column>
@@ -123,6 +118,9 @@
                 <div style="margin-bottom: 20px">
 
                 </div>
+                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
 
                 <h:panelGroup id="usersTable" rendered="#{userPermissionBean.hasPermission('VIEW_USERS')}">
 
@@ -206,6 +204,7 @@
         </div>
 
         <h:form id="addUserForm">
+
             <p:dialog header="Add New User."
                       widgetVar="addUserDialog"
                       modal="true"
@@ -214,7 +213,8 @@
                       hideEffect="fade"
                       closable="true"
                       width="600px"
-                      visible="#{facesContext.validationFailed}">
+                      visible="#{facesContext.validationFailed}"
+                      >
                 <p:outputPanel id="addUserPanel" rendered="true">
                     <p:messages id="addUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                         <p:autoUpdate/>
@@ -225,7 +225,7 @@
                             <div style="height: 8px">
 
                             </div>
-                            <p:inputText id="newUserName" value="#{userBean.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid username" label="Username">
+                            <p:inputText id="newUserName" value="#{userBean.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid username" label="Username" autocomplete="off">
                                 <f:validateRegex pattern="[a-zA-Z0-9_]*"/>
                                 <f:validateLength minimum="3" maximum="16"/>
                                 <f:validateRequired/>
@@ -307,6 +307,7 @@
         </h:form>
 
         <h:form id="editUserForm">
+
             <p:dialog header="Update #{userBean.selectedUser.getUsername()}"
                       widgetVar="editUserDialog"
                       modal="true"
@@ -316,7 +317,8 @@
                       height="410px"
                       closable="true"
                       width="600px"
-                      visible="#{facesContext.validationFailed}">
+                      visible="#{facesContext.validationFailed}"
+                      >
                 <p:outputPanel id="editUserPanel" rendered="true">
                     <p:messages id="editUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                         <p:autoUpdate/>
@@ -450,6 +452,7 @@
         </h:form>
 
         <h:form id="updateRoleForm">
+
             <p:dialog header="Update Role"
                       widgetVar="editRoleDialog"
                       modal="true"
@@ -490,5 +493,6 @@
         </h:form>
 
     </ui:define>
+
 
 </ui:composition>

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -102,11 +103,17 @@ public class UserDAO {
     }*/
 
     public List<User> filterUsersByPermission(Permission permission) {
-        String hql = "SELECT u FROM User u JOIN u.role r JOIN r.permissions p WHERE p = :permission";
+        try {
+            String hql = "SELECT u FROM User u JOIN u.role r JOIN r.permissions p WHERE p = :permission";
 
-        return sessionFactory.getCurrentSession().createQuery(hql, User.class)
-                .setParameter("permission", permission)
-                .getResultList();
+            return sessionFactory.getCurrentSession().createQuery(hql, User.class)
+                    .setParameter("permission", permission)
+                    .getResultList();
+        }catch (Exception e){
+            System.out.println("From the Bean"+e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
 }

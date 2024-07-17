@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
             User existingUserWithEmail = userDAO.getUserByEmail("ahumuzaariyo@gmail.com");
             String enteredPasswordEncoded = Base64.getEncoder().encodeToString(password.getBytes());
             if (existingUserWithUsername != null) {
-                String storedPassword = existingUserWithEmail.getPassword();
+                String storedPassword = existingUserWithUsername.getPassword();
                 if (storedPassword.equals(enteredPasswordEncoded)) {
                     return existingUserWithUsername;
                 }
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
             }
         }catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: "+e.getMessage(), null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Something went wrong", null));
             System.out.println("Error: "+e.getMessage());
         }
         return null;
@@ -130,7 +130,19 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> filterUsersByPermission(Permission permission){
-        return userDAO.filterUsersByPermission(permission);
+        try {
+            User admin = getUserByUsername("Admin");
+            List<User> filteredUsers = userDAO.filterUsersByPermission(permission);
+            if(admin != null && !filteredUsers.isEmpty()) {
+                filteredUsers.remove(admin);
+            }
+            return filteredUsers;
+        }catch (Exception e){
+            System.out.println("Error in Service: "+e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+
     }
 
 }

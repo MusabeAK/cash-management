@@ -63,7 +63,7 @@ public class LoginBean {
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Something went wrong", null));
             e.printStackTrace();
         }
 
