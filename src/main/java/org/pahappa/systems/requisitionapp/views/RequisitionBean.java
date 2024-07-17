@@ -6,8 +6,10 @@ import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
+import org.pahappa.systems.requisitionapp.models.utils.StatusPipeline;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
+import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -87,7 +89,7 @@ public class RequisitionBean implements Serializable {
                       List<Requisition> userRequisitions = currentUser.getRequisitions();
                       if (!currentUserRequisitions.isEmpty() || !userRequisitions.isEmpty()) {
                           for (Requisition requisition : currentUserRequisitions) {
-                              if (requisition.getAccountability() == null) {
+                              if (requisition.getAccountability() == null && !requisition.getStatus().equals(RequisitionStatus.REJECTED)) {
                                   FacesContext.getCurrentInstance().addMessage(null,
                                           new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
                                   return;
@@ -511,5 +513,16 @@ public class RequisitionBean implements Serializable {
 
     public void setTotalAmountDisbursed(double totalAmountDisbursed) {
         this.totalAmountDisbursed = totalAmountDisbursed;
+    }
+
+    public void rowSelect(SelectEvent event) {
+        selectedRequisition = (Requisition) event.getObject();
+    }
+
+    public int getOverallProgress() {
+        if (selectedRequisition != null) {
+            return StatusPipeline.getOverallProgress(selectedRequisition.getStatus());
+        }
+        return 0;
     }
 }
