@@ -351,8 +351,8 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" styleClass="custom-button1" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
-                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times" update=":updateBudgetLineForm:editBudgetPanel"/>
+                        <p:commandButton value="Add" styleClass="custom-button1" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetLinePanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times" update=":updateBudgetLineForm:editBudgetLinePanel"/>
                     </p:outputPanel>
                 </p:dialog>
             </h:form>

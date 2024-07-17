@@ -144,7 +144,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="10 Requisition(s)" styleClass="total-users"/>
+                        <h:outputText value="#{requisitionBean.userRequisitions.size()} Requistion(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :createRequisition:createRequisitionPanel"/>
 
@@ -187,7 +187,7 @@
                             <h:outputText value="#{requisition.comment}"/>
                         </p:column>
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-pencil"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
+                            <p:commandButton icon="pi pi-upload"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
 
                             <p:commandButton icon="pi pi-trash" rendered="#{requisition.status == 'DRAFT' or requisition.status == 'REJECTED'}" action="#{requisitionBean.deleteRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" title="Delete" styleClass="delete-button" style="color:red" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this requisition?"
@@ -282,8 +282,8 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":updateRequisition:updateRequistionTable :userRequisitions:userRequisitionsTable" />
-                        <p:commandButton value="Update" styleClass="custom-button3" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-pencil" update=":updateRequisition:updateRequistionTable :userRequisitions:userRequisitionsTable"/>
+                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable" />
+                        <p:commandButton value="Update" styleClass="custom-button3" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-pencil" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable"/>
                         <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
