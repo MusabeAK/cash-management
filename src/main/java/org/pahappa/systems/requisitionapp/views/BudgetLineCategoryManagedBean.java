@@ -18,6 +18,7 @@ import javax.faces.view.ViewScoped;
 import javax.persistence.NoResultException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -40,13 +41,16 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     private List<BudgetLine> approvedBudgetLines;
     private List<BudgetLine> draftBudgetLines;
     private BudgetLine selectedBudgetLine;
+    private int activeBudgetLineCount;
 
     @PostConstruct
     public void init() {
+        activeBudgetLineCount = budgetLineService.getActiveBudgetLineCount();
         newBudgetLineCategory = new BudgetLineCategory();
         budgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
         newBudgetLine = new BudgetLine();
         budgetLines = budgetLineService.getAllBudgetLines();
+        draftBudgetLines = new ArrayList<>();
         approvedBudgetLines = new ArrayList<>();
         for (BudgetLine budgetLine : budgetLines) {
             if (budgetLine.getStatus() == BudgetLineStatus.APPROVED) {
@@ -168,14 +172,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             return;
         }
         try {
-            List<Requisition> budgetLineRequisitions = budgetLine.getRequisitions();
-            for (Requisition requisition : budgetLineRequisitions){
-                if (requisition.getStatus().equals(RequisitionStatus.DISBURSED) && requisition.getAccountability() == null){
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
-                    return;
-                }
-            }
+//            List<Requisition> budgetLineRequisitions = budgetLine.getRequisitions();
+//            for (Requisition requisition : budgetLineRequisitions){
+//                if (requisition.getStatus().equals(RequisitionStatus.DISBURSED) && requisition.getAccountability() == null){
+//                    FacesContext.getCurrentInstance().addMessage(null,
+//                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
+//                    return;
+//                }
+//            }
             budgetLineService.deleteBudgetLine(budgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
@@ -247,10 +251,10 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         }
         try {
             List<BudgetLine> budgetLineCategoryBudgetLines = category.getBudgetLines();
-            for (BudgetLine budgetLineCategoryBudgetLine : budgetLineCategoryBudgetLines){
-                if (budgetLineCategoryBudgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
+            for (BudgetLine budgetLine : budgetLineCategoryBudgetLines){
+                if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
                     FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line category with an active budget line.", null));
                     return;
                 }
             }
@@ -303,7 +307,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLine> getBudgetLines() {
-        return budgetLineService.getAllBudgetLines();
+        List<BudgetLine> allBudgetLines = budgetLineService.getAllBudgetLines();
+        Date currentDate = new Date();
+        for (BudgetLine budgetLine : allBudgetLines){
+            if (currentDate.after(budgetLine.getEndDate())){
+                budgetLine.setStatus(BudgetLineStatus.EXPIRED);
+            }
+        }
+        return allBudgetLines;
     }
 
     public void setBudgetLines(List<BudgetLine> budgetLines) {
@@ -340,5 +351,13 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void setDraftBudgetLines(List<BudgetLine> draftBudgetLines) {
         this.draftBudgetLines = draftBudgetLines;
+    }
+
+    public int getActiveBudgetLineCount() {
+        return budgetLineService.getActiveBudgetLineCount();
+    }
+
+    public void setActiveBudgetLineCount(int activeBudgetLineCount) {
+        this.activeBudgetLineCount = activeBudgetLineCount;
     }
 }

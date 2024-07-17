@@ -99,4 +99,15 @@ public class RequisitionServiceImpl implements RequisitionService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public double getTotalAmountDisbursed(){
+        List<Requisition> requisitions = requisitionDAO.getAllRequisitions();
+        List<Requisition> disbursedRequisitions = new ArrayList<>();
+        for (Requisition requisition : requisitions) {
+            if (requisition.getStatus() == RequisitionStatus.DISBURSED) {
+                disbursedRequisitions.add(requisition);
+            }
+        }
+        return disbursedRequisitions.stream().mapToDouble(Requisition::getAmount).sum();
+    }
 }

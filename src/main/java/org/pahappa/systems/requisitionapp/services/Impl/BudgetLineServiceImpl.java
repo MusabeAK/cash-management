@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -155,4 +156,16 @@ public class BudgetLineServiceImpl implements BudgetLineService {
     }
 
 
+    @Override
+    @Transactional
+    public int getActiveBudgetLineCount(){
+        List<BudgetLine> budgetLines = budgetLineDAO.getAllBudgetLines();
+        List<BudgetLine> activeBudgetLines = new ArrayList<>();
+        for (BudgetLine budgetLine : budgetLines) {
+            if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
+                activeBudgetLines.add(budgetLine);
+            }
+        }
+        return activeBudgetLines.size();
+    }
 }

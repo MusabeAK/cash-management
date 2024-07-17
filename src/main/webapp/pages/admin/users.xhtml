@@ -7,6 +7,30 @@
     <ui:define name="content" class="form-container">
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
+        <script type="text/javascript">
+            function handleAddUserOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('addUserDialog').hide();
+                }
+            }
+            function handleEditUserOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('editUserDialog').hide();
+                }
+            }
+            function addRoleOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('addRoleDialog').hide();
+                }
+            }
+            function editRoleOnClick(xhr, status, args) {
+                if (!args.validationFailed) {
+                    PF('editRoleDialog').hide();
+                }
+            }
+        </script>
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="Users" styleClass="top-bar-title" />
@@ -26,8 +50,8 @@
                     <div class="card">
                         <i class="pi pi-key card-icon"/>
                         <div class="card-content">
-                            <h:outputText value="Total Amount Disbursed" styleClass="card-title"/>
-                            <h:outputText value="20" styleClass="card-number"/>
+                            <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
+                            <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
                         </div>
                     </div>
                     <div class="card">
@@ -42,11 +66,10 @@
                         <i class="pi pi-users card-icon"/>
                         <div class="card-content">
                             <h:outputText value="Active Budget Lines" styleClass="card-title"/>
-                            <h:outputText value="#{budgetLineCategoryManagedBean.budgetLines.size()}" styleClass="card-number"/>
+                            <h:outputText value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
                         </div>
                     </div>
                 </div>
-
 
                 <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
                     <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -66,8 +89,9 @@
                     <div class="table-header">
                         <h:outputText value="#{roleBean.roles.size()} Role(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-plus" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()" update=":usersForm:rolesTable :addRoleForm:addRolePanel"/>
-                            <p:commandButton icon="pi pi-trash" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" value="Delete All" action="#" styleClass="delete-all-button" update=":usersForm:rolesTable :usersForm:usersTable">
+                            <p:commandButton icon="pi pi-user-plus" update=":usersForm:rolesTable :addRoleForm:addRolePanel" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
+
+                            <p:commandButton icon="pi pi-trash" update=":usersForm:rolesTable" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Roles?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>

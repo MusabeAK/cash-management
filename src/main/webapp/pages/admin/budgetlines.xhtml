@@ -49,7 +49,7 @@
                         <i class="pi pi-key card-icon"/>
                         <div class="card-content">
                             <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
-                            <h:outputText value="20" styleClass="card-number"/>
+                            <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
                         </div>
                     </h:panelGroup>
                     <h:panelGroup class="card">
@@ -64,7 +64,7 @@
                         <i class="pi pi-users card-icon"/>
                         <div class="card-content">
                             <h:outputText value="Active Budget Lines" styleClass="card-title"/>
-                            <h:outputText value="5" styleClass="card-number"/>
+                            <h:outputText value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
                         </div>
                     </h:panelGroup>
                 </div>
@@ -210,8 +210,8 @@
                             </p:inputText>
 
                             <p:outputLabel for="budgetLineAmount" value="Budget Line Amount: "/>
-                            <p:inputText id="budgetLineAmount" value="#{budgetLineCategoryManagedBean.newBudgetLine.initialAmount}" required="true" requiredMessage="Add an amount" validatorMessage="Amount must be a number">
-                                <f:convertNumber currencySymbol="Shs " type="currency"/>
+                            <p:inputText id="budgetLineAmount" placeholder="UGX..." value="#{budgetLineCategoryManagedBean.newBudgetLine.initialAmount}" required="true" requiredMessage="Add an amount" validatorMessage="Amount must be a number">
+                                <f:convertNumber/>
                             </p:inputText>
 
                             <p:outputLabel for="budgetLineStartDate" value="Start Date: "  />
@@ -303,8 +303,8 @@
                             </p:inputText>
 
                             <p:outputLabel for="editBudgetLineAmount" value="Budget Line Amount: "/>
-                            <p:inputText id="editBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}" required="true" requiredMessage="Budget Line Amount is required" validatorMessage="Amount must be a number">
-                                <f:convertNumber currencySymbol="Shss" type="currency"/>
+                            <p:inputText id="editBudgetLineAmount" placeholder="UGX..." value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}" required="true" requiredMessage="Budget Line Amount is required" validatorMessage="Amount must be a number">
+                                <f:convertNumber/>
                             </p:inputText>
 
                             <p:outputLabel for="editBudgetLineStartDate" value="Start Date: "  />

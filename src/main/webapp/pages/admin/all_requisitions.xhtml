@@ -27,15 +27,15 @@
             <div class="card">
                 <i class="pi pi-key card-icon"/>
                 <div class="card-content">
-                    <h:outputText value="Total Amount Disbursed" styleClass="card-title"/>
-                    <h:outputText value="20" styleClass="card-number"/>
+                    <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
+                    <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
                 </div>
             </div>
             <div class="card">
                 <i class="pi pi-key card-icon"/>
                 <div class="card-content">
-                    <h:outputText value="Number of Registered Users" styleClass="card-title"/>
-                    <h:outputText value="30" styleClass="card-number"/>
+                    <h:outputText value="Total Amount Used" styleClass="card-title"/>
+                    <h:outputText value="#{accountabilityBean.totalAmountUsed}" styleClass="card-number"/>
                 </div>
             </div>
 
@@ -43,7 +43,7 @@
                 <i class="pi pi-users card-icon"/>
                 <div class="card-content">
                     <h:outputText value="Active Budget Lines" styleClass="card-title"/>
-                    <h:outputText value="#{budgetLineCategoryManagedBean.budgetLines.size()}" styleClass="card-number"/>
+                    <h:outputText value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
                 </div>
             </div>
         </div>

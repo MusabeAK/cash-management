@@ -19,4 +19,6 @@ public interface AccountabilityService {
     Accountability getAccountabilityByRequisition(Requisition requisition);
 
     List<Accountability> searchAccountabilities(String searchTerm);
+
+    double getTotalAmountUsed();
 }

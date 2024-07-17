@@ -19,6 +19,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -43,9 +45,11 @@ public class RequisitionBean implements Serializable {
     private String comment;
     private String searchQuery;
     private List<Requisition> filteredRequisitions;
+    private double totalAmountDisbursed;
 
     @PostConstruct
     public void init() {
+        totalAmountDisbursed = requisitionService.getTotalAmountDisbursed();
         newRequisition = new Requisition();
         requisitions = requisitionService.getAllRequisitions();
         filteredRequisitions = requisitionService.getAllRequisitions();
@@ -124,10 +128,10 @@ public class RequisitionBean implements Serializable {
                       newRequisition = new Requisition();
                   } else
                       FacesContext.getCurrentInstance().addMessage(null,
-                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line currently", null));
+                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid budget line", null));
               } else
                   FacesContext.getCurrentInstance().addMessage(null,
-                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line currently", null));
+                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "No budget line in the system", null));
           } else {
               FacesContext.getCurrentInstance().addMessage(null,
                       new FacesMessage(FacesMessage.SEVERITY_ERROR, "No user logged in", null));
@@ -332,6 +336,11 @@ public class RequisitionBean implements Serializable {
             return;
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
+            if (selectedRequisition.getAmount() > selectedRequisition.getBudgetLine().getBalance()){
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount greater than budget line balance.", null));
+                return;
+            }
             try {
                 selectedRequisition.setStatus(RequisitionStatus.DISBURSED);
                 int currentBalance = selectedRequisition.getBudgetLine().getBalance();
@@ -354,7 +363,11 @@ public class RequisitionBean implements Serializable {
     public List<BudgetLine> searchBudgetLines(String query){
         List<BudgetLine> searchedBudgetLines = requisitionService.searchBudgetLines(query);
         List<BudgetLine> returnedBudgetLines = new ArrayList<>();
+        Date currentDate = new Date();
         for(BudgetLine budgetLine : searchedBudgetLines){
+            if (currentDate.after(budgetLine.getEndDate())){
+                budgetLine.setStatus(BudgetLineStatus.EXPIRED);
+            }
             if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
                 returnedBudgetLines.add(budgetLine);
             }
@@ -447,19 +460,19 @@ public class RequisitionBean implements Serializable {
     }
 
     public List<Requisition> getUserRequisitions() {
-        currentUser = getCurrentUser();
-        try {
-            if (currentUser != null) {
+        currentUser = LoginBean.getCurrentUser();
+        if (currentUser != null) {
+            try {
                 userRequisitions = requisitionService.getRequisitionsByUser(currentUser);
                 userRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
-
                 return userRequisitions;
+            } catch (Exception e){
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+                return Collections.emptyList();
             }
-        } catch (Exception e){
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
-        }
-        return userRequisitions;
+        } else
+            return Collections.emptyList();
     }
 
     public void setUserRequisitions(List<Requisition> userRequisitions) {
@@ -520,5 +533,13 @@ public class RequisitionBean implements Serializable {
 
     public void setFilteredRequisitions(List<Requisition> filteredRequisitions) {
         this.filteredRequisitions = filteredRequisitions;
+    }
+
+    public double getTotalAmountDisbursed() {
+        return requisitionService.getTotalAmountDisbursed();
+    }
+
+    public void setTotalAmountDisbursed(double totalAmountDisbursed) {
+        this.totalAmountDisbursed = totalAmountDisbursed;
     }
 }

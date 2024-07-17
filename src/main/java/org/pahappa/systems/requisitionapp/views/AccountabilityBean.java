@@ -42,12 +42,14 @@ public class AccountabilityBean implements Serializable {
     private UploadedFile uploadedFile;
     private List<Accountability> allAccountabilities;
     private Accountability selectedAccountability;
+    private double totalAmountUsed;
 
     @PostConstruct
     public void init() {
         newAccountability = new Accountability();
         allAccountabilities = accountabilityService.getAllAccountabilities();
         selectedAccountability = new Accountability();
+        totalAmountUsed = accountabilityService.getTotalAmountUsed();
     }
 
     public void addAccountability() {
@@ -174,5 +176,13 @@ public class AccountabilityBean implements Serializable {
 
     public String getBase64Image(byte[] image) {
         return DatatypeConverter.printBase64Binary(image);
+    }
+
+    public double getTotalAmountUsed() {
+        return accountabilityService.getTotalAmountUsed();
+    }
+
+    public void setTotalAmountUsed(double totalAmountUsed) {
+        this.totalAmountUsed = totalAmountUsed;
     }
 }

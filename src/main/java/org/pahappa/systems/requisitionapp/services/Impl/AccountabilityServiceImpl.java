@@ -85,4 +85,10 @@ public class AccountabilityServiceImpl implements AccountabilityService {
         }
         return accountabilityDAO.searchAccountabilities(searchTerm);
     }
+
+    @Override
+    public double getTotalAmountUsed(){
+        List<Accountability> accountabilities = accountabilityDAO.getAllAccountabilities();
+        return accountabilities.stream().mapToDouble(Accountability::getAmountUsed).sum();
+    }
 }
