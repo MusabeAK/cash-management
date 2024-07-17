@@ -22,6 +22,27 @@
             color: #f54b40;
         }
 
+        .custom-button1 {
+            margin-left: 10px;
+            margin-right: 5px;
+            background-color: #1814F3 !important;
+            border: #1814F3 !important;
+        }
+
+       .custom-button2 {
+            margin-left: 5px !important;
+            margin-right: 5px;
+            background-color: #EC1212 !important;
+            border: #EC1212 !important;
+        }
+
+        .custom-button3 {
+            margin-left: 5px !important;
+            margin-right: 5px;
+            background-color: #32de84 !important;
+            border: #32de84 !important;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -489,7 +510,7 @@
             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
         </p:confirmDialog>
         <div class="left-nav">
-            <h2><i class="pi pi-server"/><span> </span>  <h:outputText value="#{loginBean.currentUser().role.name}"/></h2>
+            <h2><i class="pi pi-user" style="margin-left: 10px"/><h:outputText value="&nbsp; #{loginBean.currentUser().username}"/></h2>
             <ul>
 
                 <ui:repeat value="#{navigationBean.links}" var="link">

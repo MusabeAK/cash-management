@@ -99,12 +99,10 @@ public class ServiceUtils {
     public static String testPasswordInput(String input) throws IllegalArgumentException {
         if (!input.isEmpty()) {
             if (input.length() >= 3) {
-                if ((input.matches("^[A-Z]+$")
-                        || input.matches("^[a-z]+$")
-                        || input.matches("^[0-9]+$"))) {
+                if ((input.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{3,}$"))) {
                     return Base64.getEncoder().encodeToString(input.getBytes());
 
-                } else throw new IllegalArgumentException("Password must contain at least 1 (Uppercase, Lowercase letter and Number)");
+                } else throw new IllegalArgumentException("Password must contain at least 1 (Uppercase, Lowercase letter and special character)");
             }
             else throw new IllegalArgumentException("Password must contain at least 3 Characters");
         }

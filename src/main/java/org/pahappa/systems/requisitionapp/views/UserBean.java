@@ -6,6 +6,7 @@ import org.pahappa.systems.requisitionapp.models.utils.Gender;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.pahappa.systems.requisitionapp.services.UserService;
+import org.pahappa.systems.requisitionapp.services.utils.MailService;
 import org.pahappa.systems.requisitionapp.services.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,11 +66,13 @@ public class UserBean implements Serializable {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final MailService mailService;
 
     @Autowired
-    public UserBean(UserService userService, RoleService roleService) {
+    public UserBean(UserService userService, RoleService roleService, MailService mailService) {
         this.userService = userService;
         this.roleService = roleService;
+        this.mailService = mailService;
     }
 
     public String getUsername() {
@@ -132,6 +135,10 @@ public class UserBean implements Serializable {
             user.setRole(role);
             user.setPhoneNumber(phone);
 
+            mailService.send("ahumuzaariyo@gmail.com", "tiadbqtshilfdprn", user.getEmail(), "Log In Details", "Your username is: " + user.getUsername() + "\nYour password is: " + password);
+
+            username=firstName=lastName=password=email=phoneNumber="";
+
             userService.addUser(user);
             filteredUsers = userService.getAllUsers();
 
@@ -143,10 +150,6 @@ public class UserBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "User creation failed: "+e.getMessage(), null));
             System.out.println("Error Creating User:  "+e.getMessage());
         }
-    }
-
-    public void resetUserForm(){
-        this.username=this.firstName=this.lastName=this.password=this.email=this.phoneNumber="";
     }
 
     public void updateUser(){
