@@ -8,25 +8,57 @@
     <ui:define name="content" class="form-container">
         <script type="text/javascript">
             function handleAddBudgetLineOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('addBudgetLineDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('addBudgetLineDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('addBudgetLineDialog').hide();
             }
+
             function handleAddBudgetLineCategoryOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('addBudgetLineCategoryDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('addBudgetLineCategoryDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('addBudgetLineCategoryDialog').hide();
             }
+
             function handleEditBudgetLineCategoryOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('editBudgetLineCategoryDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editBudgetLineCategoryDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editBudgetLineCategoryDialog').hide();
             }
+
             function handleEditBudgetLineOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('editBudgetLineDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editBudgetLineDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editBudgetLineDialog').hide();
             }
+
         </script>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
@@ -68,6 +100,10 @@
                         </div>
                     </h:panelGroup>
                 </div>
+
+                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
 
                 <h:panelGroup id="budgetLineCategoryTable" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
                     <div class="search-container">
@@ -222,8 +258,8 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" oncomplete="handleAddBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineToBudgetLineCategory}" icon="pi pi-check"/>
-                        <p:commandButton value="Cancel" onclick="PF('addBudgetLineDialog').hide();" icon="pi pi-times"/>
+                        <p:commandButton value="Add" styleClass="custom-button1" oncomplete="handleAddBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineToBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('addBudgetLineDialog').hide();" icon="pi pi-times" update=":addBudgetLineForm:addBudgetPanel"/>
                     </p:outputPanel>
                 </p:dialog>
 
@@ -249,8 +285,8 @@
                             </p:inputText>
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" oncomplete="handleAddBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
-                        <p:commandButton value="Cancel" onclick="PF('addBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
+                        <p:commandButton value="Add" styleClass="custom-button1" oncomplete="handleAddBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" styleClass="custom-button2" update=":addBudgetLineCategoryForm:addBudgetLineCategoryPanel" onclick="PF('addBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
             </h:form>
@@ -275,8 +311,8 @@
                             </p:inputText>
                         </p:panelGrid>
 
-                        <p:commandButton value="Edit" oncomplete="handleEditBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-check"/>
-                        <p:commandButton value="Cancel" onclick="PF('editBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
+                        <p:commandButton value="Edit" styleClass="custom-button1" oncomplete="handleEditBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-pencil"/>
+                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineCategoryDialog').hide();" update=":updateBudgetLineCategoryForm:editBudgetLineCategoryPanel" icon="pi pi-times"/>
                     </p:outputPanel>
 
                 </p:dialog>
@@ -315,8 +351,8 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
-                        <p:commandButton value="Cancel" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times"/>
+                        <p:commandButton value="Add" styleClass="custom-button1" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetPanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times" update=":updateBudgetLineForm:editBudgetPanel"/>
                     </p:outputPanel>
                 </p:dialog>
             </h:form>
@@ -357,8 +393,8 @@
 
                 </p:panelGrid>
 
-                    <p:commandButton value="Approve" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.approveBudgetLine}" update=":budgetLine:budgetLineTable"/>
-                    <p:commandButton value="Reject" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}" update=":budgetLine:budgetLineTable"/>
+                    <p:commandButton value="Approve" styleClass="custom-button1" icon="pi pi-check" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.approveBudgetLine}" update=":budgetLine:budgetLineTable"/>
+                    <p:commandButton value="Reject" styleClass="custom-button2" icon="pi pi-times" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}" update=":budgetLine:budgetLineTable"/>
 
                 </p:outputPanel>
                 </p:dialog>

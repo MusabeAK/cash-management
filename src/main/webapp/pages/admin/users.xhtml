@@ -9,25 +9,57 @@
 
         <script type="text/javascript">
             function handleAddUserOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('addUserDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('addUserDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('addUserDialog').hide();
             }
+
             function handleEditUserOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('editUserDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editUserDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editUserDialog').hide();
             }
+
             function addRoleOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('addRoleDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editRoleDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editRoleDialog').hide();
             }
+
             function editRoleOnClick(xhr, status, args) {
-                if (!args.validationFailed) {
-                    PF('editRoleDialog').hide();
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editRoleDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
                 }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editRoleDialog').hide();
             }
+
         </script>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
@@ -71,10 +103,10 @@
                     </div>
                 </div>
 
+                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
                 <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
-                    <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
-                        <p:autoUpdate/>
-                    </p:messages>
                     <div class="search-container">
                         <h3>All Roles</h3>
                         <div class="search-and-filter">
@@ -267,7 +299,7 @@
                             <div style="height: 8px">
 
                             </div>
-                            <p:password id="password" value="#{userBean.password}"  />
+                            <p:password id="password" value="#{userBean.password}" required="true" requiredMessage="Password is required" />
                         </p:outputLabel>
 
                         <p:outputLabel for="role" value="Role">
@@ -300,7 +332,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" oncomplete="handleAddUserOnClick(xhr, status, args)" update=":usersForm:usersTable" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Add" oncomplete="handleAddUserOnClick(xhr, status, args)" update=":usersForm:usersTable :addUserForm:addUserPanel" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
                     <p:commandButton value="Cancel" onclick="PF('addUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
                 </p:outputPanel>
             </p:dialog>
@@ -401,7 +433,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" oncomplete="handleEditUserOnClick(xhr, status, args)" update=":usersForm:usersTable" actionListener="#{userBean.updateUser}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Update" oncomplete="handleEditUserOnClick(xhr, status, args)" update=":usersForm:usersTable :editUserForm:editUserPanel" actionListener="#{userBean.updateUser}" icon="pi pi-check" styleClass="add-button"/>
                     <p:commandButton value="Cancel" onclick="PF('editUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
                 </p:outputPanel>
             </p:dialog>
@@ -427,7 +459,7 @@
                             <div style="height: 8px">
 
                             </div>
-                            <p:inputText id="roleName" value="#{roleBean.roleName}" >
+                            <p:inputText id="roleName" value="#{roleBean.roleName}" required="true" requiredMessage="Please add a role name">
                             </p:inputText>
                         </p:outputLabel>
 
@@ -443,7 +475,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable @form" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
+                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable @form :addRoleForm:addRolePanel" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
                     <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" />
                 </p:outputPanel>
             </p:dialog>
@@ -483,7 +515,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" update=":usersForm:rolesTable @form" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="editRoleOnClick(xhr, status, args)"/>
+                    <p:commandButton value="Update" update=":usersForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="editRoleOnClick(xhr, status, args)"/>
                     <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" immediate="true" />
                 </p:outputPanel>
             </p:dialog>

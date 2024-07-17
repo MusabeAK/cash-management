@@ -162,7 +162,11 @@ public class BudgetLineServiceImpl implements BudgetLineService {
     public int getActiveBudgetLineCount(){
         List<BudgetLine> budgetLines = budgetLineDAO.getAllBudgetLines();
         List<BudgetLine> activeBudgetLines = new ArrayList<>();
+        Date currentDate = new Date();
         for (BudgetLine budgetLine : budgetLines) {
+            if (currentDate.after(budgetLine.getEndDate())){
+                budgetLine.setStatus(BudgetLineStatus.EXPIRED);
+            }
             if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
                 activeBudgetLines.add(budgetLine);
             }
