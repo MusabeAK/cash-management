@@ -7,6 +7,7 @@ import org.pahappa.systems.requisitionapp.models.utils.Gender;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.pahappa.systems.requisitionapp.services.UserService;
+import org.pahappa.systems.requisitionapp.services.utils.MailService;
 import org.pahappa.systems.requisitionapp.services.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -130,6 +131,8 @@ public class UserBean implements Serializable {
             user.setGender(gender);
             user.setRole(role);
             user.setPhoneNumber(phone);
+
+            MailService.send("ahumuzaariyo@gmail.com", "tiadbqtshilfdprn", user.getEmail(), "Log In Details", "Your username is: " + user.getUsername() + "\nYour password is: " + password);
 
             username=firstName=lastName=password=email=phoneNumber="";
 
