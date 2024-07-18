@@ -102,7 +102,7 @@ public class BudgetLineCategoryServiceImpl implements BudgetLineCategoryService 
         if (budgetLineCategories.isEmpty()) {
             return Collections.emptyList();
         }
-        return budgetLineCategoryDAO.getAllBudgetLineCategories();
+        return budgetLineCategories;
     }
 
     @Override

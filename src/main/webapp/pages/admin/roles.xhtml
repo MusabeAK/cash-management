@@ -103,9 +103,9 @@
             </div>
         </div>
 
-        <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+        <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
             <p:autoUpdate/>
-        </p:messages>
+        </p:growl>
         <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
             <div class="search-container">
                 <h3>All Roles</h3>

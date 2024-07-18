@@ -124,9 +124,9 @@
 
 
         <div class="content">
-            <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+            <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
                 <p:autoUpdate/>
-            </p:messages>
+            </p:growl>
             <h:form id="userRequisitions" style="margin-top: 30px">
                 <h:panelGroup id="userRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
                     <div class="search-container">
@@ -179,9 +179,6 @@
                         </p:column>
                         <p:column headerText="Status">
                             <h:outputText value="#{requisition.status}"/>
-                        </p:column>
-                        <p:column headerText="Comment">
-                            <h:outputText value="#{requisition.comment}"/>
                         </p:column>
                         <p:column headerText="Actions">
                             <p:commandButton icon="pi pi-upload"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>

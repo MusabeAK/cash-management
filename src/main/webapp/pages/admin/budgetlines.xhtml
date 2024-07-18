@@ -101,9 +101,9 @@
                     </h:panelGroup>
                 </div>
 
-                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
                     <p:autoUpdate/>
-                </p:messages>
+                </p:growl>
 
                 <h:panelGroup id="budgetLineCategoryTable" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
                     <div class="search-container">
@@ -125,7 +125,7 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLineCategories}" var="category" paginator="true" rows="3" paginatorPosition="bottom" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.uniqueBudgetLineCategories}" var="category" paginator="true" rows="3" paginatorPosition="bottom" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
                         <p:column headerText="ID">
                             <h:outputText value="#{category.id}"/>
                         </p:column>
@@ -169,7 +169,18 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}" var="budgetLine" paginator="true" rows="5" paginatorPosition="bottom">
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}"
+                                 rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}"
+                                 var="budgetLine"
+                                 paginator="true"
+                                 rows="5"
+                                 selection="#{budgetLineCategoryManagedBean.selectedBudgetLine}"
+                                 selectionMode="single"
+                                 rowKey="#{budgetLine.id}"
+                                 id="budgetLinesTable"
+                                 paginatorPosition="bottom">
+                        <p:ajax event="rowSelect" process="budgetLinesTable" listener="#{budgetLineCategoryManagedBean.rowSelect}" update=":reviewBudgetLineForm:reviewBudgetLinePanel" oncomplete="PF('reviewBudgetLineDialog').show();" />
+
                         <p:column headerText="Title">
                             <h:outputText value="#{budgetLine.title}"/>
                         </p:column>
@@ -210,7 +221,6 @@
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton icon="pi pi-cog" styleClass="edit-button" rendered="#{budgetLine.status == 'DRAFT' and loginBean.hasPermission('APPROVE_BUDGET_LINE')}" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('reviewBudgetLineDialog').show()" update="@form :budgetLine:budgetLineTable :reviewBudgetLineForm:reviewBudgetLinePanel"/>
                         </p:column>
 
                     </p:dataTable>
@@ -351,7 +361,7 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" styleClass="custom-button1" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetLinePanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
+                        <p:commandButton value="Update" styleClass="custom-button1" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetLinePanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times" update=":updateBudgetLineForm:editBudgetLinePanel"/>
                     </p:outputPanel>
                 </p:dialog>
@@ -393,8 +403,8 @@
 
                 </p:panelGrid>
 
-                    <p:commandButton value="Approve" styleClass="custom-button1" icon="pi pi-check" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.approveBudgetLine}" update=":budgetLine:budgetLineTable"/>
-                    <p:commandButton value="Reject" styleClass="custom-button2" icon="pi pi-times" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}" update=":budgetLine:budgetLineTable"/>
+                    <p:commandButton value="Approve" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'DRAFT' and loginBean.hasPermission('APPROVE_BUDGET_LINE') }" styleClass="custom-button1" icon="pi pi-check" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.approveBudgetLine}" update=":budgetLine:budgetLineTable"/>
+                    <p:commandButton value="Reject" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'DRAFT' and loginBean.hasPermission('REJECT_BUDGET_LINE')}" styleClass="custom-button2" icon="pi pi-times" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}" update=":budgetLine:budgetLineTable"/>
 
                 </p:outputPanel>
                 </p:dialog>

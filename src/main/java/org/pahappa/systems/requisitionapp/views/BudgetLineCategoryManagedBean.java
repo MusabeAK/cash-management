@@ -9,6 +9,7 @@ import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineCategoryService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
+import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.persistence.NoResultException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 @ViewScoped
@@ -51,7 +50,10 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     public void init() {
         activeBudgetLineCount = budgetLineService.getActiveBudgetLineCount();
         newBudgetLineCategory = new BudgetLineCategory();
-        budgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
+
+        Set<BudgetLineCategory> uniqueCategories = new HashSet<>(budgetLineCategoryService.getAllBudgetLineCategories());
+        budgetLineCategories = new ArrayList<>(uniqueCategories);
+
         newBudgetLine = new BudgetLine();
         budgetLines = budgetLineService.getAllBudgetLines();
         draftBudgetLines = new ArrayList<>();
@@ -118,6 +120,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot update a budget line that is not in draft", null));
                 return;
             }
+            selectedBudgetLine.setBalance(selectedBudgetLine.getInitialAmount());
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
@@ -282,7 +285,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLineCategory> budgetLineCategoryList(String query) {
-        return budgetLineCategoryService.searchBudgetLineCategoriesByName(query);
+        Set<BudgetLineCategory> uniqueCategories = new HashSet<>(budgetLineCategoryService.searchBudgetLineCategoriesByName(query));
+        return new ArrayList<>(uniqueCategories);
     }
 
     // Getters and setters
@@ -295,7 +299,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLineCategory> getBudgetLineCategories() {
-        return budgetLineCategories;
+        return budgetLineCategoryService.getAllBudgetLineCategories();
     }
 
     public void setBudgetLineCategories(List<BudgetLineCategory> budgetLineCategories) {
@@ -365,11 +369,21 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         this.draftBudgetLines = draftBudgetLines;
     }
 
+    public List<BudgetLineCategory> getUniqueBudgetLineCategories() {
+        Set<BudgetLineCategory> uniqueCategories = new HashSet<>(budgetLineCategoryService.getAllBudgetLineCategories());
+        return new ArrayList<>(uniqueCategories);
+    }
+
+
     public int getActiveBudgetLineCount() {
         return budgetLineService.getActiveBudgetLineCount();
     }
 
     public void setActiveBudgetLineCount(int activeBudgetLineCount) {
         this.activeBudgetLineCount = activeBudgetLineCount;
+    }
+
+    public void rowSelect(SelectEvent event) {
+        selectedBudgetLine = (BudgetLine) event.getObject();
     }
 }

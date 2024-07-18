@@ -59,9 +59,9 @@
                 </div>
             </div>
         </div>
-            <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+            <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
                 <p:autoUpdate/>
-            </p:messages>
+            </p:growl>
         <h:form id="allRequisitions" style="margin-top: 20px">
             <h:panelGroup id="allRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_ALL_REQUISITIONS')}">
 

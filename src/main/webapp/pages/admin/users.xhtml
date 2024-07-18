@@ -318,9 +318,9 @@
                       width="600px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="editUserPanel" rendered="true">
-                    <p:messages id="editUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:growl id="editUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
                         <p:autoUpdate/>
-                    </p:messages>
+                    </p:growl>
                     <p:panelGrid columns="2" styleClass="custom-grid">
                         <p:outputLabel for="userName" value="User Name">
                             <div style="height: 8px">

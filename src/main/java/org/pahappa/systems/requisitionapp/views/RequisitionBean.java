@@ -20,10 +20,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 @ViewScoped
@@ -78,6 +75,26 @@ public class RequisitionBean implements Serializable {
     }
 
     public void makeRequisition() {
+        Date currentDate = new Date();
+
+        // Remove time part from current date
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentDate);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date currentDateOnly = cal1.getTime();
+
+        // Remove time part from date needed
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(newRequisition.getDateNeeded());
+        cal2.set(Calendar.HOUR_OF_DAY, 0);
+        cal2.set(Calendar.MINUTE, 0);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+        Date dateNeededOnly = cal2.getTime();
+
         if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_REQUISITION)){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
@@ -115,6 +132,11 @@ public class RequisitionBean implements Serializable {
                                   new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
                           return;
                       }
+                      if (dateNeededOnly.before(currentDateOnly)){
+                          FacesContext.getCurrentInstance().addMessage(null,
+                                  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before current date", null));
+                          return;
+                      }
                       if (newRequisition.getAmount() <= 0){
                           FacesContext.getCurrentInstance().addMessage(null,
                                   new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be less than or equal 0", null));
@@ -145,6 +167,26 @@ public class RequisitionBean implements Serializable {
     }
 
     public void updateRequisition(){
+        Date currentDate = new Date();
+
+        // Remove time part from current date
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentDate);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date currentDateOnly = cal1.getTime();
+
+        // Remove time part from date needed
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(selectedRequisition.getDateNeeded());
+        cal2.set(Calendar.HOUR_OF_DAY, 0);
+        cal2.set(Calendar.MINUTE, 0);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+        Date dateNeededOnly = cal2.getTime();
+
         if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.EDIT_REQUISITION)){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
@@ -163,6 +205,11 @@ public class RequisitionBean implements Serializable {
         if (selectedRequisition.getDateNeeded().before(selectedRequisition.getBudgetLine().getStartDate())){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
+            return;
+        }
+        if (dateNeededOnly.before(currentDateOnly)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before current date", null));
             return;
         }
         if (selectedRequisition.getAmount() <= 0){
@@ -187,6 +234,26 @@ public class RequisitionBean implements Serializable {
     }
 
     public void submitRequisition(){
+        Date currentDate = new Date();
+
+        // Remove time part from current date
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentDate);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        Date currentDateOnly = cal1.getTime();
+
+        // Remove time part from date needed
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(selectedRequisition.getDateNeeded());
+        cal2.set(Calendar.HOUR_OF_DAY, 0);
+        cal2.set(Calendar.MINUTE, 0);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+        Date dateNeededOnly = cal2.getTime();
+
         if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_REQUISITION)){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
@@ -205,6 +272,11 @@ public class RequisitionBean implements Serializable {
         if (selectedRequisition.getDateNeeded().before(selectedRequisition.getBudgetLine().getStartDate())){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before budget line start date", null));
+            return;
+        }
+        if (dateNeededOnly.before(currentDateOnly)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be before current date", null));
             return;
         }
         if (selectedRequisition.getAmount() <= 0){
