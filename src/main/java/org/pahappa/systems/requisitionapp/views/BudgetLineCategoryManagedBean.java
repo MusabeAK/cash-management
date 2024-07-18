@@ -54,6 +54,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     private List<BudgetLine> draftBudgetLines;
     private BudgetLine selectedBudgetLine;
     private int activeBudgetLineCount;
+    private double budgetLineSummedTotal;
 
     @PostConstruct
     public void init() {
@@ -256,7 +257,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void loadBudgetLineCategories() {
         try {
-            budgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
+            filteredBudgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
@@ -273,6 +274,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineCategoryService.createBudgetLineCategory(newBudgetLineCategory);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
+            filteredBudgetLineCategories.add(newBudgetLineCategory);
             newBudgetLineCategory = new BudgetLineCategory();
             loadBudgetLineCategories();
         } catch (RuntimeException e) {
@@ -465,6 +467,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         this.activeBudgetLineCount = activeBudgetLineCount;
     }
 
+    public double getBudgetLineSummedTotal() {
+        return budgetLineService.getBudgetLineTotalAmount();
+    }
+
+    public void setBudgetLineSummedTotal(double budgetLineSummedTotal) {
+        this.budgetLineSummedTotal = budgetLineSummedTotal;
+    }
+
     public String getCategorySearchQuery() {
         return categorySearchQuery;
     }
@@ -474,7 +484,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLineCategory> getFilteredBudgetLineCategories() {
-        return filteredBudgetLineCategories;
+        Set<BudgetLineCategory> uniqueCategories = new HashSet<>(filteredBudgetLineCategories);
+        return new ArrayList<>(uniqueCategories);
     }
 
     public void setFilteredBudgetLineCategories(List<BudgetLineCategory> filteredBudgetLineCategories) {

@@ -110,21 +110,25 @@
 
                     <p:column headerText="Actions">
                         <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}"
+                                         actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
                                          oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations"
                                          rendered="#{requisition.status == 'SUBMITTED' and loginBean.hasPermission('REVIEW_REQUISITION')}" />
 
                         <p:commandButton value="Approve" action="#{requisitionBean.selectRequisition(requisition)}"
+                                         actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
                                          update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel"
                                          oncomplete="PF('reviewRequisitionDialog').show()"
                                          rendered="#{requisition.status == 'HR_REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' )}" />
 
                         <p:commandButton value="Disburse" action="#{requisitionBean.selectRequisition(requisition)}"
+                                         actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
                                          update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance"
                                          oncomplete="PF('reviewRequisitionDialogFinance').show()"
                                          rendered="#{requisition.status == 'CEO_APPROVED' and loginBean.hasPermission('DISBURSE_MONEY')}" />
                         <!-- Work on this  -->
                         <p:commandButton value="Accountability"
                                          action="#{accountabilityBean.selectRequisition(requisition)}"
+                                         actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
                                          update=":viewAccountability:viewAccountabilityPanel :allRequisitions:allRequisitionsTable"
                                          oncomplete="PF('viewAccountabilityDialog').show()"
                                          rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" />
@@ -183,8 +187,8 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Approve" styleClass="custom-button1" actionListener="#{requisitionBean.reviewAndApproveRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-check" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
-                    <p:commandButton value="Reject" styleClass="custom-button2" actionListener="#{requisitionBean.reviewAndRejectRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-times" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
+                    <p:commandButton value="Approve" styleClass="custom-button1" actionListener="#{requisitionBean.reviewAndApproveRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-check" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
+                    <p:commandButton value="Reject" styleClass="custom-button2" actionListener="#{requisitionBean.reviewAndRejectRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-times" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
 
                 </p:outputPanel>
             </p:dialog>
@@ -237,8 +241,8 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Approve" styleClass="custom-button1" actionListener="#{requisitionBean.approveRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-check" onclick="PF('reviewRequisitionDialog').hide()"/>
-                    <p:commandButton value="Reject" styleClass="custom-button2" actionListener="#{requisitionBean.rejectRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-times" onclick="PF('reviewRequisitionDialog').hide()"/>
+                    <p:commandButton value="Approve" styleClass="custom-button1" actionListener="#{requisitionBean.approveRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-check" onclick="PF('reviewRequisitionDialog').hide()"/>
+                    <p:commandButton value="Reject" styleClass="custom-button2" actionListener="#{requisitionBean.rejectRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-times" onclick="PF('reviewRequisitionDialog').hide()"/>
 
                 </p:outputPanel>
             </p:dialog>
@@ -291,7 +295,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Disburse" icon="pi pi-check" styleClass="custom-button1" oncomplete="handleDisburseRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.disburseRequisition}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance" />
+                    <p:commandButton value="Disburse" icon="pi pi-check" styleClass="custom-button1" oncomplete="handleDisburseRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.disburseRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance" />
                     <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" onclick="PF('reviewRequisitionDialogFinance').hide()"/>
 
                 </p:outputPanel>

@@ -143,7 +143,7 @@
                     <div class="table-header">
                         <h:outputText value="#{requisitionBean.userRequisitions.size()} Requistion(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :createRequisition:createRequisitionPanel"/>
+                            <p:commandButton icon="pi pi-user-plus" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :createRequisition:createRequisitionPanel"/>
 
                             <p:commandButton icon="pi pi-trash" update=":userRequisitions:userRequisitionsTable" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Requisitions?"
@@ -213,7 +213,8 @@
                     <p:messages id="createRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                         <p:autoUpdate/>
                     </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
+                        <h:outputText rendered="#{!loginBean.hasPermission('CREATE_REQUISITION')}" value="User does not have access to this function"/>
+                        <p:panelGrid columns="2" styleClass="custom-grid" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}">
                             <p:outputLabel for="subject" >Reason: </p:outputLabel>
                             <p:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true" requiredMessage="Add a reason for your requisition">
                             </p:inputText>
@@ -235,7 +236,7 @@
                             <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please add a date when you need this requisition"/>
                         </p:panelGrid>
 
-                        <p:commandButton value="Create" styleClass="custom-button1" oncomplete="handleCreateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.makeRequisition}" icon="pi pi-check" update=":createRequisition:createRequisitionPanel :userRequisitions:userRequisitionsTable"/>
+                        <p:commandButton value="Create" styleClass="custom-button1" oncomplete="handleCreateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.makeRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-check" update=":createRequisition:createRequisitionPanel :userRequisitions:userRequisitionsTable"/>
                         <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('createRequisitionDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
@@ -276,8 +277,8 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable" />
-                        <p:commandButton value="Update" styleClass="custom-button3" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-pencil" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable"/>
+                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-check" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable" />
+                        <p:commandButton value="Update" styleClass="custom-button3" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-pencil" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable"/>
                         <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
@@ -318,7 +319,7 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Add" styleClass="custom-button1" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.addAccountability}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
+                        <p:commandButton value="Add" styleClass="custom-button1" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.addAccountability}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
                         <p:commandButton value="Cancel" styleClass="custom-button2" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>
@@ -398,6 +399,9 @@
 
                         <h:outputText value="Amount:" />
                         <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
+
+                        <h:outputText value="Budget Line: "/>
+                        <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
 
                         <h:outputText value="Date Needed:" />
                         <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">

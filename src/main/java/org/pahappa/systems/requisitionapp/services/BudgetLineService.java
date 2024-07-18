@@ -29,4 +29,6 @@ public interface BudgetLineService {
     List<BudgetLine> filterBudgetLineByCategory(BudgetLineCategory budgetLineCategory);
 
     List<BudgetLine> filterBudgetLineByStatus(String status);
+
+    double getBudgetLineTotalAmount();
 }
