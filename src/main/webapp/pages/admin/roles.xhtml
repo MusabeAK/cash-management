@@ -193,8 +193,8 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable @form :addRoleForm:addRolePanel" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
-                    <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" />
+                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable @form :addRoleForm:addRolePanel" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="custom-button1"/>
+                    <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="custom-button2" />
                 </p:outputPanel>
             </p:dialog>
         </h:form>
@@ -233,8 +233,8 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" update=":usersForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="editRoleOnClick(xhr, status, args)"/>
-                    <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" immediate="true" />
+                    <p:commandButton value="Update" update=":usersForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="custom-button1" oncomplete="editRoleOnClick(xhr, status, args)"/>
+                    <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="custom-button2" immediate="true" />
                 </p:outputPanel>
             </p:dialog>
         </h:form>

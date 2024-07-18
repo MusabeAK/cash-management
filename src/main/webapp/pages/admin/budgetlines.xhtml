@@ -118,7 +118,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{budgetLineCategoryManagedBean.budgetLineCategories.size()} Budget Line Category(s)" styleClass="total-users"/>
+                        <h:outputText value="#{budgetLineCategoryManagedBean.uniqueBudgetLineCategories.size()} Budget Line Category(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus" update=":budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel" style="margin-right: 20px" value="Add Category" styleClass="add-button" oncomplete="PF('addBudgetLineCategoryDialog').show()" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}"/>
 
@@ -153,10 +153,27 @@
                     <div class="search-container">
                         <h3>All Budget Lines</h3>
                         <div class="search-and-filter">
-                            <div class="search">
-                                <p:inputText id="searchBar2" value="#" styleClass="search-bar" placeholder="Search...">
-                                    <p:ajax event="keyup"/>
-                                </p:inputText>
+                            <div class="search-and-filter">
+                                <div class="search">
+                                    <p:inputText id="budgetLineSearchBar" value="#{budgetLineCategoryManagedBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
+                                        <p:ajax event="keyup" update=":budgetLine:budgetLineTable" listener="#{budgetLineCategoryManagedBean.searchBudgetLines}"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="filter">
+                                    <h:selectOneMenu value="#{budgetLineCategoryManagedBean.selectedStatus}" styleClass="gender-filter">
+                                        <f:selectItem itemLabel="Status" itemValue="#{null}" />
+                                        <f:selectItems value="#{budgetLineCategoryManagedBean.budgetLineStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+                                        <p:ajax event="change" update=":budgetLine:budgetLineTable" listener="#{budgetLineCategoryManagedBean.filterBudgetLinesByStatus}"/>
+                                    </h:selectOneMenu>
+                                </div>
+                                <div class="filter">
+                                    <h:selectOneMenu value="#{budgetLineCategoryManagedBean.selectedCategory}" styleClass="gender-filter">
+                                        <f:selectItem itemLabel="Category" itemValue="#{null}" />
+                                        <f:selectItems value="#{budgetLineCategoryManagedBean.uniqueBudgetLineCategories}" var="category" itemLabel="#{category.categoryName}" itemValue="#{category}" />
+                                        <f:converter converterId="budgetLineCategoryConverter" />
+                                        <p:ajax event="change" update=":budgetLine:budgetLinesTable" listener="#{budgetLineCategoryManagedBean.filterBudgetLinesByCategory}"/>
+                                    </h:selectOneMenu>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -169,7 +186,7 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{budgetLineCategoryManagedBean.budgetLines}"
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.filteredBudgetLines}"
                                  rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}"
                                  var="budgetLine"
                                  paginator="true"
@@ -210,10 +227,10 @@
                         </p:column>
 
                         <p:column headerText="Budget Line Category">
-                            <h:outputText value="#{budgetLine.budgetLineCategory}"/>
+                            <h:outputText value="#{budgetLine.budgetLineCategory.categoryName}"/>
                         </p:column>
 
-                        <p:column headerText="Actions">
+                        <p:column headerText="Actions" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE') or loginBean.hasPermission('DELETE_BUDGET_LINE')}">
                             <p:commandButton icon="pi pi-pencil" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE') and budgetLine.status == 'DRAFT'}" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLine(budgetLine)}" oncomplete="PF('editBudgetLineDialog').show();" update="@form :budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :updateBudgetLineForm:editBudgetLinePanel"/>
 
                             <p:commandButton icon="pi pi-trash" styleClass="delete-button" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable" >
@@ -383,7 +400,7 @@
                 </p:messages>
                 <p:panelGrid columns="2" styleClass="custom-grid">
                     <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
-                    <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory}"/>
+                    <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory.categoryName}"/>
 
                     <p:outputLabel for="reviewBudgetLineTitle" value="Title: "/>
                     <h:outputText id="reviewBudgetLineTitle" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}"/>

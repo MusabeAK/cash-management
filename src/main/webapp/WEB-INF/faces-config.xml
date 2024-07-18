@@ -26,5 +26,10 @@
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 
+    <converter>
+        <converter-id>budgetLineCategoryConverter</converter-id>
+        <converter-class>org.pahappa.systems.requisitionapp.views.utils.BudgetLineCategoryConverter</converter-class>
+    </converter>
+
 
 </faces-config>

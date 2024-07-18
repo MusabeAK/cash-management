@@ -184,4 +184,25 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         }
         return requisitions;
     }
+
+    @Override
+    @Transactional
+    public List<BudgetLine> filterBudgetLineByCategory(BudgetLineCategory budgetLineCategory){
+        List<BudgetLine> budgetLines = budgetLineDAO.filterBudgetLineByCategory(budgetLineCategory);
+        if (budgetLines.isEmpty()){
+            return Collections.emptyList();
+        }
+        return budgetLines;
+    }
+
+    @Override
+    @Transactional
+    public List<BudgetLine> filterBudgetLineByStatus(String status){
+        List<BudgetLine> budgetLines = budgetLineDAO.filterBudgetLineByStatus(status);
+        if (budgetLines.isEmpty()){
+            return Collections.emptyList();
+        }
+        return budgetLines;
+    }
+
 }

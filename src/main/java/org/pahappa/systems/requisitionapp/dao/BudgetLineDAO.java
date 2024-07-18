@@ -92,4 +92,33 @@ public class BudgetLineDAO {
         return requisitions;
     }
 
+    public List<BudgetLine> filterBudgetLineByCategory(BudgetLineCategory budgetLineCategory) {
+        List<BudgetLine> budgetLines = null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            String hql = "FROM BudgetLine bl WHERE bl.budgetLineCategory = :budgetLineCategory";
+            budgetLines = session.createQuery(hql, BudgetLine.class)
+                    .setParameter("budgetLineCategory", budgetLineCategory)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return budgetLines;
+    }
+
+    public List<BudgetLine> filterBudgetLineByStatus(String status) {
+        List<BudgetLine> budgetLines = null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            String hql = "FROM BudgetLine bl WHERE bl.status = :status";
+            budgetLines = session.createQuery(hql, BudgetLine.class)
+                    .setParameter("status", status)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return budgetLines;
+    }
+
+
 }

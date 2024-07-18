@@ -20,6 +20,7 @@ import javax.faces.view.ViewScoped;
 import javax.persistence.NoResultException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @ViewScoped
@@ -38,9 +39,15 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     private List<BudgetLineCategory> budgetLineCategories;
     private String budgetLineCategoryName;
     private BudgetLineCategory selectedBudgetLineCategory;
+    private BudgetLineCategory selectedCategory;
+
+    private List<String> budgetLineStatuses;
+    private BudgetLineStatus selectedStatus;
+    private String searchQuery;
 
     private BudgetLine newBudgetLine;
     private List<BudgetLine> budgetLines;
+    private List<BudgetLine> filteredBudgetLines;
     private List<BudgetLine> approvedBudgetLines;
     private List<BudgetLine> draftBudgetLines;
     private BudgetLine selectedBudgetLine;
@@ -54,8 +61,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         Set<BudgetLineCategory> uniqueCategories = new HashSet<>(budgetLineCategoryService.getAllBudgetLineCategories());
         budgetLineCategories = new ArrayList<>(uniqueCategories);
 
-        newBudgetLine = new BudgetLine();
         budgetLines = budgetLineService.getAllBudgetLines();
+        filteredBudgetLines = new ArrayList<>(budgetLines);
+
+        budgetLineStatuses = Arrays.stream(BudgetLineStatus.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+
+        newBudgetLine = new BudgetLine();
         draftBudgetLines = new ArrayList<>();
         approvedBudgetLines = new ArrayList<>();
         for (BudgetLine budgetLine : budgetLines) {
@@ -68,6 +81,26 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 draftBudgetLines.add(budgetLine);
             }
         }
+    }
+
+    public void searchBudgetLines() {
+        applyFilters();
+    }
+
+    public void filterBudgetLinesByCategory() {
+        applyFilters();
+    }
+
+    public void filterBudgetLinesByStatus() {
+        applyFilters();
+    }
+
+    private void applyFilters() {
+        filteredBudgetLines = budgetLines.stream()
+                .filter(bl -> searchQuery == null || searchQuery.isEmpty() || bl.getTitle().toLowerCase().contains(searchQuery.toLowerCase()))
+                .filter(bl -> selectedCategory == null || bl.getBudgetLineCategory().equals(selectedCategory))
+                .filter(bl -> selectedStatus == null || bl.getStatus().equals(selectedStatus))
+                .collect(Collectors.toList());
     }
 
     public void selectBudgetLineCategory(BudgetLineCategory budgetLineCategory) {
@@ -95,6 +128,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 budgetLineService.createBudgetLine(newBudgetLine, budgetLineCategory);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
+                filteredBudgetLines.add(newBudgetLine);
                 newBudgetLine = new BudgetLine();
                 newBudgetLineCategory = new BudgetLineCategory();
                 loadBudgetLines();
@@ -204,7 +238,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void loadBudgetLines(){
         try {
-            budgetLines = budgetLineService.getAllBudgetLines();
+            filteredBudgetLines = budgetLineService.getAllBudgetLines();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
@@ -369,11 +403,50 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         this.draftBudgetLines = draftBudgetLines;
     }
 
+    public List<BudgetLine> getFilteredBudgetLines() {
+        return filteredBudgetLines;
+    }
+
+    public void setFilteredBudgetLines(List<BudgetLine> filteredBudgetLines) {
+        this.filteredBudgetLines = filteredBudgetLines;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public BudgetLineStatus getSelectedStatus() {
+        return selectedStatus;
+    }
+
+    public void setSelectedStatus(BudgetLineStatus selectedStatus) {
+        this.selectedStatus = selectedStatus;
+    }
+
+    public BudgetLineCategory getSelectedCategory() {
+        return selectedCategory;
+    }
+
+    public void setSelectedCategory(BudgetLineCategory selectedCategory) {
+        this.selectedCategory = selectedCategory;
+    }
+
+    public List<String> getBudgetLineStatuses() {
+        return budgetLineStatuses;
+    }
+
+    public void setBudgetLineStatuses(List<String> budgetLineStatuses) {
+        this.budgetLineStatuses = budgetLineStatuses;
+    }
+
     public List<BudgetLineCategory> getUniqueBudgetLineCategories() {
         Set<BudgetLineCategory> uniqueCategories = new HashSet<>(budgetLineCategoryService.getAllBudgetLineCategories());
         return new ArrayList<>(uniqueCategories);
     }
-
 
     public int getActiveBudgetLineCount() {
         return budgetLineService.getActiveBudgetLineCount();

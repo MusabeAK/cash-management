@@ -9,13 +9,13 @@
 
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
-        <h:panelGroup layout="block" styleClass="top-bar">
+        <h:panelGroup layout="block" rendered="#{loginBean.hasPermission('VIEW_DASHBOARD')}" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="Dashboard" styleClass="top-bar-title" />
         </h:panelGroup>
 
         <div class="content">
-            <h:form id="mainView">
+            <h:form id="mainView" rendered="#{loginBean.hasPermission('VIEW_DASHBOARD')}">
                 <p:messages id="messages" showDetail="false" closable="true" severity="info, error">
                     <p:autoUpdate/>
                 </p:messages>

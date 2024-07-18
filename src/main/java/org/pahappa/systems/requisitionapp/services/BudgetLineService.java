@@ -25,4 +25,8 @@ public interface BudgetLineService {
     List<Requisition> getBudgetLineRequisitions(long budgetLineId);
 
     int getActiveBudgetLineCount();
+
+    List<BudgetLine> filterBudgetLineByCategory(BudgetLineCategory budgetLineCategory);
+
+    List<BudgetLine> filterBudgetLineByStatus(String status);
 }

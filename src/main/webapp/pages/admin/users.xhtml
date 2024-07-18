@@ -106,9 +106,9 @@
                 <div style="margin-bottom: 20px">
 
                 </div>
-                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
                     <p:autoUpdate/>
-                </p:messages>
+                </p:growl>
 
                 <h:panelGroup id="usersTable" rendered="#{userPermissionBean.hasPermission('VIEW_USERS')}">
 
