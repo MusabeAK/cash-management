@@ -40,10 +40,12 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     private String budgetLineCategoryName;
     private BudgetLineCategory selectedBudgetLineCategory;
     private BudgetLineCategory selectedCategory;
+    private List<BudgetLineCategory> filteredBudgetLineCategories;
 
     private List<String> budgetLineStatuses;
     private BudgetLineStatus selectedStatus;
     private String searchQuery;
+    private String categorySearchQuery;
 
     private BudgetLine newBudgetLine;
     private List<BudgetLine> budgetLines;
@@ -60,6 +62,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
         Set<BudgetLineCategory> uniqueCategories = new HashSet<>(budgetLineCategoryService.getAllBudgetLineCategories());
         budgetLineCategories = new ArrayList<>(uniqueCategories);
+        filteredBudgetLineCategories = new ArrayList<>(uniqueCategories);
 
         budgetLines = budgetLineService.getAllBudgetLines();
         filteredBudgetLines = new ArrayList<>(budgetLines);
@@ -100,6 +103,12 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 .filter(bl -> searchQuery == null || searchQuery.isEmpty() || bl.getTitle().toLowerCase().contains(searchQuery.toLowerCase()))
                 .filter(bl -> selectedCategory == null || bl.getBudgetLineCategory().equals(selectedCategory))
                 .filter(bl -> selectedStatus == null || bl.getStatus().equals(selectedStatus))
+                .collect(Collectors.toList());
+    }
+
+    public void searchCategories() {
+        filteredBudgetLineCategories = budgetLineCategories.stream()
+                .filter(blc -> categorySearchQuery == null || categorySearchQuery.isEmpty() || blc.getCategoryName().toLowerCase().contains(categorySearchQuery.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -454,6 +463,22 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void setActiveBudgetLineCount(int activeBudgetLineCount) {
         this.activeBudgetLineCount = activeBudgetLineCount;
+    }
+
+    public String getCategorySearchQuery() {
+        return categorySearchQuery;
+    }
+
+    public void setCategorySearchQuery(String categorySearchQuery) {
+        this.categorySearchQuery = categorySearchQuery;
+    }
+
+    public List<BudgetLineCategory> getFilteredBudgetLineCategories() {
+        return filteredBudgetLineCategories;
+    }
+
+    public void setFilteredBudgetLineCategories(List<BudgetLineCategory> filteredBudgetLineCategories) {
+        this.filteredBudgetLineCategories = filteredBudgetLineCategories;
     }
 
     public void rowSelect(SelectEvent event) {
