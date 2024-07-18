@@ -59,6 +59,7 @@ public class BudgetLineServiceImpl implements BudgetLineService {
 
         budgetLine.setStatus(BudgetLineStatus.DRAFT);
         budgetLine.setBalance(budgetLine.getInitialAmount());
+        budgetLine.setFloatAmount(budgetLine.getBalance());
         budgetLineDAO.addBudgetLineToBudgetLineCategory(budgetLine, budgetLineCategory);
     }
 
@@ -89,6 +90,7 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         budgetLineToUpdate.setStatus(budgetLine.getStatus());
         budgetLineToUpdate.setInitialAmount(budgetLine.getInitialAmount());
         budgetLineToUpdate.setBalance(budgetLine.getBalance());
+        budgetLineToUpdate.setFloatAmount(budgetLine.getFloatAmount());
         budgetLineToUpdate.setTitle(budgetLine.getTitle());
         budgetLineToUpdate.setEndDate(budgetLine.getEndDate());
         budgetLineToUpdate.setStartDate(budgetLine.getStartDate());

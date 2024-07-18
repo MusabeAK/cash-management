@@ -77,6 +77,7 @@ public class AccountabilityBean implements Serializable {
             int newBudgetLineBalance = budgetLine.getBalance() + disparity;
             accountabilityService.addAccountabilityToRequisition(newAccountability, selectedRequisition);
             budgetLine.setBalance(newBudgetLineBalance);
+            budgetLine.setFloatAmount(budgetLine.getBalance());
             budgetLineService.updateBudgetLine(budgetLine);
             newAccountability = new Accountability();
         } catch (Exception e){

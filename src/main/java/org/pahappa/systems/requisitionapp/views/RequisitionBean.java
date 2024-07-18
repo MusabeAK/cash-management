@@ -122,6 +122,11 @@ public class RequisitionBean implements Serializable {
                                   new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
                           return;
                       }
+                      if (budgetLine.getFloatAmount() < newRequisition.getAmount()){
+                          FacesContext.getCurrentInstance().addMessage(null,
+                                  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to make requisition at the moment", null));
+                          return;
+                      }
                       if (newRequisition.getDateNeeded().after(budgetLine.getEndDate())){
                           FacesContext.getCurrentInstance().addMessage(null,
                                   new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be after budget line end date", null));
@@ -264,6 +269,11 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount cannot be greater than budget line balance", null));
             return;
         }
+        if (selectedRequisition.getBudgetLine().getFloatAmount() < selectedRequisition.getAmount()){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to make requisition at the moment", null));
+            return;
+        }
         if (selectedRequisition.getDateNeeded().after(selectedRequisition.getBudgetLine().getEndDate())){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Date Needed cannot be after budget line end date", null));
@@ -291,6 +301,14 @@ public class RequisitionBean implements Serializable {
         }
         try {
             selectedRequisition.setStatus(RequisitionStatus.SUBMITTED);
+            BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
+            int amountUsed = selectedRequisition.getAmount();
+            int currentFloatAmount = budgetLine.getFloatAmount();
+            int newFloatAmount = currentFloatAmount - amountUsed;
+
+            budgetLine.setFloatAmount(newFloatAmount);
+            budgetLineService.updateBudgetLine(budgetLine);
+
             draftRequisitions.add(newRequisition);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -357,6 +375,9 @@ public class RequisitionBean implements Serializable {
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)) {
             selectedRequisition.setComment(comment);
+            BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
+            budgetLine.setFloatAmount(budgetLine.getBalance());
+            budgetLineService.updateBudgetLine(budgetLine);
             selectedRequisition.setStatus(RequisitionStatus.REJECTED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -393,10 +414,13 @@ public class RequisitionBean implements Serializable {
             return;
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+            BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
+            budgetLine.setFloatAmount(budgetLine.getBalance());
+            budgetLineService.updateBudgetLine(budgetLine);
             selectedRequisition.setStatus(RequisitionStatus.REJECTED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Requisition rejected.", null));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition rejected.", null));
             reviewedRequisitions.remove(selectedRequisition);
         } else
             FacesContext.getCurrentInstance().addMessage(null,
@@ -422,6 +446,7 @@ public class RequisitionBean implements Serializable {
                 int newBalance = currentBalance - amountUsed;
                 BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
                 budgetLine.setBalance(newBalance);
+                budgetLine.setFloatAmount(budgetLine.getBalance());
                 budgetLineService.updateBudgetLine(budgetLine);
                 requisitionService.updateRequisition(selectedRequisition);
                 FacesContext.getCurrentInstance().addMessage(null,

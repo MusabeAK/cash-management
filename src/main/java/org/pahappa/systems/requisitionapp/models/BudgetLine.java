@@ -24,6 +24,9 @@ public class BudgetLine {
     @Column(name = "balance")
     private int balance;
 
+    @Column(name = "float_amount")
+    private int floatAmount;
+
     @Column(name = "start_date")
     private Date startDate;
 
@@ -132,6 +135,14 @@ public class BudgetLine {
 
     public void setBalance(int balance) {
         this.balance = balance;
+    }
+
+    public int getFloatAmount() {
+        return floatAmount;
+    }
+
+    public void setFloatAmount(int floatAmount) {
+        this.floatAmount = floatAmount;
     }
 
     @Override

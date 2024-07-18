@@ -165,6 +165,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 return;
             }
             selectedBudgetLine.setBalance(selectedBudgetLine.getInitialAmount());
+            selectedBudgetLine.setFloatAmount(selectedBudgetLine.getBalance());
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
