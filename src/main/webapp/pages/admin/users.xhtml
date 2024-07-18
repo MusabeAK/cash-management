@@ -102,50 +102,6 @@
                         </div>
                     </div>
                 </div>
-                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
-                    <p:autoUpdate/>
-                </p:messages>
-                <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
-
-                    <div class="search-container">
-                        <h3>All Roles</h3>
-                        <div class="search-and-filter">
-                            <div class="search">
-                                <p:inputText id="searchBar2" value="#{roleBean.searchQuery}" styleClass="search-bar" placeholder="Search..." rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
-                                    <p:ajax event="keyup" update=":usersForm:rolesTable" listener="#{roleBean.searchRoles()}"/>
-                                </p:inputText>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="table-header">
-                        <h:outputText value="#{roleBean.roles.size()} Role(s)" styleClass="total-users"/>
-                        <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" update=":usersForm:rolesTable :usersForm:usersTable :addRoleForm:addRolePanel" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
-                        </div>
-                    </div>
-
-                    <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}" value="#{roleBean.roles}" var="role" paginator="true" rows="5" paginatorPosition="bottom" styleClass="customDataTable">
-                        <p:column headerText="Role Name">
-                            <h:outputText value="#{role.name}"/>
-                        </p:column>
-
-                        <p:column headerText="Permissions">
-                            <h:outputText value="#{role.permissions}"/>
-                        </p:column>
-
-
-                        <p:column headerText="Actions">
-                            <p:commandButton value="Edit Role" rendered="#{loginBean.hasPermission('EDIT_ROLE')}" styleClass="edit-button" action="#{roleBean.selectRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":usersForm:rolesTable :usersForm:usersTable :updateRoleForm:editRolePanel" style="font-size: medium !important"/>
-
-                            <p:commandButton value="Delete" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" action="#{roleBean.deleteRole(role)}" title="Delete" styleClass="delete-button" style="color:red;font-size: medium !important" update=":usersForm:rolesTable :usersForm:usersTable">
-                                <p:confirm header="Confirm Deletion" message="Do you want to delete this Role?"
-                                           icon="pi pi-info-circle"/>
-                            </p:commandButton>
-                        </p:column>
-
-                    </p:dataTable>
-                </h:panelGroup>
 
                 <div style="margin-bottom: 20px">
 
@@ -451,88 +407,6 @@
             </p:dialog>
         </h:form>
 
-        <h:form id="addRoleForm">
-            <p:dialog header="Add New Role."
-                      widgetVar="addRoleDialog"
-                      modal="true"
-                      resizable="true"
-                      height="400px"
-                      showEffect="fade"
-                      hideEffect="fade"
-                      closable="true"
-                      width="800px"
-                      visible="#{facesContext.validationFailed}">
-                <p:outputPanel id="addRolePanel" rendered="true">
-                    <p:messages id="addRolePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                        <p:autoUpdate/>
-                    </p:messages>
-                    <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="roleName" value="Role Name">
-                            <div style="height: 8px">
-
-                            </div>
-                            <p:inputText id="roleName" value="#{roleBean.roleName}" required="true" requiredMessage="Please add a role name">
-                            </p:inputText>
-                        </p:outputLabel>
-
-
-                        <h:outputLabel for="permissions" value="Select Permissions">
-                            <div style="height: 8px">
-
-                            </div>
-                            <p:selectManyCheckbox id="permissions" value="#{roleBean.selectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;" required="true" requiredMessage="Please select at least one permission">
-                                <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
-                            </p:selectManyCheckbox>
-                        </h:outputLabel>
-
-                    </p:panelGrid>
-
-                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable :usersForm:usersTable @form" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
-                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable @form :addRoleForm:addRolePanel" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="add-button"/>
-                    <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" />
-                </p:outputPanel>
-            </p:dialog>
-        </h:form>
-
-        <h:form id="updateRoleForm">
-            <p:dialog header="Update Role"
-                      widgetVar="editRoleDialog"
-                      modal="true"
-                      resizable="true"
-                      showEffect="fade"
-                      hideEffect="fade"
-                      closable="true"
-                      height="400px"
-                      width="800px"
-                      visible="#{facesContext.validationFailed}">
-                <p:outputPanel id="editRolePanel" rendered="true">
-                    <p:messages id="editRolePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                        <p:autoUpdate/>
-                    </p:messages>
-                    <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="eroleName" value="Role Name">
-                            <div style="height: 8px">
-
-                            </div>
-                            <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
-                        </p:outputLabel>
-
-                        <h:outputLabel for="epermissions" value="Select Permissions">
-                            <div style="height: 8px">
-
-                            </div>
-                            <p:selectManyCheckbox id="epermissions" value="#{roleBean.updateSelectedPermissions}" layout="grid" columns="1" style="height: 100px; overflow-y: scroll;" required="true" requiredMessage="Please select at least one permission">
-                                <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
-                            </p:selectManyCheckbox>
-                        </h:outputLabel>
-
-                    </p:panelGrid>
-
-                    <p:commandButton value="Update" update=":usersForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="add-button" oncomplete="editRoleOnClick(xhr, status, args)"/>
-                    <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="delete-all-button" immediate="true" />
-                </p:outputPanel>
-            </p:dialog>
-        </h:form>
 
     </ui:define>
 

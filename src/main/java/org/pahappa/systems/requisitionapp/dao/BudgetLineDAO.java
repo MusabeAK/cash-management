@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -75,6 +76,20 @@ public class BudgetLineDAO {
                 .createQuery(query, BudgetLine.class)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
+    }
+
+    public List<Requisition> getBudgetLineRequisitions(long budgetLineId) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Requisition> requisitions = null;
+        try {
+            String hql = "FROM Requisition r WHERE r.budgetLine.id = :budgetLineId";
+            requisitions = session.createQuery(hql, Requisition.class)
+                    .setParameter("budgetLineId", budgetLineId)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return requisitions;
     }
 
 }

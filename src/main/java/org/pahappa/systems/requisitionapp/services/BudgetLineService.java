@@ -2,6 +2,7 @@ package org.pahappa.systems.requisitionapp.services;
 
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.pahappa.systems.requisitionapp.models.Requisition;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ public interface BudgetLineService {
     BudgetLine getBudgetLineByTitle(String title);
 
     List<BudgetLine> searchBudgetLines(String searchTerm);
+
+    List<Requisition> getBudgetLineRequisitions(long budgetLineId);
 
     int getActiveBudgetLineCount();
 }

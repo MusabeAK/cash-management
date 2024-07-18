@@ -2,6 +2,7 @@ package org.pahappa.systems.requisitionapp.services.Impl;
 
 import org.pahappa.systems.requisitionapp.dao.BudgetLineCategoryDAO;
 import org.pahappa.systems.requisitionapp.dao.BudgetLineDAO;
+import org.pahappa.systems.requisitionapp.dao.RequisitionDAO;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
 import org.pahappa.systems.requisitionapp.models.Requisition;
@@ -172,5 +173,15 @@ public class BudgetLineServiceImpl implements BudgetLineService {
             }
         }
         return activeBudgetLines.size();
+    }
+
+    @Override
+    @Transactional
+    public List<Requisition> getBudgetLineRequisitions(long budgetLineId){
+        List<Requisition> requisitions = budgetLineDAO.getBudgetLineRequisitions(budgetLineId);
+        if (requisitions.isEmpty()){
+            return Collections.emptyList();
+        }
+        return requisitions;
     }
 }
