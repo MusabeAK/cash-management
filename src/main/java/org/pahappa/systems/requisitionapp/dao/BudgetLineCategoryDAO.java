@@ -2,6 +2,7 @@ package org.pahappa.systems.requisitionapp.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,16 @@ public class BudgetLineCategoryDAO {
                 .createQuery(query, BudgetLineCategory.class)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
+    }
+
+    public List<BudgetLine> getBudgetLinesForCategory(BudgetLineCategory budgetLineCategory) {
+        Session session = sessionFactory.getCurrentSession();
+        List<BudgetLine> budgetLines = null;
+        String hql = "from BudgetLine  bl where bl.budgetLineCategory = :budgetLineCategory";
+        budgetLines = session.createQuery(hql, BudgetLine.class)
+                .setParameter("budgetLineCategory", budgetLineCategory)
+                .list();
+        return budgetLines;
     }
 
 }

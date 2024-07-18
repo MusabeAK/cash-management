@@ -128,8 +128,15 @@ public class BudgetLineCategoryServiceImpl implements BudgetLineCategoryService 
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<BudgetLineCategory> searchBudgetLineCategories(String searchTerm) {
         return budgetLineCategoryDAO.searchBudgetLineCategories(searchTerm);
+    }
+
+    @Override
+    @Transactional
+    public List<BudgetLine> getBudgetLinesForCategory(BudgetLineCategory budgetLineCategory){
+        return budgetLineCategoryDAO.getBudgetLinesForCategory(budgetLineCategory);
     }
 
 }

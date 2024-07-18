@@ -1,5 +1,6 @@
 package org.pahappa.systems.requisitionapp.services;
 
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
 import org.pahappa.systems.requisitionapp.models.User;
 
@@ -22,4 +23,6 @@ public interface BudgetLineCategoryService {
     List<BudgetLineCategory> searchBudgetLineCategoriesByName(String query);
 
     List<BudgetLineCategory> searchBudgetLineCategories(String searchTerm);
+
+    List<BudgetLine> getBudgetLinesForCategory(BudgetLineCategory budgetLineCategory);
 }

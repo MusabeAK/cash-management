@@ -259,7 +259,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             return;
         }
         try {
-            List<BudgetLine> budgetLineCategoryBudgetLines = category.getBudgetLines();
+            List<BudgetLine> budgetLineCategoryBudgetLines = budgetLineCategoryService.getBudgetLinesForCategory(category);
             for (BudgetLine budgetLine : budgetLineCategoryBudgetLines){
                 if (budgetLine.getStatus().equals(BudgetLineStatus.APPROVED)){
                     FacesContext.getCurrentInstance().addMessage(null,
@@ -267,9 +267,12 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                     return;
                 }
             }
+
+            for (BudgetLine budgetLine : budgetLineCategoryBudgetLines){
+                deleteBudgetLine(budgetLine);
+            }
             budgetLineCategoryService.deleteBudgetLineCategory(category);
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Budget Line Category deleted successfully"));
+
             loadBudgetLineCategories();
             loadBudgetLines();
         } catch (Exception e) {
