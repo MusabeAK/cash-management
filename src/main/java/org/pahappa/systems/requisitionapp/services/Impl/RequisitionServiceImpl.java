@@ -3,10 +3,8 @@ package org.pahappa.systems.requisitionapp.services.Impl;
 import org.pahappa.systems.requisitionapp.dao.BudgetLineDAO;
 import org.pahappa.systems.requisitionapp.dao.RequisitionDAO;
 import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
-import org.pahappa.systems.requisitionapp.models.BudgetLine;
+import org.pahappa.systems.requisitionapp.models.*;
 import org.pahappa.systems.requisitionapp.models.Requisition;
-import org.pahappa.systems.requisitionapp.models.Requisition;
-import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
 import org.pahappa.systems.requisitionapp.services.UserService;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,5 +108,12 @@ public class RequisitionServiceImpl implements RequisitionService {
             }
         }
         return disbursedRequisitions.stream().mapToDouble(Requisition::getAmount).sum();
+    }
+
+    public List<Requisition> getRequisitionsByBudgetLine(BudgetLine budgetLine){
+        if(budgetLine == null)
+           return Collections.emptyList();
+
+        return requisitionDAO.getRequisitionsByBudgetLine(budgetLine);
     }
 }

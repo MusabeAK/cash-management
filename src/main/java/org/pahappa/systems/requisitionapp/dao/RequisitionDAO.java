@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.Accountability;
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,16 @@ public class RequisitionDAO {
         String hql = "FROM Requisition rq WHERE rq.user = :user";
         requisitions = session.createQuery(hql, Requisition.class)
                 .setParameter("user", user)
+                .list();
+        return requisitions;
+    }
+
+    public List<Requisition> getRequisitionsByBudgetLine(BudgetLine budgetLine) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Requisition> requisitions;
+        String hql = "FROM Requisition rq WHERE rq.budgetLine = :budgetLine";
+        requisitions = session.createQuery(hql, Requisition.class)
+                .setParameter("budgetLine", budgetLine)
                 .list();
         return requisitions;
     }

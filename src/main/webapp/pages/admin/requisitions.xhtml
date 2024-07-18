@@ -122,9 +122,6 @@
             <h:outputText value="My Requisitions" styleClass="top-bar-title" />
         </h:panelGroup>
 
-        <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
-            <p:autoUpdate/>
-        </p:messages>
 
         <div class="content">
             <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -282,8 +279,8 @@
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":updateRequisition:updateRequistionTable :userRequisitions:userRequisitionsTable" />
-                        <p:commandButton value="Update" styleClass="custom-button3" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-pencil" update=":updateRequisition:updateRequistionTable :userRequisitions:userRequisitionsTable"/>
+                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}" icon="pi pi-check" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable" />
+                        <p:commandButton value="Update" styleClass="custom-button3" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" icon="pi pi-pencil" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable"/>
                         <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
                     </p:outputPanel>
                 </p:dialog>

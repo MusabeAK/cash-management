@@ -8,6 +8,7 @@ import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineCategoryService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
+import org.pahappa.systems.requisitionapp.services.RequisitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,9 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     @Autowired
     private BudgetLineService budgetLineService;
+
+    @Autowired
+    private RequisitionService requisitionService;
 
     private BudgetLineCategory newBudgetLineCategory;
     private List<BudgetLineCategory> budgetLineCategories;
@@ -172,14 +176,19 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             return;
         }
         try {
-//            List<Requisition> budgetLineRequisitions = budgetLine.getRequisitions();
-//            for (Requisition requisition : budgetLineRequisitions){
-//                if (requisition.getStatus().equals(RequisitionStatus.DISBURSED) && requisition.getAccountability() == null){
-//                    FacesContext.getCurrentInstance().addMessage(null,
-//                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
-//                    return;
-//                }
-//            }
+            List<Requisition> budgetLineRequisitions = requisitionService.getRequisitionsByBudgetLine(budgetLine);
+            for (Requisition requisition : budgetLineRequisitions){
+                if (requisition.getStatus().equals(RequisitionStatus.DISBURSED) && requisition.getAccountability() == null){
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete a budget line with a requisition which has not yet been provided accountability for.", null));
+                    return;
+                }
+            }
+
+            for (Requisition requisition : budgetLineRequisitions){
+                requisitionService.deleteRequisition(requisition);
+            }
+
             budgetLineService.deleteBudgetLine(budgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
