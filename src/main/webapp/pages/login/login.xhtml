@@ -9,15 +9,15 @@
         <div class="centered-form">
             <h:form class="form-container">
                 <h1>Login</h1>
-                <p:messages style="color: red; contain: content" showDetail="false" closable="true" severity="error, info" showSummary="true" styleClass="expanded">
+                <p:messages id="loginPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                     <p:autoUpdate/>
                 </p:messages>
                 <h:panelGrid columns="1">
                     <h:outputLabel for="username" value="Username" styleClass="form-label"/>
-                    <h:inputText id="username" value="#{loginBean.identifier}" required="true" styleClass="form-input"/>
+                    <h:inputText id="username" value="#{loginBean.identifier}" required="true" styleClass="form-input" requiredMessage="Username is required"/>
 
                     <h:outputLabel for="password" value="Password" styleClass="form-label"/>
-                    <h:inputSecret id="password" value="#{loginBean.password}" required="true" styleClass="form-input"/>
+                    <h:inputSecret id="password" value="#{loginBean.password}" required="true" styleClass="form-input" requiredMessage="Password is required"/>
 
                 </h:panelGrid>
 

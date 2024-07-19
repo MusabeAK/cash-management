@@ -1,5 +1,6 @@
 package org.pahappa.systems.requisitionapp.views.utils;
 
+import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.models.utils.Role;
 import org.pahappa.systems.requisitionapp.views.LoginBean;
@@ -11,6 +12,7 @@ import javax.faces.event.ComponentSystemEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.primefaces.component.panelgrid.PanelGridBase.PropertyKeys.role;
 
@@ -33,7 +35,8 @@ public class NavigationBean implements Serializable {
         links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line", Permission.VIEW_BUDGET_LINES))   ;
         links.add(new NavLink("Settings", "settings", "pi pi-cog", Permission.VIEW_SETTINGS));
 
-        activePage = "dashboard"; // Default active page
+        activePage = "dashboard";
+
     }
 
     public List<NavLink> getLinks() {

@@ -5,12 +5,140 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/template/template.xhtml">
     <ui:define name="content" class="form-container">
+        <style type="text/css">
+           .wrap-panel{
+               margin: 0;
+           }
+            .inner-div{
+                justify-content: center;
+                background-color: white;
+                padding: 3px 25px;
+                margin: 0;
+                border-radius: 10px;
+                height: 100%;
+            }
+
+           .inner-div h3{
+               margin-left: 20px;
+               font-weight: bolder;
+               color: #343C6A;
+
+           }
+            .add-button{
+                float: right;
+            }
+
+            .inner-div .custom-grid{
+                justify-content: space-between;
+                height: 100%;
+                display: inline;
+
+            }
+
+           .inner-div .custom-grid input{
+               width: 90%;
+           }
+
+           .inner-div .custom-grid label{
+               font-weight: bold;
+           }
+
+           .inner-div .custom-button3:hover{
+               font-weight: bold;
+               transition: font-weight 0.3s ease;
+               background-color: #0dda6f !important;
+               border: #32de84 !important;
+           }
+
+        </style>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+        <f:event listener="#{userBean.loadCurrentUser()}" type="preRenderView"/>
 
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="Settings" styleClass="top-bar-title" />
         </h:panelGroup>
+        <div class="content">
+            <p:outputPanel id="editUserPanel" rendered="true" styleClass="wrap-panel">
+                <div class="inner-div">
+                    <h3>Edit Your Profile</h3>
+                    <p:messages id="editUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <h:form >
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="userName" value="User Name">
+                                <div style="height: 6px">
 
+                                </div>
+                                <p:inputText id="userName" value="#{userBean.selectedUser.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid Username">
+                                    <f:validateRegex pattern="[a-zA-Z0-9_]*"/>
+                                    <f:validateLength minimum="3" maximum="16"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+
+                            <p:outputLabel for="efirstName" value="First Name">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="efirstName" value="#{userBean.selectedUser.firstName}" required="true" requiredMessage="First name is required" validatorMessage="Invalid first name">
+                                    <f:validateRegex pattern="[a-zA-Z]*"/>
+                                    <f:validateLength minimum="3" maximum="32"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+                            <p:outputLabel for="elastName" value="Last Name">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="elastName" value="#{userBean.selectedUser.lastName}" rendered="true" required="true" requiredMessage="Last name is required" validatorMessage="Invalid last name">
+                                    <f:validateRegex pattern="[a-zA-Z]*"/>
+                                    <f:validateLength minimum="3" maximum="32"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+                            <p:outputLabel for="eemail" value="Email:">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="eemail" value="#{userBean.selectedUser.email}" required="true" requiredMessage="Email address is required" validatorMessage="Invalid email address">
+                                    <f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)"/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+                            <p:outputLabel for="epassword" value="Password">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:password id="epassword" value="#{userBean.selectedUser.password}"  />
+                            </p:outputLabel>
+
+                            <p:outputLabel for="ephone" value="Phone Number">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="ephone" value="#{userBean.selectedUser.phoneNumber}"  />
+                            </p:outputLabel>
+
+                            <p:outputLabel for="egender" value="Gender:">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:selectOneMenu id="egender" value="#{userBean.selectedUser.gender}" style="width: 90%">
+                                    <f:selectItem itemLabel="Select Gender" itemValue="" />
+                                    <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
+                                </p:selectOneMenu>
+                            </p:outputLabel>
+                        </p:panelGrid>
+                        <p:commandButton value="Update" oncomplete="handleEditUserOnClick(xhr, status, args)" actionListener="#{userBean.updateCurrentUser}" icon="pi pi-pencil" styleClass="custom-button3" />
+                    </h:form>
+
+                </div>
+        </p:outputPanel>
+        </div>
     </ui:define>
 </ui:composition>

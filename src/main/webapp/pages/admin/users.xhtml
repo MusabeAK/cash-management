@@ -156,7 +156,12 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{userBean.filteredUsers}" rendered="#{loginBean.hasPermission('VIEW_USERS')}" var="user" paginator="true" rows="5" paginatorPosition="bottom">
+                    <p:dataTable value="#{userBean.filteredUsers}" rendered="#{loginBean.hasPermission('VIEW_USERS')}" var="user" paginator="true" rows="5" paginatorPosition="bottom" rowIndexVar="rowIndex">
+
+                        <p:column headerText="No.">
+                            <h:outputText value="#{rowIndex + 1}" />
+                        </p:column>
+
                         <p:column headerText="User Name">
                             <h:outputText value="#{user.username}"/>
                         </p:column>
@@ -198,10 +203,8 @@
 
                     </p:dataTable>
 
-
                 </h:panelGroup>
             </h:form>
-
 
         </div>
 
