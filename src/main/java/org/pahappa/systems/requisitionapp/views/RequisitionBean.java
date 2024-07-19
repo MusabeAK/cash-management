@@ -375,6 +375,7 @@ public class RequisitionBean implements Serializable {
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
             selectedRequisition.setComment(comment);
+            comment = "";
             selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -394,6 +395,7 @@ public class RequisitionBean implements Serializable {
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)) {
             selectedRequisition.setComment(comment);
+            comment = "";
             BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
             budgetLine.setFloatAmount(budgetLine.getBalance());
             budgetLineService.updateBudgetLine(budgetLine);
@@ -416,6 +418,7 @@ public class RequisitionBean implements Serializable {
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
             selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
+            selectedRequisition.setComment(comment);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition approved.", null));
@@ -501,7 +504,32 @@ public class RequisitionBean implements Serializable {
         filteredRequisitions = requisitionService.getAllRequisitions();
     }
 
-
+    public void requestChanges(){
+        if (!(LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION))){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
+        try {
+            if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED) || selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
+                BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
+                budgetLine.setFloatAmount(budgetLine.getBalance());
+                budgetLineService.updateBudgetLine(budgetLine);
+                selectedRequisition.setStatus(RequisitionStatus.DRAFT);
+                requisitionService.updateRequisition(selectedRequisition);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
+                requisitions.remove(selectedRequisition);
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", null));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+        }
+    }
 
     public void loadUserRequisitions(){
         try {

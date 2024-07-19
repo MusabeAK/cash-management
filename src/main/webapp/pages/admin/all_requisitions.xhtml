@@ -189,6 +189,7 @@
 
                     <p:commandButton value="Approve" styleClass="custom-button1" actionListener="#{requisitionBean.reviewAndApproveRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-check" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
                     <p:commandButton value="Reject" styleClass="custom-button2" actionListener="#{requisitionBean.reviewAndRejectRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-times" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
+                    <p:commandButton value="Request Changes" styleClass="custom-button3" actionListener="#{requisitionBean.requestChanges}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations" icon="pi pi-pencil" onclick="PF('reviewRequisitionDialogoperations').hide()"/>
 
                 </p:outputPanel>
             </p:dialog>
@@ -243,6 +244,7 @@
 
                     <p:commandButton value="Approve" styleClass="custom-button1" actionListener="#{requisitionBean.approveRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-check" onclick="PF('reviewRequisitionDialog').hide()"/>
                     <p:commandButton value="Reject" styleClass="custom-button2" actionListener="#{requisitionBean.rejectRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-times" onclick="PF('reviewRequisitionDialog').hide()"/>
+                    <p:commandButton value="Request Changes" styleClass="custom-button3" actionListener="#{requisitionBean.requestChanges}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel" icon="pi pi-pencil" onclick="PF('reviewRequisitionDialog').hide()"/>
 
                 </p:outputPanel>
             </p:dialog>
