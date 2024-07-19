@@ -35,9 +35,9 @@ public class ServiceUtils {
     }
 
     public static String testStringInput(String input, String id) throws IllegalArgumentException {
-        input = input.strip();
         // handling empty input
-        if (!input.isEmpty()) {
+        if (input != null && !input.isEmpty()) {
+            input = input.strip();
             if (containsAlphabetsOnly(input))
                 return input;
             else {
@@ -51,9 +51,9 @@ public class ServiceUtils {
     }
 
     public static String testUserNameInput(String input) throws IllegalArgumentException {
-        input = input.strip();
         // handling empty input
-        if (!input.isEmpty()) {
+        if (input != null && !input.isEmpty()) {
+            input = input.strip();
             if (containsAlphanumericsOnly(input))
                 return input;
             else {
@@ -66,9 +66,9 @@ public class ServiceUtils {
     }
 
     public static String testEmailInput(String input) throws IllegalArgumentException {
-        input = input.strip();
         // handling empty input
-        if (!input.isEmpty()) {
+        if (input != null && !input.isEmpty()) {
+            input = input.strip();
             if (validateEmail(input))
                 return input;
             else {
@@ -81,9 +81,9 @@ public class ServiceUtils {
     }
 
     public static String testPhoneNumberInput(String input) throws IllegalArgumentException {
-        input = input.strip();
         // handling empty input
-        if (!input.isEmpty()) {
+        if (input != null && !input.isEmpty()) {
+            input = input.strip();
             if (validatePhoneNumber(input))
                 return input;
             else {
@@ -94,7 +94,7 @@ public class ServiceUtils {
     }
 
     public static String testPasswordInput(String input) throws IllegalArgumentException {
-        if (!input.isEmpty()) {
+        if (input != null && !input.isEmpty()) {
             if (input.length() >= 3) {
                 if ((input.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{3,}$"))) {
                     return Base64.getEncoder().encodeToString(input.getBytes());

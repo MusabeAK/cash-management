@@ -47,6 +47,7 @@ public class UserBean implements Serializable {
     private User selectedUser;
     private String newRole;
     private Gender selectedGender;
+    private boolean userLoaded = false;
 
     @PostConstruct
     public void init() {
@@ -172,6 +173,43 @@ public class UserBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating User: "+e.getMessage(), null));
             System.out.println("Error Updating User:  "+e.getMessage());
+        }
+
+    }
+
+    public void updateCurrentUser(){
+        try{
+            String username =ServiceUtils.testUserNameInput(selectedUser.getUsername());
+            String password = ServiceUtils.testPasswordInput(selectedUser.getPassword());
+            String firstname = ServiceUtils.testStringInput(selectedUser.getFirstName(), "First Name");
+            String lastname = ServiceUtils.testStringInput(selectedUser.getLastName(), "Last Name");
+            String email = ServiceUtils.testEmailInput(selectedUser.getEmail());
+            String phone = ServiceUtils.testPhoneNumberInput(selectedUser.getPhoneNumber());
+
+            selectedUser.setUsername(username);
+            selectedUser.setFirstName(firstname);
+            selectedUser.setLastName(lastname);
+            selectedUser.setEmail(email);
+            selectedUser.setPhoneNumber(phone);
+            selectedUser.setPassword(password);
+            userService.updateUser(selectedUser);
+
+            filteredUsers = userService.getAllUsers();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "User Update Success", null));
+        }catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating User: "+e.getMessage(), null));
+            System.out.println("Error Updating User:  "+e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void loadCurrentUser() {
+        if(!userLoaded){
+            selectedUser = LoginBean.getCurrentUser();
+            userLoaded = true;
         }
 
     }
@@ -367,4 +405,5 @@ public class UserBean implements Serializable {
     public void setSelectedGender(Gender selectedGender) {
         this.selectedGender = selectedGender;
     }
+
 }

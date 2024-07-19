@@ -20,10 +20,10 @@ public class SecurityFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        roleToPathMap.put(Role.EMPLOYEE, "/pages/employee/");
-        roleToPathMap.put(Role.OPERATIONS, "/pages/operations/");
-        roleToPathMap.put(Role.FINANCE, "/pages/finance/");
-        roleToPathMap.put(Role.CEO, "/pages/ceo/");
+//        roleToPathMap.put(Role.EMPLOYEE, "/pages/employee/");
+//        roleToPathMap.put(Role.OPERATIONS, "/pages/operations/");
+//        roleToPathMap.put(Role.FINANCE, "/pages/finance/");
+//        roleToPathMap.put(Role.CEO, "/pages/ceo/");
         roleToPathMap.put(Role.ADMIN, "/pages/admin/");
     }
 
@@ -69,8 +69,8 @@ public class SecurityFilter implements Filter {
 
             if (allowedPath != null && !requestedPath.startsWith(allowedPath)) {
                 // Redirect to the appropriate home page based on user role
-                String redirectPath = determineRedirectPath(currentUser, contextPath);
-                res.sendRedirect(redirectPath);
+//                String redirectPath = determineRedirectPath(currentUser, contextPath);
+//                res.sendRedirect(redirectPath);
                 return;
             }
         }else {
@@ -84,14 +84,14 @@ public class SecurityFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    private String determineRedirectPath(User currentUser, String contextPath) {
+    /*private String determineRedirectPath(User currentUser, String contextPath) {
         switch (currentUser.getRole().getName()) {
             case "ROLE_EMPLOYEE":
-                return contextPath + Hyperlink.EMPLOYEE_VIEW;
+                return contextPath + Hyperlink.ROLES_VIEW;
             case "ROLE_OPERATIONS":
-                return contextPath + Hyperlink.OPERATIONS_VIEW;
+                return contextPath + Hyperlink.ALL_REQUISITIONS_VIEW;
             case "ROLE_FINANCE":
-                return contextPath + Hyperlink.FINANCE_VIEW;
+                return contextPath + Hyperlink.SETTINGS_VIEW;
             case "ROLE_CEO":
                 return contextPath + Hyperlink.CEO_VIEW;
             case "ROLE_ADMIN":
@@ -99,7 +99,11 @@ public class SecurityFilter implements Filter {
             default:
                 return contextPath + Hyperlink.LOGIN_VIEW;
         }
+
+
     }
+
+     */
 
     @Override
     public void destroy() {
