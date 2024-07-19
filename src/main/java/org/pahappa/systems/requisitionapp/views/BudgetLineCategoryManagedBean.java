@@ -100,6 +100,9 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     private void applyFilters() {
+        if ((searchQuery == null || searchQuery.isEmpty()) && selectedCategory == null  && selectedStatus == null){
+            filteredBudgetLines = budgetLineService.getAllBudgetLines();
+        }
         filteredBudgetLines = budgetLines.stream()
                 .filter(bl -> searchQuery == null || searchQuery.isEmpty() || bl.getTitle().toLowerCase().contains(searchQuery.toLowerCase()))
                 .filter(bl -> selectedCategory == null || bl.getBudgetLineCategory().equals(selectedCategory))
@@ -416,6 +419,12 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLine> getFilteredBudgetLines() {
+        Date currentDate = new Date();
+        for (BudgetLine budgetLine : filteredBudgetLines){
+            if (currentDate.after(budgetLine.getEndDate())){
+                budgetLine.setStatus(BudgetLineStatus.EXPIRED);
+            }
+        }
         return filteredBudgetLines;
     }
 

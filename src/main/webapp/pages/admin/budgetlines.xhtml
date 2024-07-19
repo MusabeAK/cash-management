@@ -60,6 +60,67 @@
             }
 
         </script>
+        <style type="text/css">
+            .details-grid {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .details-grid td {
+                padding: 15px 10px;
+            }
+
+            .details-grid .ui-outputtext {
+                margin-bottom: 10px;
+            }
+
+            .details-grid tr {
+                height: 30px;
+            }
+
+            .full-width-panel {
+                width: 100%;
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                margin-bottom: 20px;
+                padding: 10px 10px 30px;
+            }
+
+            .panel-header {
+                display: block;
+                text-align: center;
+                align-items: center;
+                font-weight: bold;
+                margin-bottom: 15px;
+                text-decoration: underline;
+            }
+
+            .pipeline {
+                width: 100%;
+                position: relative;
+            }
+
+            .custom-progress {
+                width: 100% !important;
+                height: 20px !important;
+            }
+
+            .status-container {
+                display: flex;
+                justify-content: space-between;
+                position: relative;
+                height: 20px;
+                margin-top: 5px;
+            }
+
+            .status {
+                position: relative;
+                text-align: center;
+                font-size: 12px;
+                width: 25%;
+            }
+        </style>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
@@ -398,7 +459,7 @@
                 <p:messages id="reviewBudgetLinePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                     <p:autoUpdate/>
                 </p:messages>
-                <p:panelGrid columns="2" styleClass="custom-grid">
+                <h:panelGrid columns="2" styleClass="details-grid">
                     <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
                     <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory.categoryName}"/>
 
@@ -418,10 +479,14 @@
                         <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                     </h:outputText>
 
-                </p:panelGrid>
+                </h:panelGrid>
 
                     <p:commandButton value="Approve" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'DRAFT' and loginBean.hasPermission('APPROVE_BUDGET_LINE') }" styleClass="custom-button1" icon="pi pi-check" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.approveBudgetLine}" update=":budgetLine:budgetLineTable :budgetLineCategoryForm:card2 :budgetLineCategoryForm:card3"/>
                     <p:commandButton value="Reject" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'DRAFT' and loginBean.hasPermission('REJECT_BUDGET_LINE')}" styleClass="custom-button2" icon="pi pi-times" onclick="PF('reviewBudgetLineDialog').hide()" actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}" update=":budgetLine:budgetLineTable"/>
+                    <p:commandButton value="Print" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status != 'EXPIRED' }" type="button" icon="pi pi-print" styleClass="custom-button3">
+                        <p:printer target="reviewBudgetLinePanel"/>
+                    </p:commandButton>
+
 
                 </p:outputPanel>
                 </p:dialog>

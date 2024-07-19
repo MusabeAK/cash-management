@@ -46,8 +46,27 @@ public class RequisitionBean implements Serializable {
     private List<Requisition> filteredRequisitions;
     private double totalAmountDisbursed;
 
+    private long totalProcessingTime;
+    private long ReviewedToApprovedTime;
+    private long ApprovedToDisbursedTime;
+    private long SubmittedToRejectedTime;
+    private long SubmittedToReviewedTime;
+    private long SubmittedToApprovedTime;
+    private long SubmittedToDisbursedTime;
+    private long TimeSinceSubmitted;
+
     @PostConstruct
     public void init() {
+        totalProcessingTime = 0L;
+        ReviewedToApprovedTime = 0L;
+        ApprovedToDisbursedTime = 0L;
+        SubmittedToRejectedTime = 0L;
+        SubmittedToReviewedTime = 0L;
+        SubmittedToApprovedTime = 0L;
+        SubmittedToDisbursedTime = 0L;
+        TimeSinceSubmitted = 0L;
+
+
         totalAmountDisbursed = requisitionService.getTotalAmountDisbursed();
         newRequisition = new Requisition();
         requisitions = requisitionService.getAllRequisitions();
@@ -640,6 +659,78 @@ public class RequisitionBean implements Serializable {
 
     public void setTotalAmountDisbursed(double totalAmountDisbursed) {
         this.totalAmountDisbursed = totalAmountDisbursed;
+    }
+
+    public String getReviewedToApprovedTime() {
+        long time =  requisitionService.getHRReviewedToCEOApprovedTime(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setReviewedToApprovedTime(long reviewedToApprovedTime) {
+        ReviewedToApprovedTime = reviewedToApprovedTime;
+    }
+
+    public String getTotalProcessingTime() {
+        long time = requisitionService.getTotalProcessingTime(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setTotalProcessingTime(long totalProcessingTime) {
+        this.totalProcessingTime = totalProcessingTime;
+    }
+
+    public String getApprovedToDisbursedTime() {
+        long time = requisitionService.getCEOApprovedToDisbursedTime(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setApprovedToDisbursedTime(long approvedToDisbursedTime) {
+        ApprovedToDisbursedTime = approvedToDisbursedTime;
+    }
+
+    public String getSubmittedToRejectedTime() {
+        long time = requisitionService.getSubmittedToRejectedTime(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setSubmittedToRejectedTime(long submittedToRejectedTime) {
+        SubmittedToRejectedTime = submittedToRejectedTime;
+    }
+
+    public String getSubmittedToReviewedTime() {
+        long time = requisitionService.getSubmittedToHRReviewedTime(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setSubmittedToReviewedTime(long submittedToReviewedTime) {
+        SubmittedToReviewedTime = submittedToReviewedTime;
+    }
+
+    public String getSubmittedToApprovedTime() {
+        long time = requisitionService.getSubmittedToCEOApprovedTime(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setSubmittedToApprovedTime(long submittedToApprovedTime) {
+        SubmittedToApprovedTime = submittedToApprovedTime;
+    }
+
+    public String getSubmittedToDisbursedTime() {
+        long time = requisitionService.getSubmittedToDisbursedTime(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setSubmittedToDisbursedTime(long submittedToDisbursedTime) {
+        SubmittedToDisbursedTime = submittedToDisbursedTime;
+    }
+
+    public String getTimeSinceSubmitted() {
+        long time = requisitionService.getTimeSinceSubmitted(selectedRequisition);
+        return requisitionService.formatDuration(time);
+    }
+
+    public void setTimeSinceSubmitted(long timeSinceSubmitted) {
+        TimeSinceSubmitted = timeSinceSubmitted;
     }
 
     public void rowSelect(SelectEvent event) {

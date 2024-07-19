@@ -4,6 +4,7 @@ import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 
 import java.util.List;
 
@@ -27,4 +28,24 @@ public interface RequisitionService {
     double getTotalAmountDisbursed();
 
     List<Requisition> getRequisitionsByBudgetLine(BudgetLine budgetLine);
+
+    long getTimeBetweenStatuses(Requisition requisition, RequisitionStatus startStatus, RequisitionStatus endStatus);
+
+    long getHRReviewedToCEOApprovedTime(Requisition requisition);
+
+    long getCEOApprovedToDisbursedTime(Requisition requisition);
+
+    long getSubmittedToRejectedTime(Requisition requisition);
+
+    long getSubmittedToHRReviewedTime(Requisition requisition);
+
+    long getSubmittedToCEOApprovedTime(Requisition requisition);
+
+    long getSubmittedToDisbursedTime(Requisition requisition);
+
+    long getTotalProcessingTime(Requisition requisition);
+
+    String formatDuration(long millis);
+
+    long getTimeSinceSubmitted(Requisition requisition);
 }

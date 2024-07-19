@@ -83,6 +83,9 @@ public class BudgetLineServiceImpl implements BudgetLineService {
         if(budgetLine.getStartDate().after(budgetLine.getEndDate())){
             throw new ArithmeticException("Start date cannot be after end date");
         }
+        if(budgetLine.getEndDate().before(new Date())){
+            throw new ArithmeticException("End date cannot be before current date");
+        }
         if(budgetLine.getTitle().trim().isEmpty()){
             throw new RuntimeException("Title cannot be empty");
         }
