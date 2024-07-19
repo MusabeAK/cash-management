@@ -90,7 +90,7 @@
                         <i class="pi pi-key card-icon"/>
                         <div class="card-content">
                             <h:outputText value="Number of Registered Users" styleClass="card-title"/>
-                            <h:outputText value="#{userBean.users.size()}" styleClass="card-number"/>
+                            <h:outputText id="card1" value="#{userBean.users.size()}" styleClass="card-number"/>
                         </div>
                     </div>
 
@@ -147,9 +147,9 @@
                     <div class="table-header">
                         <h:outputText value="#{userBean.users.size()} User(s)" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" oncomplete="PF('addUserDialog').show()" rendered="#{userPermissionBean.hasPermission('CREATE_USER')}" update=":addUserForm"/>
+                            <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" oncomplete="PF('addUserDialog').show()" rendered="#{userPermissionBean.hasPermission('CREATE_USER')}" update=":addUserForm :usersForm:card1"/>
 
-                            <p:commandButton icon="pi pi-trash" value="Delete All" action="#" styleClass="delete-all-button" rendered="#{userPermissionBean.hasPermission('DELETE_USER')}">
+                            <p:commandButton icon="pi pi-trash" update="card1" value="Delete All" action="#" styleClass="delete-all-button" rendered="#{userPermissionBean.hasPermission('DELETE_USER')}">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Users?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
@@ -303,8 +303,8 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" oncomplete="handleAddUserOnClick(xhr, status, args)" update=":usersForm:usersTable :addUserForm:addUserPanel" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="add-button"/>
-                    <p:commandButton value="Cancel" onclick="PF('addUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
+                    <p:commandButton value="Add" oncomplete="handleAddUserOnClick(xhr, status, args)" update=":usersForm:usersTable :addUserForm:addUserPanel :usersForm:card1" actionListener="#{userBean.registerUser}" icon="pi pi-check" styleClass="custom-button1"/>
+                    <p:commandButton value="Cancel" onclick="PF('addUserDialog').hide();" icon="pi pi-times" styleClass="custom-button2"/>
                 </p:outputPanel>
             </p:dialog>
         </h:form>
@@ -329,11 +329,8 @@
                             <div style="height: 8px">
 
                             </div>
-                            <p:inputText id="userName" value="#{userBean.selectedUser.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid Username">
-                                <f:validateRegex pattern="[a-zA-Z0-9_]*"/>
-                                <f:validateLength minimum="3" maximum="16"/>
-                                <f:validateRequired/>
-                            </p:inputText>
+                            <h:outputText id="userName" value="#{userBean.selectedUser.username}" >
+                            </h:outputText>
                         </p:outputLabel>
 
 
@@ -368,12 +365,7 @@
                             </p:inputText>
                         </p:outputLabel>
 
-                        <p:outputLabel for="epassword" value="Password">
-                            <div style="height: 8px">
 
-                            </div>
-                            <p:password id="epassword" value="#{userBean.selectedUser.password}"  />
-                        </p:outputLabel>
 
                         <p:outputLabel for="erole" value="Role">
                             <div style="height: 8px">
@@ -404,8 +396,8 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" oncomplete="handleEditUserOnClick(xhr, status, args)" update=":usersForm:usersTable :editUserForm:editUserPanel" actionListener="#{userBean.updateUser}" icon="pi pi-check" styleClass="add-button"/>
-                    <p:commandButton value="Cancel" onclick="PF('editUserDialog').hide();" icon="pi pi-times" styleClass="delete-all-button"/>
+                    <p:commandButton value="Update" oncomplete="handleEditUserOnClick(xhr, status, args)" update=":usersForm:usersTable :editUserForm:editUserPanel :usersForm:card1" actionListener="#{userBean.updateUser}" icon="pi pi-check" styleClass="custom-button1"/>
+                    <p:commandButton value="Cancel" onclick="PF('editUserDialog').hide();" icon="pi pi-times" styleClass="custom-button2"/>
                 </p:outputPanel>
             </p:dialog>
         </h:form>

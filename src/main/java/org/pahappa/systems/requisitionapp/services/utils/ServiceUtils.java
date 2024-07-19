@@ -89,10 +89,8 @@ public class ServiceUtils {
             else {
                 throw new IllegalArgumentException("Phone Number must contain numbers only");
             }
-
-        } else {
-            throw new IllegalArgumentException("Phone Number must not be empty. Try Again!");
         }
+        return "";
     }
 
     public static String testPasswordInput(String input) throws IllegalArgumentException {
