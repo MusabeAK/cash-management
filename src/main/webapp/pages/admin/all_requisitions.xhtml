@@ -40,7 +40,7 @@
                 <i class="pi pi-key card-icon"/>
                 <div class="card-content">
                     <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
-                    <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
+                    <h:outputText id="card1" value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
                 </div>
             </div>
             <div class="card">
@@ -122,7 +122,7 @@
 
                         <p:commandButton value="Disburse" action="#{requisitionBean.selectRequisition(requisition)}"
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
-                                         update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance"
+                                         update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance card1"
                                          oncomplete="PF('reviewRequisitionDialogFinance').show()"
                                          rendered="#{requisition.status == 'CEO_APPROVED' and loginBean.hasPermission('DISBURSE_MONEY')}" />
                         <!-- Work on this  -->
@@ -295,7 +295,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Disburse" icon="pi pi-check" styleClass="custom-button1" oncomplete="handleDisburseRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.disburseRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance" />
+                    <p:commandButton value="Disburse" icon="pi pi-check" styleClass="custom-button1" oncomplete="handleDisburseRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.disburseRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance card1" />
                     <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" onclick="PF('reviewRequisitionDialogFinance').hide()"/>
 
                 </p:outputPanel>

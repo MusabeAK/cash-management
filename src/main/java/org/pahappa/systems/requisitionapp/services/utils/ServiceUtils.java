@@ -34,7 +34,6 @@ public class ServiceUtils {
         return phoneNumber.matches(PHONE_NUMBER_PATTERN);
     }
 
-
     public static String testStringInput(String input, String id) throws IllegalArgumentException {
         input = input.strip();
         // handling empty input
@@ -90,10 +89,8 @@ public class ServiceUtils {
             else {
                 throw new IllegalArgumentException("Phone Number must contain numbers only");
             }
-
-        } else {
-            throw new IllegalArgumentException("Phone Number must not be empty. Try Again!");
         }
+        return "";
     }
 
     public static String testPasswordInput(String input) throws IllegalArgumentException {

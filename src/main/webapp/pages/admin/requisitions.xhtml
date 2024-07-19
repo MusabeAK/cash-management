@@ -55,6 +55,13 @@
 
         </script>
         <style type="text/css">
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            }
+
             .details-grid {
                 width: 100%;
                 margin-bottom: 20px;
@@ -434,7 +441,7 @@
                         </h:panelGrid>
                     </h:panelGroup>
 
-                        <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="shadow-1 mb-3 mr-2">
+                        <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="custom-button3">
                             <p:printer target="requisitionDetailsPanel"/>
                         </p:commandButton>
 

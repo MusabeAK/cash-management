@@ -9,6 +9,7 @@ import org.pahappa.systems.requisitionapp.services.UserService;
 import org.pahappa.systems.requisitionapp.services.utils.MailService;
 import org.pahappa.systems.requisitionapp.services.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -134,16 +135,13 @@ public class UserBean implements Serializable {
             user.setGender(gender);
             user.setRole(role);
             user.setPhoneNumber(phone);
-
-            mailService.send("ahumuzaariyo@gmail.com", "tiadbqtshilfdprn", user.getEmail(), "Log In Details", "Your username is: " + user.getUsername() + "\nYour password is: " + password);
-
-            username=firstName=lastName=password=email=phoneNumber="";
-
             userService.addUser(user);
             filteredUsers = userService.getAllUsers();
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "User Creation Success", null));
+
+            mailService.send("ahumuzaariyo@gmail.com", "tiadbqtshilfdprn", user.getEmail(), "Log In Details", "Your username is: " + user.getUsername() + "\nYour password is: " + password);
 
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -154,8 +152,8 @@ public class UserBean implements Serializable {
 
     public void updateUser(){
         try{
-            String username =ServiceUtils.testUserNameInput(selectedUser.getUsername());
-            String password = ServiceUtils.testPasswordInput(selectedUser.getPassword());
+            String username = ServiceUtils.testUserNameInput(selectedUser.getUsername());
+            // String password = ServiceUtils.testPasswordInput(selectedUser.getPassword());
             String firstname = ServiceUtils.testStringInput(selectedUser.getFirstName(), "First Name");
             String lastname = ServiceUtils.testStringInput(selectedUser.getLastName(), "Last Name");
             String email = ServiceUtils.testEmailInput(selectedUser.getEmail());
@@ -165,7 +163,7 @@ public class UserBean implements Serializable {
             selectedUser.setLastName(lastname);
             selectedUser.setEmail(email);
             selectedUser.setPhoneNumber(phone);
-            selectedUser.setPassword(password);
+            // selectedUser.setPassword(password);
             selectedUser.setRole(roleService.getRoleByName(newRole));
             userService.updateUser(selectedUser);
             FacesContext.getCurrentInstance().addMessage(null,
