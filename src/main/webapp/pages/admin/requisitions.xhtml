@@ -184,7 +184,7 @@
                                 <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Status">
+                        <p:column rendered="#{requisition.status == 'DRAFT'}" headerText="Status">
                             <h:outputText value="#{requisition.status}"/>
                         </p:column>
                         <p:column headerText="Actions">
@@ -299,6 +299,7 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
+                          closeOnEscape="true"
                           width="800px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="addAccountabilityPanel" rendered="true">
@@ -306,23 +307,23 @@
                             <p:autoUpdate/>
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: ">
-                                <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
+                            <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: "/>
+                            <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
                                     <f:convertNumber/>
-                                </p:inputText>
-                            </p:outputLabel>
+                            </p:inputText>
 
-                            <p:outputLabel for="accountabilityDescription" value="Description: ">
-                                <p:inputText id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
 
-                                </p:inputText>
-                            </p:outputLabel>
+                            <p:outputLabel for="accountabilityDescription" value="Description: "/>
+                            <p:inputText id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
 
-                            <p:outputLabel for="accountabilityImage" value="Image: ">
-                                <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
+                            </p:inputText>
+
+
+                            <p:outputLabel for="accountabilityImage" value="Image: "/>
+                            <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
                                               mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
-                                </p:fileUpload>
-                            </p:outputLabel>
+
+                            </p:fileUpload>
 
                         </p:panelGrid>
 
@@ -415,8 +416,8 @@
                             <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                         </h:outputText>
 
-                        <h:outputText value="Time Since Submitted: "/>
-                        <h:outputText value="#{requisitionBean.timeSinceSubmitted}"/>
+                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="Time Since Submitted: "/>
+                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="#{requisitionBean.timeSinceSubmitted}"/>
 
                         <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="Time from Submitted to Rejected: "/>
                         <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="#{requisitionBean.submittedToRejectedTime}"/>
