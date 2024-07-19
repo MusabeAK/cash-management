@@ -45,6 +45,19 @@
                 PF('addAccountabilityDialog').hide();
             }
 
+            function handleUpdateAccountabilityOnClick(xhr, status, args) {
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('updateAccountabilityDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
+                }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('updateAccountabilityDialog').hide();
+            }
+
             function start() {
                 PF('statusDialog').show();
             }
@@ -184,9 +197,6 @@
                                 <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Status">
-                            <h:outputText value="#{requisition.status}"/>
-                        </p:column>
                         <p:column headerText="Actions">
                             <p:commandButton icon="pi pi-upload"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
 
@@ -196,7 +206,8 @@
                             </p:commandButton>
 
                             <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :addAccountability:addAccountabilityPanel" oncomplete="PF('addAccountabilityDialog').show()" style="background-color: #32de84; border-color: #32de84;"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :viewAccountability:viewAccountabilityPanel" oncomplete="PF('viewAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.accountability != null and requisition.accountability.status != 'REJECTED'}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :viewAccountability:viewAccountabilityPanel :viewAccountability:viewAccountabilityDialog" oncomplete="PF('viewAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability.status == 'REJECTED' }" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :updateAccountability:updateAccountabilityPanel :updateAccountability:updateAccountabilityDialog" oncomplete="PF('updateAccountabilityDialog').show()" style="background-color: #EC1212 !important; border: #EC1212 !important;"/>
 
                         </p:column>
                     </p:dataTable>
@@ -269,6 +280,11 @@
 
                             </p:inputText>
 
+                            <p:outputLabel for="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}">Comment: </p:outputLabel>
+
+                            <h:outputText id="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}"/>
+
+
                             <p:outputLabel for="editRequisitionAmount" value="Amount"/>
                             <p:inputText id="editRequisitionAmount" placeholder="UGX..." value="#{requisitionBean.selectedRequisition.amount}" required="true" requiredMessage="Please add an amount for your requisition" validatorMessage="Amount should be a number">
                                 <f:convertNumber/>
@@ -299,6 +315,7 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
+                          closeOnEscape="true"
                           width="800px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="addAccountabilityPanel" rendered="true">
@@ -306,23 +323,23 @@
                             <p:autoUpdate/>
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: ">
-                                <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
+                            <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: "/>
+                            <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
                                     <f:convertNumber/>
-                                </p:inputText>
-                            </p:outputLabel>
+                            </p:inputText>
 
-                            <p:outputLabel for="accountabilityDescription" value="Description: ">
-                                <p:inputText id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
 
-                                </p:inputText>
-                            </p:outputLabel>
+                            <p:outputLabel for="accountabilityDescription" value="Description: "/>
+                            <p:inputText id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
 
-                            <p:outputLabel for="accountabilityImage" value="Image: ">
-                                <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
+                            </p:inputText>
+
+
+                            <p:outputLabel for="accountabilityImage" value="Image: "/>
+                            <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
                                               mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
-                                </p:fileUpload>
-                            </p:outputLabel>
+
+                            </p:fileUpload>
 
                         </p:panelGrid>
 
@@ -335,6 +352,7 @@
             <h:form id="viewAccountability">
                 <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
                           widgetVar="viewAccountabilityDialog"
+                          id="viewAccountabilityDialog"
                           modal="true"
                           resizable="true"
                           showEffect="fade"
@@ -347,12 +365,15 @@
                             <p:autoUpdate/>
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="accountabilityDescriptionView" value="Reason: "/>
+                            <p:outputLabel for="accountabilityDescriptionView" value="Description: "/>
                             <h:outputText id="accountabilityDescriptionView" value="#{accountabilityBean.selectedAccountability.description}">
                             </h:outputText>
 
                             <p:outputLabel for="accountabilityAmountView" value="Amount Used: "/>
                             <h:outputText id="accountabilityAmountView" value="#{accountabilityBean.selectedAccountability.amountUsed}"/>
+
+                            <p:outputLabel for="accountabilityStatus" value="Status: "/>
+                            <h:outputText id="accountabilityStatus" value="#{accountabilityBean.selectedAccountability.status}"/>
 
                             <p:outputLabel for="accountabilityImageView" value="Image: "/>
                             <p:commandButton id="accountabilityImageView" value="Download Image"
@@ -367,6 +388,50 @@
 
                     </p:outputPanel>
                 </p:dialog>
+            </h:form>
+
+            <h:form id="updateAccountability" enctype="multipart/form-data">
+                <p:dialog header="Update Accountability"
+                          widgetVar="updateAccountabilityDialog"
+                          id="updateAccountabilityDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          closeOnEscape="true"
+                          width="800px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="updateAccountabilityPanel" rendered="true">
+                        <p:messages id="updateAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="accountabilityAmountUsedUpdate" value="Amount Used: "/>
+                            <p:inputText id="accountabilityAmountUsedUpdate" placeholder="UGX..." value="#{accountabilityBean.selectedAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
+                                <f:convertNumber/>
+                            </p:inputText>
+
+
+                            <p:outputLabel for="accountabilityDescriptionUpdate" value="Description: "/>
+                            <p:inputText id="accountabilityDescriptionUpdate" value="#{accountabilityBean.selectedAccountability.description}" required="true">
+
+                            </p:inputText>
+
+
+                            <p:outputLabel for="accountabilityImageUpdate" value="Image: "/>
+                            <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImageUpdate" value="#{accountabilityBean.uploadedFile}"
+                                          mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
+
+                            </p:fileUpload>
+                        </p:panelGrid>
+
+                        <p:commandButton update=":updateAccountability:updateAccountabilityPanel :userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.updateAccountability}" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" styleClass="custom-button1" oncomplete="handleUpdateAccountabilityOnClick(xhr, status, args)" value="Update"/>
+                        <p:commandButton styleClass="custom-button2" onclick="PF('updateAccountabilityDialog').hide()" value="Cancel"/>
+
+                    </p:outputPanel>
+                </p:dialog>
+
             </h:form>
 
             <h:form id="requisitionDetailsForm">
@@ -412,8 +477,8 @@
                             <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                         </h:outputText>
 
-                        <h:outputText value="Time Since Submitted: "/>
-                        <h:outputText value="#{requisitionBean.timeSinceSubmitted}"/>
+                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="Time Since Submitted: "/>
+                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="#{requisitionBean.timeSinceSubmitted}"/>
 
                         <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="Time from Submitted to Rejected: "/>
                         <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="#{requisitionBean.submittedToRejectedTime}"/>

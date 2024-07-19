@@ -50,17 +50,16 @@
                 </div>
 
                 <div class="charts-container">
-                    <div class="chart bar-chart">
-                        <h3 class="chart-title">Weekly User Statistics</h3>
-                        <p:barChart type="bar" model="#{chartBean.weeklyUsersModel}" styleClass="custom-chart" />
+                    <div class="chart pie-chart">
+                        <h3 class="chart-title">User Gender Statistics</h3>
+                        <p:pieChart type="pie" model="#{newChartBean.pieModel}" styleClass="custom-chart" style="width: 100%; height: fit-content;" />
                     </div>
                     <div class="chart pie-chart">
                         <h3 class="chart-title">Budget Lines Status</h3>
-                        <p:pieChart type="pie" model="#{chartBean.pieModel}" styleClass="custom-chart" style="width: 100%" />
+                        <p:pieChart type="pie" model="#{newChartBean.pieModel2}" styleClass="custom-chart" style="width: 100%; height: fit-content;" />
                     </div>
 
                 </div>
-
 
             </h:form>
         </div>
@@ -100,7 +99,6 @@
                 height: 400px;
                 position: relative;
             }
-
 
             .chart-title {
                 text-align: center;

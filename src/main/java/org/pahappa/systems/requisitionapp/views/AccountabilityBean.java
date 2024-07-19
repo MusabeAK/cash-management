@@ -4,6 +4,7 @@ import org.pahappa.systems.requisitionapp.models.Accountability;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
+import org.pahappa.systems.requisitionapp.models.utils.AccountabilityStatus;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.AccountabilityService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
@@ -65,7 +66,6 @@ public class AccountabilityBean implements Serializable {
             return;
         }
         try {
-            BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
             int amountRequested = selectedRequisition.getAmount();
             int amountUsed = newAccountability.getAmountUsed();
             if (amountUsed > amountRequested) {
@@ -73,13 +73,74 @@ public class AccountabilityBean implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
                 return;
             }
-            int disparity = amountRequested - amountUsed;
-            int newBudgetLineBalance = budgetLine.getBalance() + disparity;
+
+            newAccountability.setStatus(AccountabilityStatus.SUBMITTED);
             accountabilityService.addAccountabilityToRequisition(newAccountability, selectedRequisition);
-            budgetLine.setBalance(newBudgetLineBalance);
-            budgetLine.setFloatAmount(budgetLine.getBalance());
-            budgetLineService.updateBudgetLine(budgetLine);
             newAccountability = new Accountability();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability added", null));
+            uploadedFile = null;
+        } catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+        }
+    }
+
+    public void updateAccountability(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.CREATE_ACCOUNTABILITY)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
+        handleFileUpload();
+        try {
+            int amountRequested = selectedAccountability.getRequisition().getAmount();
+            int amountUsed = selectedAccountability.getAmountUsed();
+            if (amountUsed > amountRequested) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
+                return;
+            }
+            selectedAccountability.setStatus(AccountabilityStatus.SUBMITTED);
+            accountabilityService.updateAccountability(selectedAccountability);
+        } catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+        }
+    }
+
+    public void acceptAccountability(){
+        try {
+            if (selectedAccountability != null){
+                BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
+                int amountRequested = selectedRequisition.getAmount();
+                int amountUsed = selectedAccountability.getAmountUsed();
+                if (amountUsed > amountRequested) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
+                    return;
+                }
+                int disparity = amountRequested - amountUsed;
+                int newBudgetLineBalance = budgetLine.getBalance() + disparity;
+                budgetLine.setBalance(newBudgetLineBalance);
+                budgetLine.setFloatAmount(budgetLine.getBalance());
+
+                budgetLineService.updateBudgetLine(budgetLine);
+                selectedAccountability.setStatus(AccountabilityStatus.APPROVED);
+                accountabilityService.updateAccountability(selectedAccountability);
+            }
+        } catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+        }
+    }
+
+    public void rejectAccountability(){
+        try {
+            if (selectedAccountability != null){
+                selectedAccountability.setStatus(AccountabilityStatus.REJECTED);
+                accountabilityService.updateAccountability(selectedAccountability);
+            }
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
