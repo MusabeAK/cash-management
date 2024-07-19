@@ -1,5 +1,6 @@
 package org.pahappa.systems.requisitionapp.views.utils;
 
+import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.bar.BarChartModel;
 import org.primefaces.model.charts.bar.BarChartDataSet;
@@ -7,6 +8,8 @@ import org.primefaces.model.charts.optionconfig.legend.Legend;
 import org.primefaces.model.charts.pie.PieChartModel;
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartOptions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -16,11 +19,15 @@ import java.util.Arrays;
 import java.util.List;
 
 @ManagedBean
+@Component
 @ViewScoped
 public class ChartBean implements Serializable {
 
     private BarChartModel weeklyUsersModel;
     private PieChartModel pieModel;
+
+    @Autowired
+    private BudgetLineService budgetLineService;
 
     @PostConstruct
     public void init() {
@@ -59,7 +66,7 @@ public class ChartBean implements Serializable {
         ChartData data = new ChartData();
 
         PieChartDataSet dataSet = new PieChartDataSet();
-        List<Number> values = Arrays.asList(300, 50, 100, 150);
+        List<Number> values = Arrays.asList(20, 50, 100, 150);
         dataSet.setData(values);
 
         List<String> backgroundColors = Arrays.asList("rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)", "rgb(75, 192, 192)");

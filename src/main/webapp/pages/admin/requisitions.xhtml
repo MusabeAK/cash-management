@@ -171,7 +171,7 @@
                                  paginatorPosition="bottom">
                         <p:ajax event="rowSelect" process="myRequisitionsTable" listener="#{requisitionBean.rowSelect}" update=":requisitionDetailsForm:requisitionDetailsPanel" oncomplete="PF('requisitionDetailsDialog').show(); console.log('Dialog shown, selected requisition:', #{requisitionBean.selectedRequisition != null});" />
                         <p:column headerText="Id">
-                            <h:outputText value="#{requisition.id}"/>
+                            <h:outputText value="#{requisitionBean.convertIdToString(requisition.id) }"/>
                         </p:column>
                         <p:column headerText="Reason">
                             <h:outputText value="#{requisition.subject}"/>
@@ -376,30 +376,27 @@
                           width="800px"
                           fitViewport="true"
                           id="requisitionDetailsDialog">
-                    <p:outputPanel id="requisitionDetailsPanel">
-                        <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
+                <p:outputPanel id="requisitionDetailsPanel">
+                    <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
                     <h:panelGroup columns="2" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
 
                         <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
                             <h:outputText styleClass="panel-header" value="Status"/>
                             <div class="pipeline">
-                                <div class="status-container">
-                                    <div class="status">Submitted</div>
-                                    <div class="status">Reviewed</div>
-                                    <div class="status">Approved</div>
-                                    <div class="status">Disbursed</div>
+                                <div class="card">
+                                    <!-- PrimeFaces Steps Component -->
+                                    <p:steps model="#{requisitionBean.stepModel}" activeIndex="#{requisitionBean.overallProgress}"  styleClass="custom-steps "/>
+
                                 </div>
-                                <div class="progress-bar">
-                                    <p:progressBar value="#{requisitionBean.overallProgress}" styleClass="custom-progress"/>
-                                </div>
+
                             </div>
                         </h:panelGroup>
                         <h:panelGrid columns="2" styleClass="details-grid">
                         <h:outputText value="Id:" />
-                        <h:outputText value="#{requisitionBean.selectedRequisition.id}" />
+                        <h:outputText value="#{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" />
 
                         <h:outputText value="Reason:" />
-                        <h:outputText value="#{requisitionBean.selectedRequisition.subject}" />
+                        <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
 
                         <h:outputText value="Description: "/>
                         <h:outputText value="#{requisitionBean.selectedRequisition.description}"/>
@@ -450,5 +447,31 @@
             </h:form>
 
         </div>
+        <style type="text/css">
+           body .content .active-step {
+                font-weight: bold !important;
+                color: green !important;
+            }
+
+            .pipeline {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            .custom-steps .ui-steps-item .ui-state-default {
+                background-color: #ddd;
+                border-color: #ddd;
+            }
+
+            .custom-steps .ui-steps-item .ui-state-active {
+                background-color: #4caf50;
+                border-color: #4caf50;
+                color: white;
+            }
+
+            .custom-steps .ui-steps-item .ui-state-active .ui-steps-title {
+                color: white;
+            }
+        </style>
     </ui:define>
 </ui:composition>

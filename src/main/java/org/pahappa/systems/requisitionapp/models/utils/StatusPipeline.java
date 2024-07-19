@@ -32,19 +32,19 @@ public class StatusPipeline {
     public static int getOverallProgress(RequisitionStatus status) {
         switch (status) {
             case DRAFT:
-                return 0;
+                return -1;
             case SUBMITTED:
-                return 20;
-            case HR_REVIEWED:
-                return 50;
-            case CEO_APPROVED:
-                return 80;
-            case DISBURSED:
-                return 100;
-            case REJECTED:
-                return 0; // or any other value you deem appropriate for rejected status
-            default:
                 return 0;
+            case HR_REVIEWED:
+                return 1;
+            case CEO_APPROVED:
+                return 2;
+            case DISBURSED:
+                return 3;
+            case REJECTED:
+                return -1; // or any other value you deem appropriate for rejected status
+            default:
+                return -1;
         }
     }
 

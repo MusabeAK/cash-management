@@ -11,6 +11,9 @@ import org.pahappa.systems.requisitionapp.models.utils.StatusPipeline;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.MenuModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,8 +58,12 @@ public class RequisitionBean implements Serializable {
     private long SubmittedToDisbursedTime;
     private long TimeSinceSubmitted;
 
+    private MenuModel stepModel;
+    private int currentStep;
+
     @PostConstruct
     public void init() {
+        createStepModel();
         totalProcessingTime = 0L;
         ReviewedToApprovedTime = 0L;
         ApprovedToDisbursedTime = 0L;
@@ -91,6 +98,45 @@ public class RequisitionBean implements Serializable {
                 approvedRequisitions.add(requisition);
             }
         }
+    }
+
+    public MenuModel getStepModel() {
+        return stepModel;
+    }
+
+    public int getCurrentStep() {
+        return currentStep;
+    }
+
+    private void createStepModel() {
+        stepModel = new DefaultMenuModel();
+
+        // Create steps using the builder pattern
+        DefaultMenuItem step1 = DefaultMenuItem.builder()
+                .value("Submitted")
+                .build();
+
+        DefaultMenuItem step2 = DefaultMenuItem.builder()
+                .value("Reviewed")
+                .build();
+
+        DefaultMenuItem step3 = DefaultMenuItem.builder()
+                .value("Approved")
+                .build();
+
+        DefaultMenuItem step4 = DefaultMenuItem.builder()
+                .value("Disbursed")
+                .build();
+
+        // Add steps to the model
+        stepModel.getElements().add(step1);
+        stepModel.getElements().add(step2);
+        stepModel.getElements().add(step3);
+        stepModel.getElements().add(step4);
+
+
+        // Set current step based on your logic
+        currentStep = 2; // For example, the current step is "Reviewed"
     }
 
     public void makeRequisition() {
@@ -521,6 +567,10 @@ public class RequisitionBean implements Serializable {
         }
     }
 
+    public String convertIdToString(int id){
+        return String.format("RQ%08d", id);
+    }
+
     /*
     to-do
     get different types of requisitions
@@ -742,5 +792,10 @@ public class RequisitionBean implements Serializable {
             return StatusPipeline.getOverallProgress(selectedRequisition.getStatus());
         }
         return 0;
+    }
+
+    // Method to check if a step is active
+    public boolean isStepActive(int stepIndex) {
+        return stepIndex <= getOverallProgress();
     }
 }
