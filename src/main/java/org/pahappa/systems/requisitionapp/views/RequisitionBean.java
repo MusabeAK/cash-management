@@ -4,10 +4,7 @@ import com.sun.faces.application.NavigationHandlerImpl;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
-import org.pahappa.systems.requisitionapp.models.utils.BudgetLineStatus;
-import org.pahappa.systems.requisitionapp.models.utils.Permission;
-import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
-import org.pahappa.systems.requisitionapp.models.utils.StatusPipeline;
+import org.pahappa.systems.requisitionapp.models.utils.*;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
 import org.primefaces.event.SelectEvent;
@@ -132,6 +129,11 @@ public class RequisitionBean implements Serializable {
                               if (requisition.getAccountability() == null && !requisition.getStatus().equals(RequisitionStatus.REJECTED)) {
                                   FacesContext.getCurrentInstance().addMessage(null,
                                           new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
+                                  return;
+                              }
+                              if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)){
+                                  FacesContext.getCurrentInstance().addMessage(null,
+                                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot make another requisition until previous requisition's accountability is approved.", null));
                                   return;
                               }
                           }

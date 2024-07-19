@@ -131,7 +131,8 @@
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
                                          update=":viewAccountability:viewAccountabilityPanel :viewAccountability:viewAccountabilityDialog :allRequisitions:allRequisitionsTable"
                                          oncomplete="PF('viewAccountabilityDialog').show()"
-                                         rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" />
+                                         style="#{requisition.accountability.status == 'APPROVED' ? 'background-color: #1814F3; border-color: #1814F3;' : (requisition.accountability.status == 'REJECTED' ? 'background-color: #EC1212; border-color: #EC1212;' : '')}"
+                                         rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}"/>
                     </p:column>
 
                 </p:dataTable>
@@ -328,6 +329,9 @@
                         <p:outputLabel for="accountabilityAmount" value="Amount Used: "/>
                         <h:outputText id="accountabilityAmount" value="#{accountabilityBean.selectedAccountability.amountUsed}"/>
 
+                        <p:outputLabel for="accountabilityStatus" value="Status: "/>
+                        <h:outputText id="accountabilityStatus" value="#{accountabilityBean.selectedAccountability.status}"/>
+
                         <p:outputLabel for="accountabilityImage" value="Image: "/>
                         <p:commandButton id="accountabilityImage" value="Download Image"
                                          ajax="false"
@@ -338,6 +342,9 @@
                         </p:commandButton>
 
                     </p:panelGrid>
+
+                    <p:commandButton icon="pi pi-check" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.acceptAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED'}" styleClass="custom-button1" value="Approve"/>
+                    <p:commandButton icon="pi pi-times" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.rejectAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED'}" styleClass="custom-button2" value="Reject"/>
 
                 </p:outputPanel>
             </p:dialog>
