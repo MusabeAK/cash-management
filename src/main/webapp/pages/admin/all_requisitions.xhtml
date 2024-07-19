@@ -111,18 +111,18 @@
                     <p:column headerText="Actions">
                         <p:commandButton value="Review" action="#{requisitionBean.selectRequisition(requisition)}"
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
-                                         oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations"
+                                         oncomplete="PF('reviewRequisitionDialogoperations').show()" update=":allRequisitions:allRequisitionsTable :reviewRequisitionoperations:reviewRequisitionPaneloperations :reviewRequisitionoperations:reviewRequisitionDialogoperations"
                                          rendered="#{requisition.status == 'SUBMITTED' and loginBean.hasPermission('REVIEW_REQUISITION')}" />
 
                         <p:commandButton value="Approve" action="#{requisitionBean.selectRequisition(requisition)}"
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
-                                         update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel"
+                                         update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel :reviewRequisition:reviewRequisitionDialog"
                                          oncomplete="PF('reviewRequisitionDialog').show()"
                                          rendered="#{requisition.status == 'HR_REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' )}" />
 
                         <p:commandButton value="Disburse" action="#{requisitionBean.selectRequisition(requisition)}"
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
-                                         update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance card1"
+                                         update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance card1 :reviewRequisitionFinance:reviewRequisitionDialogFinance"
                                          oncomplete="PF('reviewRequisitionDialogFinance').show()"
                                          rendered="#{requisition.status == 'CEO_APPROVED' and loginBean.hasPermission('DISBURSE_MONEY')}" />
                         <!-- Work on this  -->
@@ -144,6 +144,7 @@
         <h:form id="reviewRequisitionoperations">
             <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
                       widgetVar="reviewRequisitionDialogoperations"
+                      id="reviewRequisitionDialogoperations"
                       modal="true"
                       resizable="true"
                       showEffect="fade"
@@ -199,6 +200,7 @@
         <h:form id="reviewRequisition">
             <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
                       widgetVar="reviewRequisitionDialog"
+                      id="reviewRequisitionDialog"
                       modal="true"
                       resizable="true"
                       showEffect="fade"
@@ -254,6 +256,7 @@
         <h:form id="reviewRequisitionFinance">
             <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
                       widgetVar="reviewRequisitionDialogFinance"
+                      id="reviewRequisitionDialogFinance"
                       modal="true"
                       resizable="true"
                       showEffect="fade"
