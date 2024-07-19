@@ -26,6 +26,12 @@
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 
+    <managed-bean>
+        <managed-bean-name>newChartBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.utils.NewChartBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
     <converter>
         <converter-id>budgetLineCategoryConverter</converter-id>
         <converter-class>org.pahappa.systems.requisitionapp.views.utils.BudgetLineCategoryConverter</converter-class>

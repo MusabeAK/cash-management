@@ -196,7 +196,7 @@
                             </p:commandButton>
 
                             <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :addAccountability:addAccountabilityPanel" oncomplete="PF('addAccountabilityDialog').show()" style="background-color: #32de84; border-color: #32de84;"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :viewAccountability:viewAccountabilityPanel" oncomplete="PF('viewAccountabilityDialog').show()"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :viewAccountability:viewAccountabilityPanel :viewAccountability:viewAccountabilityDialog" oncomplete="PF('viewAccountabilityDialog').show()"/>
 
                         </p:column>
                     </p:dataTable>
@@ -336,6 +336,7 @@
             <h:form id="viewAccountability">
                 <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
                           widgetVar="viewAccountabilityDialog"
+                          id="viewAccountabilityDialog"
                           modal="true"
                           resizable="true"
                           showEffect="fade"

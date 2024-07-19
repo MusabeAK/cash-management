@@ -129,7 +129,7 @@
                         <p:commandButton value="Accountability"
                                          action="#{accountabilityBean.selectRequisition(requisition)}"
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
-                                         update=":viewAccountability:viewAccountabilityPanel :allRequisitions:allRequisitionsTable"
+                                         update=":viewAccountability:viewAccountabilityPanel :viewAccountability:viewAccountabilityDialog :allRequisitions:allRequisitionsTable"
                                          oncomplete="PF('viewAccountabilityDialog').show()"
                                          rendered="#{requisition.status == 'DISBURSED' and requisition.accountability != null}" />
                     </p:column>
@@ -306,6 +306,7 @@
         <h:form id="viewAccountability">
             <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
                       widgetVar="viewAccountabilityDialog"
+                      id="viewAccountabilityDialog"
                       modal="true"
                       resizable="true"
                       showEffect="fade"
@@ -318,7 +319,7 @@
                         <p:autoUpdate/>
                     </p:messages>
                     <p:panelGrid columns="2" styleClass="custom-grid">
-                        <p:outputLabel for="accountabilityDescription" value="Reason: "/>
+                        <p:outputLabel for="accountabilityDescription" value="Description: "/>
                         <h:outputText id="accountabilityDescription" value="#{accountabilityBean.selectedAccountability.description}">
                         </h:outputText>
 

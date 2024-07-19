@@ -102,12 +102,14 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     private void applyFilters() {
         if ((searchQuery == null || searchQuery.isEmpty()) && selectedCategory == null  && selectedStatus == null){
             filteredBudgetLines = budgetLineService.getAllBudgetLines();
+        } else {
+            filteredBudgetLines = budgetLines.stream()
+                    .filter(bl -> searchQuery == null || searchQuery.isEmpty() || bl.getTitle().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .filter(bl -> selectedCategory == null || bl.getBudgetLineCategory().equals(selectedCategory))
+                    .filter(bl -> selectedStatus == null || bl.getStatus().equals(selectedStatus))
+                    .collect(Collectors.toList());
         }
-        filteredBudgetLines = budgetLines.stream()
-                .filter(bl -> searchQuery == null || searchQuery.isEmpty() || bl.getTitle().toLowerCase().contains(searchQuery.toLowerCase()))
-                .filter(bl -> selectedCategory == null || bl.getBudgetLineCategory().equals(selectedCategory))
-                .filter(bl -> selectedStatus == null || bl.getStatus().equals(selectedStatus))
-                .collect(Collectors.toList());
+
     }
 
     public void searchCategories() {
@@ -138,6 +140,12 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         try {
             BudgetLineCategory budgetLineCategory = budgetLineCategoryService.getBudgetLineCategoryByName(budgetLineCategoryName);
             if (budgetLineCategory != null) {
+                Date currentDate = new Date();
+                if (currentDate.after(newBudgetLine.getEndDate())){
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current date cannot be after end date", null));
+                    return;
+                }
                 budgetLineService.createBudgetLine(newBudgetLine, budgetLineCategory);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
