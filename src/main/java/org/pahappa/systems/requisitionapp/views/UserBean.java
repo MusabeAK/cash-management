@@ -8,6 +8,7 @@ import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.pahappa.systems.requisitionapp.services.UserService;
 import org.pahappa.systems.requisitionapp.services.utils.MailService;
 import org.pahappa.systems.requisitionapp.services.utils.ServiceUtils;
+import org.pahappa.systems.requisitionapp.views.utils.NewChartBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -69,12 +70,14 @@ public class UserBean implements Serializable {
     private final UserService userService;
     private final RoleService roleService;
     private final MailService mailService;
+    private final NewChartBean newChartBean;
 
     @Autowired
-    public UserBean(UserService userService, RoleService roleService, MailService mailService) {
+    public UserBean(UserService userService, RoleService roleService, MailService mailService, NewChartBean newChartBean) {
         this.userService = userService;
         this.roleService = roleService;
         this.mailService = mailService;
+        this.newChartBean = newChartBean;
     }
 
     public String getUsername() {
@@ -142,6 +145,8 @@ public class UserBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "User Creation Success", null));
 
+            newChartBean.refreshChartData();
+
             mailService.send("ahumuzaariyo@gmail.com", "tiadbqtshilfdprn", user.getEmail(), "Log In Details", "Your username is: " + user.getUsername() + "\nYour password is: " + password);
 
         } catch (Exception e) {
@@ -169,6 +174,7 @@ public class UserBean implements Serializable {
             userService.updateUser(selectedUser);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "User Update Success", null));
+            newChartBean.refreshChartData();
         }catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating User: "+e.getMessage(), null));
@@ -197,6 +203,7 @@ public class UserBean implements Serializable {
             filteredUsers = userService.getAllUsers();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "User Update Success", null));
+            newChartBean.refreshChartData();
         }catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating User: "+e.getMessage(), null));
@@ -217,6 +224,7 @@ public class UserBean implements Serializable {
     public void deleteUser(User user){
         userService.deleteUser(user);
         filteredUsers = userService.getAllUsers();
+        newChartBean.refreshChartData();
     }
 
     public void deleteAllUsers(){
