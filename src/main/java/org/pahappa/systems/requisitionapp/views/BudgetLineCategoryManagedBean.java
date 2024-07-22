@@ -152,7 +152,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 filteredBudgetLines.add(newBudgetLine);
                 newBudgetLine = new BudgetLine();
                 newBudgetLineCategory = new BudgetLineCategory();
-                loadBudgetLines();
+                // loadBudgetLines();
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line with that category name does not exist.", null));
@@ -180,7 +180,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
-            loadBudgetLines();
+            // loadBudgetLines();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -251,7 +251,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineService.deleteBudgetLine(budgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
-            loadBudgetLines();
+            // loadBudgetLines();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -288,7 +288,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
             filteredBudgetLineCategories.add(newBudgetLineCategory);
             newBudgetLineCategory = new BudgetLineCategory();
-            loadBudgetLineCategories();
+            // loadBudgetLineCategories();
         } catch (RuntimeException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
@@ -305,7 +305,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineCategoryService.updateBudgetLineCategory(selectedBudgetLineCategory);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
-            loadBudgetLineCategories();
+            // loadBudgetLineCategories();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
