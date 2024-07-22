@@ -70,16 +70,20 @@
                     <div class="search-and-filter">
                         <div class="search">
                             <p:inputText id="searchBar2" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
-                                <p:ajax event="keyup" update=":allRequisitions:allRequisitionsTable" listener="#{requisitionBean.searchRequisitions()}"/>
+                                <p:ajax event="keyup" listener="#{requisitionBean.searchAllRequisitions()}" update=":allRequisitions:allRequisitionsTable @form"/>
                             </p:inputText>
                         </div>
                     </div>
                 </div>
 
+                <div class="table-header">
+                    <h:outputText value="#{requisitionBean.requisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
+                </div>
+
 
                 <p:dataTable value="#{requisitionBean.requisitions}" rendered="#{loginBean.hasPermission('VIEW_ALL_REQUISITIONS')}" var="requisition" paginator="true" rows="5" paginatorPosition="bottom">
                     <p:column headerText="Id">
-                        <h:outputText value="#{requisition.id}"/>
+                        <h:outputText value="#{requisitionBean.convertIdToString( requisition.id)}"/>
                     </p:column>
 
                     <p:column headerText="User">

@@ -289,6 +289,11 @@ public class UserBean implements Serializable {
         return users;
     }
 
+    public String usersStringLabel(){
+        return filteredUsers.size() != 1 ? " Users":" User";
+    }
+
+
     public void setUsers(List<User> users) {
         this.users = users;
     }

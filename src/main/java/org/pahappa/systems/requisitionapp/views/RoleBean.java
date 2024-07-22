@@ -156,6 +156,14 @@ public class RoleBean implements Serializable {
         return roles;
     }
 
+    public String convertRoleIdToString(int id){
+        return String.format("RL%05d", id);
+    }
+
+    public String rolesStringLabel(){
+        return filteredRoles.size() != 1 ? " Roles":" Role";
+    }
+
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }

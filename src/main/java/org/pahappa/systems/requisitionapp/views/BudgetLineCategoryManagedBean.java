@@ -113,8 +113,12 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public void searchCategories() {
+        if(categorySearchQuery == null || categorySearchQuery.isEmpty()){
+            filteredBudgetLineCategories = budgetLineCategoryService.getAllBudgetLineCategories();
+            return;
+        }
         filteredBudgetLineCategories = budgetLineCategories.stream()
-                .filter(blc -> categorySearchQuery == null || categorySearchQuery.isEmpty() || blc.getCategoryName().toLowerCase().contains(categorySearchQuery.toLowerCase()))
+                .filter(blc -> categorySearchQuery.isEmpty() || blc.getCategoryName().toLowerCase().contains(categorySearchQuery.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -436,6 +440,18 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         return filteredBudgetLines;
     }
 
+    public String convertBudgetLineIdToString(int id){
+        return String.format("BL%08d", id);
+    }
+
+    public String convertBudgetLineCategoryIdToString(int id){
+        return String.format("BC%05d", id);
+    }
+
+    public String budgetLinesStringLabel(){
+        return filteredBudgetLines.size() != 1 ? " Budget Lines":" Budget Line";
+    }
+
     public void setFilteredBudgetLines(List<BudgetLine> filteredBudgetLines) {
         this.filteredBudgetLines = filteredBudgetLines;
     }
@@ -502,8 +518,11 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLineCategory> getFilteredBudgetLineCategories() {
-        Set<BudgetLineCategory> uniqueCategories = new HashSet<>(filteredBudgetLineCategories);
-        return new ArrayList<>(uniqueCategories);
+        return filteredBudgetLineCategories;
+    }
+
+    public String budgetLineCategoryStringLabel(){
+        return filteredBudgetLineCategories.size() != 1 ? " Budget Line Categories":" Budget Line Category";
     }
 
     public void setFilteredBudgetLineCategories(List<BudgetLineCategory> filteredBudgetLineCategories) {

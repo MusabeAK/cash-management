@@ -179,7 +179,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText id="card4" value="#{budgetLineCategoryManagedBean.uniqueBudgetLineCategories.size()} Budget Line Category(s)" styleClass="total-users"/>
+                        <h:outputText id="card4" value="#{budgetLineCategoryManagedBean.filteredBudgetLineCategories.size()}#{budgetLineCategoryManagedBean.budgetLineCategoryStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus" update=":budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel" style="margin-right: 20px" value="Add Category" styleClass="add-button" oncomplete="PF('addBudgetLineCategoryDialog').show()" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}"/>
 
@@ -188,7 +188,7 @@
 
                     <p:dataTable value="#{budgetLineCategoryManagedBean.filteredBudgetLineCategories}" var="category" paginator="true" rows="3" paginatorPosition="bottom" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
                         <p:column headerText="ID">
-                            <h:outputText value="#{category.id}"/>
+                            <h:outputText value="#{budgetLineCategoryManagedBean.convertBudgetLineCategoryIdToString(category.id)}"/>
                         </p:column>
                         <p:column headerText="Category Name">
                             <h:outputText value="#{category.categoryName}"/>
@@ -240,7 +240,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{budgetLineCategoryManagedBean.budgetLines.size()} BudgetLine(s)" styleClass="total-users"/>
+                        <h:outputText value="#{budgetLineCategoryManagedBean.filteredBudgetLines.size()}#{budgetLineCategoryManagedBean.budgetLinesStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus" action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE')}" style="margin-right: 20px" value="Add Budget Line" styleClass="add-button" oncomplete="PF('addBudgetLineDialog').show()"/>
 
@@ -258,6 +258,12 @@
                                  id="budgetLinesTable"
                                  paginatorPosition="bottom">
                         <p:ajax event="rowSelect" process="budgetLinesTable" listener="#{budgetLineCategoryManagedBean.rowSelect}" update=":reviewBudgetLineForm:reviewBudgetLinePanel" oncomplete="PF('reviewBudgetLineDialog').show();" />
+
+
+                        <p:column headerText="Id">
+                            <h:outputText value="#{budgetLineCategoryManagedBean.convertBudgetLineIdToString(budgetLine.id)}"/>
+                        </p:column>
+
 
                         <p:column headerText="Title">
                             <h:outputText value="#{budgetLine.title}"/>

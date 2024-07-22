@@ -145,7 +145,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{userBean.users.size()} User(s)" styleClass="total-users"/>
+                        <h:outputText value="#{userBean.filteredUsers.size()}#{userBean.usersStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-user-plus" value="Add User" styleClass="add-button" oncomplete="PF('addUserDialog').show()" rendered="#{userPermissionBean.hasPermission('CREATE_USER')}" update=":addUserForm :usersForm:card1"/>
 

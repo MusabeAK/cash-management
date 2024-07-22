@@ -153,15 +153,15 @@
                         <h3>My requisitions</h3>
                         <div class="search-and-filter">
                             <div class="search">
-                                <p:inputText id="searchBar" value="#" styleClass="search-bar" placeholder="Search...">
-                                    <p:ajax event="keyup" />
+                                <p:inputText id="searchBar" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
+                                    <p:ajax event="keyup" update=":userRequisitions:userRequisitionsTable @form" listener="#{requisitionBean.searchUserRequisitions()}"/>
                                 </p:inputText>
                             </div>
                         </div>
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{requisitionBean.userRequisitions.size()} Requistion(s)" styleClass="total-users"/>
+                        <h:outputText value="#{requisitionBean.filteredRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-user-plus" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :createRequisition:createRequisitionPanel"/>
 
@@ -172,7 +172,7 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{requisitionBean.userRequisitions}"
+                    <p:dataTable value="#{requisitionBean.filteredRequisitions}"
                                  var="requisition"
                                  rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}"
                                  selectionMode="single"
@@ -443,7 +443,7 @@
                           id="requisitionDetailsDialog">
                 <p:outputPanel id="requisitionDetailsPanel">
                     <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
-                    <h:panelGroup columns="2" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
+                    <h:panelGroup columns="1" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
 
                         <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
                             <h:outputText styleClass="panel-header" value="Status"/>
@@ -456,52 +456,69 @@
 
                             </div>
                         </h:panelGroup>
+
                         <h:panelGrid columns="2" styleClass="details-grid">
-                        <h:outputText value="Id:" />
-                        <h:outputText value="#{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" />
+                            <h:outputLabel value="Id" style="padding-right: 10px">
+                                <h:outputText value="#{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" />
+                            </h:outputLabel>
 
-                        <h:outputText value="Reason:" />
-                        <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
+                            <h:outputLabel value="Reason" >
+                                <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
+                            </h:outputLabel>
 
-                        <h:outputText value="Description: "/>
-                        <h:outputText value="#{requisitionBean.selectedRequisition.description}"/>
+                            <h:outputLabel value="Description">
+                                <h:outputText value="#{requisitionBean.selectedRequisition.description}"/>
+                            </h:outputLabel>
 
-                        <h:outputText value="Amount:" />
-                        <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
+                            <h:outputLabel value="Amount" >
+                                <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
+                            </h:outputLabel>
 
-                        <h:outputText value="Budget Line: "/>
-                        <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
+                            <h:outputLabel value="Budget Line">
+                                <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
+                            </h:outputLabel>
 
-                        <h:outputText value="Date Needed:" />
-                        <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">
-                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                        </h:outputText>
+                            <h:outputLabel value="Date Needed" >
+                                <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                                </h:outputText>
+                            </h:outputLabel>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="Time Since Submitted: "/>
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="#{requisitionBean.timeSinceSubmitted}"/>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="Time from Submitted to Rejected: "/>
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="#{requisitionBean.submittedToRejectedTime}"/>
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="Time Since Submitted">
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="#{requisitionBean.timeSinceSubmitted}"/>
+                            </h:outputLabel>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="Time from Submitted to Reviewed: "/>
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="#{requisitionBean.submittedToReviewedTime}"/>
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="Time from Submitted to Rejected">
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="#{requisitionBean.submittedToRejectedTime}"/>
+                            </h:outputLabel>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Submitted to Approved: "/>
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.submittedToApprovedTime}"/>
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="Time from Submitted to Reviewed">
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="#{requisitionBean.submittedToReviewedTime}"/>
+                            </h:outputLabel>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Submitted to Disbursed: "/>
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.submittedToDisbursedTime}"/>
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Submitted to Approved">
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.submittedToApprovedTime}"/>
+                            </h:outputLabel>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Reviewed to Approved: "/>
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.reviewedToApprovedTime}"/>
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Submitted to Disbursed">
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.submittedToDisbursedTime}"/>
+                            </h:outputLabel>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Approved to Disbursed: "/>
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.approvedToDisbursedTime}"/>
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Reviewed to Approved">
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.reviewedToApprovedTime}"/>
+                            </h:outputLabel>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" />
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Approved to Disbursed">
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.approvedToDisbursedTime}"/>
+                            </h:outputLabel>
+
+                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" >
+                                <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
+                            </h:outputLabel>
                         </h:panelGrid>
                     </h:panelGroup>
+
 
                         <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="custom-button3">
                             <p:printer target="requisitionDetailsPanel"/>
@@ -512,31 +529,6 @@
             </h:form>
 
         </div>
-        <style type="text/css">
-           body .content .active-step {
-                font-weight: bold !important;
-                color: green !important;
-            }
 
-            .pipeline {
-                margin-top: 20px;
-                margin-bottom: 20px;
-            }
-
-            .custom-steps .ui-steps-item .ui-state-default {
-                background-color: #ddd;
-                border-color: #ddd;
-            }
-
-            .custom-steps .ui-steps-item .ui-state-active {
-                background-color: #4caf50;
-                border-color: #4caf50;
-                color: white;
-            }
-
-            .custom-steps .ui-steps-item .ui-state-active .ui-steps-title {
-                color: white;
-            }
-        </style>
     </ui:define>
 </ui:composition>

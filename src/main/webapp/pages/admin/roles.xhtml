@@ -69,88 +69,93 @@
         </h:panelGroup>
 
         <div class="content">
-        <h:form id="usersForm">
-        <!--                <p:growl id="growl" showDetail="true" life="2000"  />-->
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true"
-                         width="350">
-            <p:commandButton value="No" type="button"
-                             styleClass="ui-confirmdialog-no ui-button-flat"/>
-            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" update=":usersForm:rolesTable"/>
-        </p:confirmDialog>
+        <h:form id="rolesForm">
+            <!--                <p:growl id="growl" showDetail="true" life="2000"  />-->
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true"
+                             width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" update=":rolesForm:rolesTable"/>
+            </p:confirmDialog>
 
-        <div class="cards-container">
-            <div class="card">
-                <i class="pi pi-key card-icon"/>
-                <div class="card-content">
-                    <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
-                    <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
+            <div class="cards-container">
+                <div class="card">
+                    <i class="pi pi-key card-icon"/>
+                    <div class="card-content">
+                        <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
+                        <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
+                    </div>
                 </div>
-            </div>
-            <div class="card">
-                <i class="pi pi-key card-icon"/>
-                <div class="card-content">
-                    <h:outputText value="Number of Registered Users" styleClass="card-title"/>
-                    <h:outputText value="#{userBean.users.size()}" styleClass="card-number"/>
+                <div class="card">
+                    <i class="pi pi-key card-icon"/>
+                    <div class="card-content">
+                        <h:outputText value="Number of Registered Users" styleClass="card-title"/>
+                        <h:outputText value="#{userBean.users.size()}" styleClass="card-number"/>
+                    </div>
                 </div>
-            </div>
 
-            <div class="card">
-                <i class="pi pi-users card-icon"/>
-                <div class="card-content">
-                    <h:outputText value="Active Budget Lines" styleClass="card-title"/>
-                    <h:outputText value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
-                </div>
-            </div>
-        </div>
-
-        <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
-            <p:autoUpdate/>
-        </p:growl>
-        <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
-            <div class="search-container">
-                <h3>All Roles</h3>
-                <div class="search-and-filter">
-                    <div class="search">
-                        <p:inputText id="searchBar2" value="#{roleBean.searchQuery}" styleClass="search-bar" placeholder="Search..." rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
-                            <p:ajax event="keyup" update=":usersForm:rolesTable" listener="#{roleBean.searchRoles()}"/>
-                        </p:inputText>
+                <div class="card">
+                    <i class="pi pi-users card-icon"/>
+                    <div class="card-content">
+                        <h:outputText value="Active Budget Lines" styleClass="card-title"/>
+                        <h:outputText value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
                     </div>
                 </div>
             </div>
 
-            <div class="table-header">
-                <h:outputText value="#{roleBean.roles.size()} Role(s)" styleClass="total-users"/>
-                <div class="table-header-buttons">
-                    <p:commandButton icon="pi pi-user-plus" update=":usersForm:rolesTable :addRoleForm:addRolePanel" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
-
-                    <p:commandButton icon="pi pi-trash" update=":usersForm:rolesTable" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" value="Delete All" action="#" styleClass="delete-all-button">
-                        <p:confirm header="Confirm Deletion" message="Do you want to delete all Roles?"
-                                   icon="pi pi-info-circle"/>
-                    </p:commandButton>
+            <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
+                <p:autoUpdate/>
+            </p:growl>
+            <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
+                <div class="search-container">
+                    <h3>All Roles</h3>
+                    <div class="search-and-filter">
+                        <div class="search">
+                            <p:inputText id="searchBar2" value="#{roleBean.searchQuery}" styleClass="search-bar" placeholder="Search..." rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
+                                <p:ajax event="keyup" update=":rolesForm:rolesTable @form" listener="#{roleBean.searchRoles()}"/>
+                            </p:inputText>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}" value="#{roleBean.roles}" var="role" paginator="true" rows="5" paginatorPosition="bottom">
-                <p:column headerText="Role Name">
-                    <h:outputText value="#{role.name}"/>
-                </p:column>
+                <div class="table-header">
+                    <h:outputText value="#{roleBean.filteredRoles.size()} #{roleBean.rolesStringLabel()}" styleClass="total-users"/>
+                    <div class="table-header-buttons">
+                        <p:commandButton icon="pi pi-user-plus" update=":rolesForm:rolesTable :addRoleForm:addRolePanel" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
 
-                <p:column headerText="Permissions">
-                    <h:outputText value="#{role.permissions}"/>
-                </p:column>
+                        <p:commandButton icon="pi pi-trash" update=":rolesForm:rolesTable" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" value="Delete All" action="#" styleClass="delete-all-button">
+                            <p:confirm header="Confirm Deletion" message="Do you want to delete all Roles?"
+                                       icon="pi pi-info-circle"/>
+                        </p:commandButton>
+                    </div>
+                </div>
+
+                <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}" value="#{roleBean.filteredRoles}" var="role" paginator="true" rows="5" paginatorPosition="bottom">
+
+                    <p:column headerText="Id">
+                        <h:outputText value="#{roleBean.convertRoleIdToString(role.id)}"/>
+                    </p:column>
+
+                    <p:column headerText="Role Name">
+                        <h:outputText value="#{role.name}"/>
+                    </p:column>
+
+                    <p:column headerText="Permissions">
+                        <h:outputText value="#{role.permissions}"/>
+                    </p:column>
 
 
-                <p:column headerText="Actions">
-                    <p:commandButton value="Edit Role" rendered="#{loginBean.hasPermission('EDIT_ROLE')}" styleClass="edit-button" action="#{roleBean.selectRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":usersForm:rolesTable :updateRoleForm:editRolePanel" style="font-size: medium !important"/>
+                    <p:column headerText="Actions">
+                        <p:commandButton value="Edit Role" rendered="#{loginBean.hasPermission('EDIT_ROLE')}" styleClass="edit-button" action="#{roleBean.selectRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":rolesForm:rolesTable :updateRoleForm:editRolePanel" style="font-size: medium !important"/>
 
-                    <p:commandButton value="Delete" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" action="#{roleBean.deleteRole(role)}" title="Delete" styleClass="delete-button" style="color:red;font-size: medium !important" update=":usersForm:rolesTable">
-                        <p:confirm header="Confirm Deletion" message="Do you want to delete this Role?"
-                                   icon="pi pi-info-circle"/>
-                    </p:commandButton>
-                </p:column>
+                        <p:commandButton value="Delete" rendered="#{loginBean.hasPermission('DELETE_ROLE')}" action="#{roleBean.deleteRole(role)}" title="Delete" styleClass="delete-button" style="color:red;font-size: medium !important" update=":rolesForm:rolesTable">
+                            <p:confirm header="Confirm Deletion" message="Do you want to delete this Role?"
+                                       icon="pi pi-info-circle"/>
+                        </p:commandButton>
+                    </p:column>
 
-            </p:dataTable>
-        </h:panelGroup>
+                </p:dataTable>
+            </h:panelGroup>
 
         </h:form>
         </div>
@@ -193,7 +198,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":usersForm:rolesTable @form :addRoleForm:addRolePanel" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="custom-button1"/>
+                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":rolesForm:rolesTable @form :addRoleForm:addRolePanel" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="custom-button1"/>
                     <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="custom-button2" />
                 </p:outputPanel>
             </p:dialog>
@@ -233,7 +238,7 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton value="Update" update=":usersForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="custom-button1" oncomplete="editRoleOnClick(xhr, status, args)"/>
+                    <p:commandButton value="Update" update=":rolesForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="custom-button1" oncomplete="editRoleOnClick(xhr, status, args)"/>
                     <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="custom-button2" immediate="true" />
                 </p:outputPanel>
             </p:dialog>

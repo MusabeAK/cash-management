@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @ViewScoped
@@ -544,12 +545,24 @@ public class RequisitionBean implements Serializable {
         return returnedBudgetLines;
     }
 
-    public void searchRequisitions(){
+    public void searchUserRequisitions(){
         if (!(searchQuery == null || searchQuery.isEmpty())) {
             filteredRequisitions = requisitionService.searchRequisitions(searchQuery);
             return;
         }
         filteredRequisitions = requisitionService.getAllRequisitions();
+    }
+
+    public void searchAllRequisitions(){
+        if(searchQuery == null || searchQuery.isEmpty()){
+            return;
+        }
+        requisitions = requisitions.stream()
+                .filter(req -> searchQuery.isEmpty()
+                        || req.getSubject().toLowerCase().contains(searchQuery.toLowerCase())
+                        || req.getComment().toLowerCase().contains(searchQuery.toLowerCase())
+                        || req.getDescription().toLowerCase().contains(searchQuery.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     public void requestChanges(){
@@ -651,6 +664,10 @@ public class RequisitionBean implements Serializable {
         }
         returnedRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
         return returnedRequisitions;
+    }
+
+    public String requisitionsStringLabel(){
+        return filteredRequisitions.size() != 1 ? " Requisitions":" Requisition";
     }
 
     public void setRequisitions(List<Requisition> requisitions) {
