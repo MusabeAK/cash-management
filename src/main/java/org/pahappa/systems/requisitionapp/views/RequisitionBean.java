@@ -220,6 +220,7 @@ public class RequisitionBean implements Serializable {
                       userRequisitions.add(newRequisition);
                       requisitions.add(newRequisition);
                       requisitionService.makeRequisition(newRequisition, currentUser);
+                      loadUserRequisitions();
                       FacesContext.getCurrentInstance().addMessage(null,
                               new FacesMessage(FacesMessage.SEVERITY_INFO, "Success.", null));
                       newRequisition = new Requisition();
@@ -236,6 +237,7 @@ public class RequisitionBean implements Serializable {
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+            e.printStackTrace();
         }
     }
 
@@ -581,6 +583,7 @@ public class RequisitionBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
                 requisitions.remove(selectedRequisition);
+                comment = "";
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", null));
@@ -595,6 +598,7 @@ public class RequisitionBean implements Serializable {
     public void loadUserRequisitions(){
         try {
             userRequisitions = getUserRequisitions();
+            filteredRequisitions = getUserRequisitions();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));

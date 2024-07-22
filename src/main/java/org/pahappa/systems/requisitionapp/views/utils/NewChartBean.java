@@ -37,6 +37,13 @@ public class NewChartBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        femaleUsersCount();
+        maleUsersCount();
+        draftBudgetLinesCount();
+        expiredBudgetLinesCount();
+        approvedBudgetLinesCount();
+        rejectedBudgetLinesCount();
+
         createPieModel2();
         createPieModel();
     }
@@ -190,4 +197,17 @@ public class NewChartBean implements Serializable {
     public void setBudgetLines(List<BudgetLine> budgetLines) {
         this.budgetLines = budgetLines;
     }
+
+    public void refreshChartData(){
+        femaleUsersCount();
+        maleUsersCount();
+        draftBudgetLinesCount();
+        expiredBudgetLinesCount();
+        approvedBudgetLinesCount();
+        rejectedBudgetLinesCount();
+
+        createPieModel();
+        createPieModel2();
+    }
+
 }

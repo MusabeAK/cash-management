@@ -75,65 +75,107 @@
                 }
             }
 
-            .details-grid {
-                width: 100%;
-                margin-bottom: 20px;
+            /* CSS for making the dialog and content responsive and appealing */
+
+            .custom-dialog {
+                /*left: 16% !important;*/
+                /*top: 0 !important;*/
+                /*right: 0 !important;*/
+
+                background-color: #f6f6fb !important;
             }
 
-            .details-grid td {
-                padding: 15px 10px;
-            }
-
-            .details-grid .ui-outputtext {
-                margin-bottom: 10px;
-            }
-
-            .details-grid tr {
-                height: 30px;
+            .requisition-details-panel {
+                padding: 20px;
+                /*background-color: #f6f6fb;*/
+                background-color: #fff;
             }
 
             .full-width-panel {
                 width: 100%;
-                box-sizing: border-box;
-                border: 1px solid #ddd;
-                border-radius: 3px;
                 margin-bottom: 20px;
-                padding: 10px 10px 30px;
-            }
-
-            .panel-header {
-                display: block;
-                text-align: center;
-                align-items: center;
-                font-weight: bold;
-                margin-bottom: 15px;
-                text-decoration: underline;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 20px;
+                background-color: #f6f6fb !important;
             }
 
             .pipeline {
                 width: 100%;
-                position: relative;
+                border: none;
+                outline: none;
+                height: 100px;
             }
 
-            .custom-progress {
-                width: 100% !important;
-                height: 20px !important;
+            .pipeline .card {
+                width: 100%;
             }
 
-            .status-container {
+            .details-grid {
+                width: 100%;
+                margin-top: 0;
+
+            }
+
+            .field-group {
+                margin-bottom: 0;
                 display: flex;
                 justify-content: space-between;
-                position: relative;
-                height: 20px;
-                margin-top: 5px;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 20px;
+                background-color: #f6f6fb !important;
             }
 
-            .status {
-                position: relative;
-                text-align: center;
-                font-size: 12px;
-                width: 25%;
+            .field-group label {
+                font-weight: bold;
+                display: block;
+                width: auto;
+                max-width: 30%;
+                margin-bottom: 0;
+                margin-right: 30px;
             }
+
+            .field-group:last-child {
+                text-align: justify;
+
+            }
+
+            @media screen and (max-width: 768px) {
+                .details-grid {
+                    grid-template-columns: 1fr !important;
+                    display: flex;
+                }
+
+                .field-group {
+                    padding: 5px !important;
+                    display: inline;
+                    width: 100%;
+                }
+            }
+
+            .custom-steps .ui-steps-item .ui-steps-number,
+            .custom-steps .ui-steps-item .ui-steps-title {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .custom-steps .ui-steps-item .ui-steps-number {
+                margin-right: 5px;
+            }
+
+            .custom-steps .ui-steps-item.ui-state-highlight .ui-steps-number,
+            .custom-steps .ui-steps-item.ui-state-highlight .ui-steps-title {
+                color: #ffffff;
+            }
+
+            .custom-steps .ui-steps-item.ui-state-default .ui-steps-number,
+            .custom-steps .ui-steps-item.ui-state-default .ui-steps-title {
+                color: #007bff;
+            }
+
+
+
         </style>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
@@ -225,7 +267,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="createRequisitionPanel" rendered="true">
                     <p:messages id="createRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -268,7 +312,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="updateRequisitionPanel" rendered="true">
                         <p:messages id="updateRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -291,9 +337,9 @@
                             </p:inputText>
 
                             <p:outputLabel for="editRequisitionDescription" value="Description"/>
-                            <p:inputTextarea id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
+                            <p:inputText id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
 
-                            </p:inputTextarea>
+                            </p:inputText>
 
                             <p:outputLabel for="editRequisitionDateNeeded" value="Date Needed"/>
                             <p:datePicker id="editRequisitionDateNeeded" value="#{requisitionBean.selectedRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please select a date for when you need your requisition"/>
@@ -315,8 +361,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          closeOnEscape="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="addAccountabilityPanel" rendered="true">
                         <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -357,8 +404,10 @@
                           resizable="true"
                           showEffect="fade"
                           hideEffect="fade"
-                          closeOnEscape="true"
-                          width="800px"
+                          closable="true"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="viewAccountabilityPanel" rendered="#{accountabilityBean.selectedAccountability != null}">
                         <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -399,8 +448,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          closeOnEscape="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="updateAccountabilityPanel" rendered="true">
                         <p:messages id="updateAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -434,99 +484,115 @@
 
             </h:form>
 
+
             <h:form id="requisitionDetailsForm">
                 <p:dialog header="Requisition Details"
                           widgetVar="requisitionDetailsDialog"
                           modal="true"
+                          minimizable="true"
+                          maximizable="true"
+                          minWidth="800"
                           width="800px"
                           fitViewport="true"
-                          id="requisitionDetailsDialog">
-                <p:outputPanel id="requisitionDetailsPanel">
-                    <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
-                    <h:panelGroup columns="1" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
+                          id="requisitionDetailsDialog"
+                          styleClass="custom-dialog">
+                    <p:outputPanel id="requisitionDetailsPanel" styleClass="requisition-details-panel" >
+                        <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
+                        <h:panelGroup columns="1" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
 
-                        <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
-                            <h:outputText styleClass="panel-header" value="Status"/>
-                            <div class="pipeline">
-                                <div class="card">
-                                    <!-- PrimeFaces Steps Component -->
-                                    <p:steps model="#{requisitionBean.stepModel}" activeIndex="#{requisitionBean.overallProgress}"  styleClass="custom-steps "/>
-
+                            <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
+                                <h:outputText styleClass="panel-header" value="Status"/>
+                                <div class="pipeline">
+                                    <div class="card">
+                                        <!-- PrimeFaces Steps Component -->
+                                        <p:steps model="#{requisitionBean.stepModel}" activeIndex="#{requisitionBean.overallProgress}"  styleClass="custom-steps "/>
+                                    </div>
                                 </div>
+                            </h:panelGroup>
 
-                            </div>
+                            <h:panelGrid columns="2" styleClass="details-grid" cellpadding="10px">
+                                <h:panelGroup layout="block" styleClass="field-group">
+                                    <h:outputLabel value="Id" />
+                                    <h:outputText value="#{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group">
+                                    <h:outputLabel value="Reason" />
+                                    <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group">
+                                    <h:outputLabel value="Description" />
+                                    <h:outputText value="#{requisitionBean.selectedRequisition.description}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group">
+                                    <h:outputLabel value="Amount" />
+                                    <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group">
+                                    <h:outputLabel value="Budget Line" />
+                                    <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group">
+                                    <h:outputLabel value="Date Needed" />
+                                    <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                                    </h:outputText>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}">
+                                    <h:outputLabel value="Time Since Submitted" />
+                                    <h:outputText value="#{requisitionBean.timeSinceSubmitted}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}">
+                                    <h:outputLabel value="Time from Submitted to Rejected" />
+                                    <h:outputText value="#{requisitionBean.submittedToRejectedTime}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}">
+                                    <h:outputLabel value="Time from Submitted to Reviewed" />
+                                    <h:outputText value="#{requisitionBean.submittedToReviewedTime}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
+                                    <h:outputLabel value="Time from Submitted to Approved" />
+                                    <h:outputText value="#{requisitionBean.submittedToApprovedTime}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}">
+                                    <h:outputLabel value="Time from Submitted to Disbursed" />
+                                    <h:outputText value="#{requisitionBean.submittedToDisbursedTime}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
+                                    <h:outputLabel value="Time from Reviewed to Approved" />
+                                    <h:outputText value="#{requisitionBean.reviewedToApprovedTime}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}">
+                                    <h:outputLabel value="Time from Approved to Disbursed" />
+                                    <h:outputText value="#{requisitionBean.approvedToDisbursedTime}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}">
+                                    <h:outputLabel value="Comment:" />
+                                    <h:outputText value="#{requisitionBean.selectedRequisition.comment}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
                         </h:panelGroup>
-
-                        <h:panelGrid columns="2" styleClass="details-grid">
-                            <h:outputLabel value="Id" style="padding-right: 10px">
-                                <h:outputText value="#{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" />
-                            </h:outputLabel>
-
-                            <h:outputLabel value="Reason" >
-                                <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
-                            </h:outputLabel>
-
-                            <h:outputLabel value="Description">
-                                <h:outputText value="#{requisitionBean.selectedRequisition.description}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel value="Amount" >
-                                <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
-                            </h:outputLabel>
-
-                            <h:outputLabel value="Budget Line">
-                                <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel value="Date Needed" >
-                                <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">
-                                    <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                                </h:outputText>
-                            </h:outputLabel>
-
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="Time Since Submitted">
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="#{requisitionBean.timeSinceSubmitted}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="Time from Submitted to Rejected">
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="#{requisitionBean.submittedToRejectedTime}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="Time from Submitted to Reviewed">
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="#{requisitionBean.submittedToReviewedTime}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Submitted to Approved">
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.submittedToApprovedTime}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Submitted to Disbursed">
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.submittedToDisbursedTime}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Reviewed to Approved">
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.reviewedToApprovedTime}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Approved to Disbursed">
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.approvedToDisbursedTime}"/>
-                            </h:outputLabel>
-
-                            <h:outputLabel rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" >
-                                <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
-                            </h:outputLabel>
-                        </h:panelGrid>
-                    </h:panelGroup>
-
 
                         <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="custom-button3">
                             <p:printer target="requisitionDetailsPanel"/>
                         </p:commandButton>
-
                     </p:outputPanel>
                 </p:dialog>
             </h:form>
+
+
 
         </div>
 

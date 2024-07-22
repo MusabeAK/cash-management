@@ -9,6 +9,7 @@ import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 import org.pahappa.systems.requisitionapp.services.BudgetLineCategoryService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
+import org.pahappa.systems.requisitionapp.views.utils.NewChartBean;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,9 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     @Autowired
     private RequisitionService requisitionService;
+
+    @Autowired
+    private NewChartBean newChartBean;
 
     private BudgetLineCategory newBudgetLineCategory;
     private List<BudgetLineCategory> budgetLineCategories;
@@ -156,7 +160,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 filteredBudgetLines.add(newBudgetLine);
                 newBudgetLine = new BudgetLine();
                 newBudgetLineCategory = new BudgetLineCategory();
-                loadBudgetLines();
+                newChartBean.refreshChartData();
+                // loadBudgetLines();
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line with that category name does not exist.", null));
@@ -184,7 +189,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
-            loadBudgetLines();
+            // loadBudgetLines();
+            newChartBean.refreshChartData();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -210,6 +216,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Budget Line approved", null));
+            newChartBean.refreshChartData();
             approvedBudgetLines.add(selectedBudgetLine);
         } else
             FacesContext.getCurrentInstance().addMessage(null,
@@ -227,6 +234,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Budget Line rejected", null));
+            newChartBean.refreshChartData();
         } else
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line already approved", null));
@@ -255,7 +263,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineService.deleteBudgetLine(budgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
-            loadBudgetLines();
+            // loadBudgetLines();
+            newChartBean.refreshChartData();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -292,7 +301,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
             filteredBudgetLineCategories.add(newBudgetLineCategory);
             newBudgetLineCategory = new BudgetLineCategory();
-            loadBudgetLineCategories();
+            // loadBudgetLineCategories();
         } catch (RuntimeException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
@@ -309,7 +318,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             budgetLineCategoryService.updateBudgetLineCategory(selectedBudgetLineCategory);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
-            loadBudgetLineCategories();
+            // loadBudgetLineCategories();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -339,6 +348,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
             loadBudgetLineCategories();
             loadBudgetLines();
+            newChartBean.refreshChartData();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -437,6 +447,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 budgetLine.setStatus(BudgetLineStatus.EXPIRED);
             }
         }
+        newChartBean.refreshChartData();
         return filteredBudgetLines;
     }
 

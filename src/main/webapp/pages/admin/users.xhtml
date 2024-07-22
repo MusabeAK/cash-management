@@ -216,7 +216,9 @@
                       showEffect="fade"
                       hideEffect="fade"
                       closable="true"
-                      width="600px"
+                      maximizable="true"
+                      minimizable="true"
+                      minWidth="600"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="addUserPanel" rendered="true">
                     <p:messages id="addUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -316,9 +318,11 @@
                       resizable="true"
                       showEffect="fade"
                       hideEffect="fade"
-                      height="410px"
+                      minHeight="410"
                       closable="true"
-                      width="600px"
+                      maximizable="true"
+                      minimizable="true"
+                      minWidth="600"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="editUserPanel" rendered="true">
                     <p:growl id="editUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
