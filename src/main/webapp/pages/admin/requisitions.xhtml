@@ -225,7 +225,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="createRequisitionPanel" rendered="true">
                     <p:messages id="createRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -268,7 +270,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="updateRequisitionPanel" rendered="true">
                         <p:messages id="updateRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -291,9 +295,9 @@
                             </p:inputText>
 
                             <p:outputLabel for="editRequisitionDescription" value="Description"/>
-                            <p:inputTextarea id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
+                            <p:inputText id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
 
-                            </p:inputTextarea>
+                            </p:inputText>
 
                             <p:outputLabel for="editRequisitionDateNeeded" value="Date Needed"/>
                             <p:datePicker id="editRequisitionDateNeeded" value="#{requisitionBean.selectedRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please select a date for when you need your requisition"/>
@@ -315,8 +319,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          closeOnEscape="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="addAccountabilityPanel" rendered="true">
                         <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -357,8 +362,10 @@
                           resizable="true"
                           showEffect="fade"
                           hideEffect="fade"
-                          closeOnEscape="true"
-                          width="800px"
+                          closable="true"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="viewAccountabilityPanel" rendered="#{accountabilityBean.selectedAccountability != null}">
                         <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -399,8 +406,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          closeOnEscape="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="updateAccountabilityPanel" rendered="true">
                         <p:messages id="updateAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -438,6 +446,9 @@
                 <p:dialog header="Requisition Details"
                           widgetVar="requisitionDetailsDialog"
                           modal="true"
+                          minimizable="true"
+                          maximizable="true"
+                          minWidth="800"
                           width="800px"
                           fitViewport="true"
                           id="requisitionDetailsDialog">

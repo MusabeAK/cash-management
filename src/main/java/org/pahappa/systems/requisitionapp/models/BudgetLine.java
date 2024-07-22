@@ -37,8 +37,6 @@ public class BudgetLine {
     @Enumerated(EnumType.STRING)
     private BudgetLineStatus status;
 
-    @Column(name = "comment")
-    private String comment;
 
     @OneToMany(mappedBy = "budgetLine")
     private List<Requisition> requisitions;
@@ -55,14 +53,6 @@ public class BudgetLine {
         this.initialAmount = initialAmount;
         this.startDate = startDate;
         this.endDate = endDate;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public long getId() {

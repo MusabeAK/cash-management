@@ -315,7 +315,10 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          minWidth="800"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="addBudgetPanel" rendered="true">
 
@@ -361,14 +364,17 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          minWidth="800"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="addBudgetLineCategoryPanel" rendered="true">
                         <p:messages id="addBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                             <p:autoUpdate/>
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="newBudgetLineCategoryName" value="Budget Line Category Name"/>
+                            <p:outputLabel for="newBudgetLineCategoryName" value="Category Name: "/>
                             <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
                             </p:inputText>
                         </p:panelGrid>
@@ -387,14 +393,17 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          minWidth="800"
+                          width="600px"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="editBudgetLineCategoryPanel" rendered="true">
                         <p:messages id="editBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                             <p:autoUpdate/>
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="editedBudgetLineCategoryName" value="Budget Line Category Name"/>
+                            <p:outputLabel for="editedBudgetLineCategoryName" value="Category Name: "/>
                             <p:inputText id="editedBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.selectedBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
                             </p:inputText>
                         </p:panelGrid>
@@ -414,7 +423,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
-                          width="800px"
+                          maximizable="true"
+                          minimizable="true"
+                          minWidth="800"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="editBudgetLinePanel" rendered="true">
                         <p:messages id="editBudgetLineMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -453,6 +464,9 @@
                           showEffect="fade"
                           hideEffect="fade"
                           closable="true"
+                          maximizable="true"
+                          minimizable="true"
+                          minWidth="800"
                           width="800px"
                           visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="reviewBudgetLinePanel" rendered="true">
@@ -486,7 +500,6 @@
                     <p:commandButton value="Print" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status != 'EXPIRED' }" type="button" icon="pi pi-print" styleClass="custom-button3">
                         <p:printer target="reviewBudgetLinePanel"/>
                     </p:commandButton>
-
 
                 </p:outputPanel>
                 </p:dialog>

@@ -150,6 +150,8 @@
                       showEffect="fade"
                       hideEffect="fade"
                       closeOnEscape="true"
+                      maximizable="true"
+                      minimizable="true"
                       width="800px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="reviewRequisitionPaneloperations" rendered="true">
@@ -206,6 +208,8 @@
                       showEffect="fade"
                       hideEffect="fade"
                       closeOnEscape="true"
+                      maximizable="true"
+                      minimizable="true"
                       width="800px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="reviewRequisitionPanel" rendered="true">
@@ -262,6 +266,8 @@
                       showEffect="fade"
                       hideEffect="fade"
                       closeOnEscape="true"
+                      maximizable="true"
+                      minimizable="true"
                       width="800px"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="reviewRequisitionPanelFinance" rendered="true">
@@ -317,8 +323,10 @@
                       resizable="true"
                       showEffect="fade"
                       hideEffect="fade"
-                      closeOnEscape="true"
+                      maximizable="true"
+                      minimizable="true"
                       width="800px"
+                      closeOnEscape="true"
                       visible="#{facesContext.validationFailed}">
                 <p:outputPanel id="viewAccountabilityPanel" rendered="#{accountabilityBean.selectedAccountability != null}">
                     <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
@@ -346,8 +354,8 @@
 
                     </p:panelGrid>
 
-                    <p:commandButton icon="pi pi-check" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.acceptAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED'}" styleClass="custom-button1" value="Approve"/>
-                    <p:commandButton icon="pi pi-times" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.rejectAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED'}" styleClass="custom-button2" value="Reject"/>
+                    <p:commandButton icon="pi pi-check" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.acceptAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED' and loginBean.hasPermission('APPROVE_ACCOUNTABILITY')}" styleClass="custom-button1" value="Approve"/>
+                    <p:commandButton icon="pi pi-times" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.rejectAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED' and loginBean.hasPermission('APPROVE_ACCOUNTABILITY')}" styleClass="custom-button2" value="Reject"/>
 
                 </p:outputPanel>
             </p:dialog>
