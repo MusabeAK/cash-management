@@ -9,6 +9,7 @@ import org.pahappa.systems.requisitionapp.models.utils.Permission;
 import org.pahappa.systems.requisitionapp.services.AccountabilityService;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
+import org.pahappa.systems.requisitionapp.views.utils.NewChartBean;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
@@ -36,6 +37,9 @@ public class AccountabilityBean implements Serializable {
 
     @Autowired
     private BudgetLineService budgetLineService;
+
+    @Autowired
+    private NewChartBean newChartBean;
 
     private User currentUser;
     private Accountability newAccountability;
@@ -80,6 +84,7 @@ public class AccountabilityBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability added", null));
             uploadedFile = null;
+            newChartBean.refreshChartData();
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
@@ -103,6 +108,7 @@ public class AccountabilityBean implements Serializable {
             }
             selectedAccountability.setStatus(AccountabilityStatus.SUBMITTED);
             accountabilityService.updateAccountability(selectedAccountability);
+            newChartBean.refreshChartData();
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
@@ -128,6 +134,7 @@ public class AccountabilityBean implements Serializable {
                 budgetLineService.updateBudgetLine(budgetLine);
                 selectedAccountability.setStatus(AccountabilityStatus.APPROVED);
                 accountabilityService.updateAccountability(selectedAccountability);
+                newChartBean.refreshChartData();
             }
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
@@ -140,6 +147,7 @@ public class AccountabilityBean implements Serializable {
             if (selectedAccountability != null){
                 selectedAccountability.setStatus(AccountabilityStatus.REJECTED);
                 accountabilityService.updateAccountability(selectedAccountability);
+                newChartBean.refreshChartData();
             }
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,

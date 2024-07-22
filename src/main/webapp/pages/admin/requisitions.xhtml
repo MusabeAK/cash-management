@@ -480,6 +480,9 @@
                         <h:outputText value="Description: "/>
                         <h:outputText value="#{requisitionBean.selectedRequisition.description}"/>
 
+                        <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" />
+                        <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
+
                         <h:outputText value="Amount:" />
                         <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
 
@@ -512,8 +515,6 @@
                         <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Approved to Disbursed: "/>
                         <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.approvedToDisbursedTime}"/>
 
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" />
-                        <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
                         </h:panelGrid>
                     </h:panelGroup>
 

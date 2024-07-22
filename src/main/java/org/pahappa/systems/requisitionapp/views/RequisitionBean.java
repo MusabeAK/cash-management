@@ -7,6 +7,7 @@ import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.*;
 import org.pahappa.systems.requisitionapp.services.BudgetLineService;
 import org.pahappa.systems.requisitionapp.services.RequisitionService;
+import org.pahappa.systems.requisitionapp.views.utils.NewChartBean;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,9 @@ public class RequisitionBean implements Serializable {
 
     @Autowired
     private BudgetLineService budgetLineService;
+
+    @Autowired
+    private NewChartBean newChartBean;
 
     private User currentUser;
     private Requisition newRequisition;
@@ -331,10 +335,12 @@ public class RequisitionBean implements Serializable {
             budgetLineService.updateBudgetLine(budgetLine);
 
             draftRequisitions.add(newRequisition);
+            selectedRequisition.setComment("");
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Submitted", null));
             loadUserRequisitions();
+            newChartBean.refreshChartData();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
@@ -353,6 +359,7 @@ public class RequisitionBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
                 loadUserRequisitions();
+                newChartBean.refreshChartData();
             }
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
@@ -376,8 +383,8 @@ public class RequisitionBean implements Serializable {
             return;
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
-            selectedRequisition.setComment(comment);
-            comment = "";
+//            selectedRequisition.setComment(comment);
+//            comment = "";
             selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -396,8 +403,8 @@ public class RequisitionBean implements Serializable {
             return;
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)) {
-            selectedRequisition.setComment(comment);
-            comment = "";
+//            selectedRequisition.setComment(comment);
+//            comment = "";
             BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
             budgetLine.setFloatAmount(budgetLine.getBalance());
             budgetLineService.updateBudgetLine(budgetLine);
@@ -420,7 +427,7 @@ public class RequisitionBean implements Serializable {
         }
         if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
             selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
-            selectedRequisition.setComment(comment);
+//            selectedRequisition.setComment(comment);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition approved.", null));
@@ -476,6 +483,7 @@ public class RequisitionBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition disbursed.", null));
                 approvedRequisitions.remove(selectedRequisition);
+                newChartBean.refreshChartData();
             } catch (Exception e){
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error disbursing requisition." + e.getMessage(), null));
@@ -518,11 +526,16 @@ public class RequisitionBean implements Serializable {
                 budgetLine.setFloatAmount(budgetLine.getBalance());
                 budgetLineService.updateBudgetLine(budgetLine);
                 selectedRequisition.setStatus(RequisitionStatus.DRAFT);
+//                selectedRequisition.setComment(comment);
+                if (selectedRequisition.getComment().isEmpty() || selectedRequisition.getComment() == null){
+                    selectedRequisition.setComment("Changes Requested");
+                }
                 requisitionService.updateRequisition(selectedRequisition);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
                 requisitions.remove(selectedRequisition);
                 comment = "";
+                newChartBean.refreshChartData();
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", null));
