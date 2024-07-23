@@ -480,24 +480,34 @@
                     <p:autoUpdate/>
                 </p:messages>
                 <h:panelGrid columns="2" styleClass="details-grid">
-                    <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
-                    <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory.categoryName}"/>
+                    <h:panelGroup layout="block" styleClass="field-group">
+                        <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
+                        <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory.categoryName}"/>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="reviewBudgetLineTitle" value="Title: "/>
-                    <h:outputText id="reviewBudgetLineTitle" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}"/>
+                    <h:panelGroup layout="block" styleClass="field-group">
+                        <p:outputLabel for="reviewBudgetLineTitle" value="Title: "/>
+                        <h:outputText id="reviewBudgetLineTitle" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}"/>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="reviewBudgetLineAmount" value="Amount: "/>
-                    <h:outputText id="reviewBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}"/>
+                    <h:panelGroup layout="block" styleClass="field-group">
+                        <p:outputLabel for="reviewBudgetLineAmount" value="Amount: "/>
+                        <h:outputText id="reviewBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}"/>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="reviewBudgetLineStartDate" value="Start Date: "/>
-                    <h:outputText id="reviewBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}">
-                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                    </h:outputText>
+                    <h:panelGroup layout="block" styleClass="field-group">
+                        <p:outputLabel for="reviewBudgetLineStartDate" value="Start Date: "/>
+                        <h:outputText id="reviewBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                        </h:outputText>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="reviewBudgetLineEndDate" value="End Date: "/>
-                    <h:outputText id="reviewBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}">
-                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                    </h:outputText>
+                    <h:panelGroup layout="block" styleClass="field-group">
+                        <p:outputLabel for="reviewBudgetLineEndDate" value="End Date: "/>
+                        <h:outputText id="reviewBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                        </h:outputText>
+                    </h:panelGroup>
 
                 </h:panelGrid>
 

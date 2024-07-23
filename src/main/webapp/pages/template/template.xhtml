@@ -478,6 +478,129 @@
             transition: font-weight 0.5s ease-in-out;
         }
 
+
+
+
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        /* CSS for making the dialog and content responsive and appealing */
+
+        .custom-dialog {
+            /*left: 16% !important;*/
+            /*top: 0 !important;*/
+            /*right: 0 !important;*/
+
+            background-color: #fff !important;
+        }
+
+        body .custom-dialog.ui-dialog .ui-dialog-content{
+            background-color: #fff !important;
+        }
+
+        body .custom-dialog.ui-dialog .ui-dialog-titlebar {
+            background-color: #fff !important;
+        }
+
+        .column-1, .column-2{
+            width: 50%;
+        }
+
+        .requisition-details-panel {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .full-width-panel {
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff !important;
+        }
+
+        .pipeline {
+            width: 100%;
+            border: none;
+            outline: none;
+            height: 100px;
+        }
+
+        .pipeline .card {
+            width: 100%;
+        }
+
+        .details-grid {
+            width: 100%;
+            margin-top: 0;
+
+        }
+
+        .field-group {
+            margin-bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff !important;
+            height: 18vh;
+        }
+
+        .field-group label {
+            font-weight: bold;
+            display: block;
+            width: auto;
+            max-width: 30%;
+            margin-bottom: 0;
+            margin-right: 30px;
+            text-align: left;
+        }
+
+        .field-group:last-child {
+            text-align: justify;
+
+        }
+
+        @media screen and (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr !important;
+                display: flex;
+            }
+
+            .field-group {
+                padding: 5px !important;
+                display: inline;
+                width: 100%;
+            }
+        }
+
+        .custom-steps .ui-steps-item .ui-steps-number,
+        .custom-steps .ui-steps-item .ui-steps-title {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .custom-steps .ui-steps-item .ui-steps-number {
+            margin-right: 5px;
+        }
+
+        .custom-steps .ui-steps-item.ui-state-highlight .ui-steps-number,
+        .custom-steps .ui-steps-item.ui-state-highlight .ui-steps-title {
+            color: #ffffff;
+        }
+
+        .custom-steps .ui-steps-item.ui-state-default .ui-steps-number,
+        .custom-steps .ui-steps-item.ui-state-default .ui-steps-title {
+            color: #007bff;
+        }
     </style>
     <script type="text/javascript">
         function handleAddUserOnClick(xhr, status, args) {
@@ -545,7 +668,6 @@
                         </h:commandLink>
                     </h:form>
                 </li>
-
 
             </ul>
         </div>
