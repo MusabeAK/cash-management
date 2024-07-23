@@ -411,6 +411,11 @@
                                 </h:panelGroup>
 
                                 <h:panelGroup layout="block" styleClass="field-group">
+                                    <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" />
+                                    <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup layout="block" styleClass="field-group">
                                     <h:outputLabel value="Amount" />
                                     <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
                                 </h:panelGroup>
@@ -476,13 +481,11 @@
                         <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="custom-button3">
                             <p:printer target="requisitionDetailsPanel"/>
                         </p:commandButton>
+
                     </p:outputPanel>
                 </p:dialog>
             </h:form>
 
-
-
         </div>
-
     </ui:define>
 </ui:composition>

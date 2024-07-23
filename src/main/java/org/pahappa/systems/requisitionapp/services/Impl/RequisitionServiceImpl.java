@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -234,5 +232,33 @@ public class RequisitionServiceImpl implements RequisitionService {
         if (requisition.getRejectedTimestamp() != null && requisition.getRejectedTimestamp().after(latest)) latest = requisition.getRejectedTimestamp();
         if (requisition.getDisbursedTimestamp() != null && requisition.getDisbursedTimestamp().after(latest)) latest = requisition.getDisbursedTimestamp();
         return latest;
+    }
+
+    @Override
+    public String getDayOfWeek(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return new SimpleDateFormat("EEEE").format(calendar.getTime());
+    }
+
+    @Override
+    public Map<String, Long> getDisbursementFrequencyByDayOfWeek(){
+        List<Requisition> requisitions = requisitionDAO.getAllRequisitions();
+        return requisitions.stream()
+                .filter(req -> req.getDisbursedTimestamp() != null)
+                .collect(Collectors.groupingBy(
+                        req -> getDayOfWeek(req.getDisbursedTimestamp()),
+                        Collectors.counting()
+                ));
+    }
+
+    @Override
+    public Map<String, Long> getCreationFrequencyByDayOfWeek(){
+        List<Requisition> requisitions = requisitionDAO.getAllRequisitions();
+        return requisitions.stream()
+                .collect(Collectors.groupingBy(
+                        req -> getDayOfWeek(req.getSubmittedTimestamp()),
+                        Collectors.counting()
+                ));
     }
 }

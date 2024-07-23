@@ -27,6 +27,74 @@
                 PF('reviewRequisitionDialogFinance').hide();
             }
         </script>
+        <style type="text/css">
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            }
+
+            .details-grid {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .details-grid td {
+                padding: 15px 10px;
+            }
+
+            .details-grid .ui-outputtext {
+                margin-bottom: 10px;
+            }
+
+            .details-grid tr {
+                height: 30px;
+            }
+
+            .full-width-panel {
+                width: 100%;
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                margin-bottom: 20px;
+                padding: 10px 10px 30px;
+            }
+
+            .panel-header {
+                display: block;
+                text-align: center;
+                align-items: center;
+                font-weight: bold;
+                margin-bottom: 15px;
+                text-decoration: underline;
+            }
+
+            .pipeline {
+                width: 100%;
+                position: relative;
+            }
+
+            .custom-progress {
+                width: 100% !important;
+                height: 20px !important;
+            }
+
+            .status-container {
+                display: flex;
+                justify-content: space-between;
+                position: relative;
+                height: 20px;
+                margin-top: 5px;
+            }
+
+            .status {
+                position: relative;
+                text-align: center;
+                font-size: 12px;
+                width: 25%;
+            }
+        </style>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">
@@ -81,7 +149,17 @@
                 </div>
 
 
-                <p:dataTable value="#{requisitionBean.requisitions}" rendered="#{loginBean.hasPermission('VIEW_ALL_REQUISITIONS')}" var="requisition" paginator="true" rows="5" paginatorPosition="bottom">
+                <p:dataTable value="#{requisitionBean.requisitions}"
+                             rendered="#{loginBean.hasPermission('VIEW_ALL_REQUISITIONS')}"
+                             var="requisition"
+                             paginator="true"
+                             rows="5"
+                             selectionMode="single"
+                             selection="#{requisitionBean.selectedRequisition}"
+                             rowKey="#{requisition.id}"
+                             id="requisitionsTable"
+                             paginatorPosition="bottom">
+                    <p:ajax event="rowSelect" process="requisitionsTable" listener="#{requisitionBean.rowSelect}" update=":requisitionDetailsForm:requisitionDetailsPanel" oncomplete="PF('requisitionDetailsDialog').show(); console.log('Dialog shown, selected requisition:', #{requisitionBean.selectedRequisition != null});" />
                     <p:column headerText="Id">
                         <h:outputText value="#{requisitionBean.convertIdToString( requisition.id)}"/>
                     </p:column>
@@ -189,7 +267,7 @@
                         </h:outputText>
 
                         <p:outputLabel for="requisitionCommentoperations" value="Add Comment: "/>
-                        <p:inputText id="requisitionCommentoperations" value="#{requisitionBean.comment}">
+                        <p:inputText id="requisitionCommentoperations" value="#{requisitionBean.selectedRequisition.comment}">
 
                         </p:inputText>
 
@@ -360,6 +438,90 @@
 
                     <p:commandButton icon="pi pi-check" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.acceptAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED' and loginBean.hasPermission('APPROVE_ACCOUNTABILITY')}" styleClass="custom-button1" value="Approve"/>
                     <p:commandButton icon="pi pi-times" onclick="PF('viewAccountabilityDialog').hide()" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" update=":allRequisitions:allRequisitionsTable" actionListener="#{accountabilityBean.rejectAccountability}" rendered="#{accountabilityBean.selectedAccountability.status == 'SUBMITTED' and loginBean.hasPermission('APPROVE_ACCOUNTABILITY')}" styleClass="custom-button2" value="Reject"/>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="requisitionDetailsForm">
+            <p:dialog header="Requisition Details"
+                      widgetVar="requisitionDetailsDialog"
+                      modal="true"
+                      minimizable="true"
+                      maximizable="true"
+                      minWidth="800"
+                      width="800px"
+                      fitViewport="true"
+                      id="requisitionDetailsDialog">
+                <p:outputPanel id="requisitionDetailsPanel">
+                    <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
+                    <h:panelGroup columns="2" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
+
+                        <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
+                            <h:outputText styleClass="panel-header" value="Status"/>
+                            <div class="pipeline">
+                                <div class="status-container">
+                                    <div class="status">Submitted</div>
+                                    <div class="status">Reviewed</div>
+                                    <div class="status">Approved</div>
+                                    <div class="status">Disbursed</div>
+                                </div>
+                                <div class="progress-bar">
+                                    <p:progressBar value="#{requisitionBean.overallProgress}" styleClass="custom-progress"/>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGrid columns="2" styleClass="details-grid">
+                            <h:outputText value="Id:" />
+                            <h:outputText value="#{requisitionBean.selectedRequisition.id}" />
+
+                            <h:outputText value="Reason:" />
+                            <h:outputText value="#{requisitionBean.selectedRequisition.subject}" />
+
+                            <h:outputText value="Description: "/>
+                            <h:outputText value="#{requisitionBean.selectedRequisition.description}"/>
+
+                            <h:outputText value="Amount:" />
+                            <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" />
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
+
+                            <h:outputText value="Budget Line: "/>
+                            <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
+
+                            <h:outputText value="Date Needed:" />
+                            <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                            </h:outputText>
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="Time Since Submitted: "/>
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}" value="#{requisitionBean.timeSinceSubmitted}"/>
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="Time from Submitted to Rejected: "/>
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}" value="#{requisitionBean.submittedToRejectedTime}"/>
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="Time from Submitted to Reviewed: "/>
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}" value="#{requisitionBean.submittedToReviewedTime}"/>
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Submitted to Approved: "/>
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.submittedToApprovedTime}"/>
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Submitted to Disbursed: "/>
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.submittedToDisbursedTime}"/>
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="Time from Reviewed to Approved: "/>
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}" value="#{requisitionBean.reviewedToApprovedTime}"/>
+
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="Time from Approved to Disbursed: "/>
+                            <h:outputText rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}" value="#{requisitionBean.approvedToDisbursedTime}"/>
+
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="custom-button3">
+                        <p:printer target="requisitionDetailsPanel"/>
+                    </p:commandButton>
 
                 </p:outputPanel>
             </p:dialog>
