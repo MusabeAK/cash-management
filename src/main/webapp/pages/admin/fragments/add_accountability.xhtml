@@ -2,48 +2,41 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="/pages/template/template.xhtml">
-    <h:form id="addAccountability" enctype="multipart/form-data">
-    <p:dialog header="Accountability"
-              widgetVar="addAccountabilityDialog"
-              modal="true"
-              resizable="true"
-              showEffect="fade"
-              hideEffect="fade"
-              closable="true"
-              maximizable="true"
-              minimizable="true"
-              width="600px"
-              visible="#{facesContext.validationFailed}">
-        <p:outputPanel id="addAccountabilityPanel" rendered="true">
-            <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                <p:autoUpdate/>
-            </p:messages>
-            <p:panelGrid columns="2" styleClass="custom-grid">
-                <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: "/>
-                <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
-                    <f:convertNumber/>
-                </p:inputText>
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="addAccountability" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+        <p:outputPanel id="addAccountabilityPanel" rendered="#{accountabilityBean.currentForm != null}">
+            <div class="inner-div">
+                <h3>Add Accountability</h3>
+                <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:panelGrid columns="2" styleClass="custom-grid">
+                    <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: "/>
+                    <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
+                        <f:convertNumber/>
+                    </p:inputText>
 
 
-                <p:outputLabel for="accountabilityDescription" value="Description: "/>
-                <p:inputText id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
+                    <p:outputLabel for="accountabilityDescription" value="Description: "/>
+                    <p:inputText id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
 
-                </p:inputText>
+                    </p:inputText>
 
 
-                <p:outputLabel for="accountabilityImage" value="Image: "/>
-                <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
-                              mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
+                    <p:outputLabel for="accountabilityImage" value="Image: "/>
+                    <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
+                                  mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
 
-                </p:fileUpload>
+                    </p:fileUpload>
 
-            </p:panelGrid>
+                </p:panelGrid>
 
-            <p:commandButton value="Add" styleClass="custom-button1" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.addAccountability}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
-            <p:commandButton value="Cancel" styleClass="custom-button2" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
+                <p:commandButton value="Add" styleClass="custom-button1" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.addAccountability}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
+                <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" process="@this" actionListener="#{requisitionBean.cancelCurrentForm()}" oncomplete="window.location.reload();" update=":addAccountability:addAccountabilityPanel"/>
+
+            </div>
         </p:outputPanel>
-    </p:dialog>
+
 </h:form>
 </ui:composition>

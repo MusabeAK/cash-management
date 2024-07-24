@@ -8,68 +8,8 @@
 
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
         <f:event type="preRenderComponent" listener="#{requisitionBean.cancelCurrentForm()}" />
-        <script type="text/javascript">
-            function handleCreateRequisitionOnClick(xhr, status, args) {
-                // Check if there are any error messages with severity 'error'
-                var errorMessages = PF('createRequisitionDialog').jq.find('.ui-messages-error');
+        <f:event type="preRenderComponent" listener="#{accountabilityBean.cancelCurrentForm()}" />
 
-                if (args.validationFailed || errorMessages.length > 0) {
-                    // If there are validation errors or error messages, do not hide the dialog
-                    return;
-                }
-
-                // If no validation errors or error messages, hide the dialog
-                PF('createRequisitionDialog').hide();
-            }
-
-            function handleUpdateRequisitionOnClick(xhr, status, args) {
-                // Check if there are any error messages with severity 'error'
-                var errorMessages = PF('updateRequisitionDialog').jq.find('.ui-messages-error');
-
-                if (args.validationFailed || errorMessages.length > 0) {
-                    // If there are validation errors or error messages, do not hide the dialog
-                    return;
-                }
-
-                // If no validation errors or error messages, hide the dialog
-                PF('updateRequisitionDialog').hide();
-            }
-
-            function handleAddAccountabilityOnClick(xhr, status, args) {
-                // Check if there are any error messages with severity 'error'
-                var errorMessages = PF('addAccountabilityDialog').jq.find('.ui-messages-error');
-
-                if (args.validationFailed || errorMessages.length > 0) {
-                    // If there are validation errors or error messages, do not hide the dialog
-                    return;
-                }
-
-                // If no validation errors or error messages, hide the dialog
-                PF('addAccountabilityDialog').hide();
-            }
-
-            function handleUpdateAccountabilityOnClick(xhr, status, args) {
-                // Check if there are any error messages with severity 'error'
-                var errorMessages = PF('updateAccountabilityDialog').jq.find('.ui-messages-error');
-
-                if (args.validationFailed || errorMessages.length > 0) {
-                    // If there are validation errors or error messages, do not hide the dialog
-                    return;
-                }
-
-                // If no validation errors or error messages, hide the dialog
-                PF('updateAccountabilityDialog').hide();
-            }
-
-            function start() {
-                PF('statusDialog').show();
-            }
-
-            function stop() {
-                PF('statusDialog').hide();
-            }
-
-        </script>
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="My Requisitions" styleClass="top-bar-title" />
@@ -81,7 +21,7 @@
                 <p:autoUpdate/>
             </p:growl>
             <h:form id="userRequisitions" style="margin-top: 30px" >
-                <h:panelGroup id="userRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS') and (requisitionBean.currentForm == null)}">
+                <h:panelGroup id="userRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS') and ((requisitionBean.currentForm == null) and (accountabilityBean.currentForm == null))}">
                     <div class="search-container">
                         <h3>My requisitions</h3>
                         <div class="search-and-filter">
@@ -96,7 +36,7 @@
                     <div class="table-header">
                         <h:outputText value="#{requisitionBean.filteredRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus"
+                            <p:commandButton icon="pi pi-plus"
                                              rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button"
                                              action="#{requisitionBean.prepareCreateRequisition()}"
                                              update=":userRequisitions:myRequisitionsTable :formCreateRequisition @form"/>
@@ -118,7 +58,7 @@
                                  rows="5"
                                  id="myRequisitionsTable"
                                  paginatorPosition="bottom">
-                        <p:ajax event="rowSelect" process="myRequisitionsTable" listener="#{requisitionBean.rowSelect}"  />
+                        <p:ajax event="rowSelect" process="myRequisitionsTable" listener="#{requisitionBean.rowSelect}" update=":userRequisitions:myRequisitionsTable :formRequisitionDetails @form"  />
                         <p:column headerText="Id" filterBy="#{requisitionBean.convertIdToString(requisition.id)}" filterMatchMode="contains" filterPosition="top" filterStyle="height: 10px; font-size: 10px">
                             <h:outputText value="#{requisitionBean.convertIdToString(requisition.id) }"/>
                         </p:column>
@@ -141,8 +81,8 @@
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable "  style="background-color: #32de84; border-color: #32de84;"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.accountability != null and requisition.accountability.status != 'REJECTED'}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable "/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.prepareAddAccountability(requisition)}" update=":userRequisitions:myRequisitionsTable :formAddAccountability @form"  style="background-color: #32de84; border-color: #32de84;"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.accountability != null and requisition.accountability.status != 'REJECTED'}" action="#{accountabilityBean.prepareViewAccountability(requisition)}" update=":userRequisitions:myRequisitionsTable :formViewAccountability @form"/>
                             <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability.status == 'REJECTED' }" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable " style="background-color: #EC1212 !important; border: #EC1212 !important;"/>
 
                         </p:column>
@@ -158,6 +98,18 @@
 
             <h:panelGroup id="formUpdateRequisition">
                 <ui:include src="#{requisitionBean.currentForm == 'update' ? '/pages/admin/fragments/update_requisition.xhtml':null}" />
+            </h:panelGroup>
+
+            <h:panelGroup id="formRequisitionDetails">
+                <ui:include src="#{requisitionBean.currentForm == 'details' ? '/pages/admin/fragments/requisition_details.xhtml':null}" />
+            </h:panelGroup>
+
+            <h:panelGroup id="formAddAccountability">
+                <ui:include src="#{accountabilityBean.currentForm == 'accountability' ? '/pages/admin/fragments/add_accountability.xhtml':null}" />
+            </h:panelGroup>
+
+            <h:panelGroup id="formViewAccountability">
+                <ui:include src="#{accountabilityBean.currentForm == 'view_accountability' ? '/pages/admin/fragments/view_accountability.xhtml':null}" />
             </h:panelGroup>
 
             <!-- Dialogs -->

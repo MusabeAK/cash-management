@@ -48,6 +48,7 @@ public class AccountabilityBean implements Serializable {
     private List<Accountability> allAccountabilities;
     private Accountability selectedAccountability;
     private double totalAmountUsed;
+    private String currentForm;
 
     @PostConstruct
     public void init() {
@@ -254,5 +255,27 @@ public class AccountabilityBean implements Serializable {
 
     public void setTotalAmountUsed(double totalAmountUsed) {
         this.totalAmountUsed = totalAmountUsed;
+    }
+
+    public String getCurrentForm() {
+        return currentForm;
+    }
+
+    public void setCurrentForm(String currentForm) {
+        this.currentForm = currentForm;
+    }
+
+    public void prepareAddAccountability(Requisition requisition) {
+        currentForm = "accountability";
+        selectRequisition(requisition);
+    }
+
+    public void prepareViewAccountability(Requisition requisition) {
+        currentForm = "view_accountability";
+        selectRequisition(requisition);
+    }
+
+    public void cancelCurrentForm() {
+        currentForm = null;
     }
 }

@@ -46,7 +46,8 @@
                                      styleClass="custom-button3"
                                      actionListener="#{requisitionBean.updateRequisition}"
                                      icon="pi pi-pencil" />
-                    <p:commandButton value="Cancel" styleClass="custom-button2"
+                    <p:commandButton value="Cancel"
+                                     styleClass="custom-button2"
                                      action="#{requisitionBean.cancelCurrentForm()}" icon="pi pi-times"
                                      oncomplete="window.location.reload();"
                                      update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable @form"/>

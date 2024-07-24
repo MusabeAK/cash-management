@@ -859,6 +859,7 @@ public class RequisitionBean implements Serializable {
 
     public void rowSelect(SelectEvent event) {
         selectedRequisition = (Requisition) event.getObject();
+        currentForm = "details";
     }
 
     public int getOverallProgress() {
@@ -894,8 +895,9 @@ public class RequisitionBean implements Serializable {
         currentForm = "create";
     }
 
-    public void prepareRequisitionDetails() {
-        currentForm = "create";
+    public void prepareRequisitionDetails(Requisition requisition) {
+        currentForm = "details";
     }
+
 
 }
