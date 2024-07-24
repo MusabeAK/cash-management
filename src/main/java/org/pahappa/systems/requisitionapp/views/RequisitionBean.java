@@ -63,6 +63,9 @@ public class RequisitionBean implements Serializable {
     private MenuModel stepModel;
     private int currentStep;
 
+
+    private String currentForm;
+
     @PostConstruct
     public void init() {
         createStepModel();
@@ -74,7 +77,6 @@ public class RequisitionBean implements Serializable {
         SubmittedToApprovedTime = 0L;
         SubmittedToDisbursedTime = 0L;
         TimeSinceSubmitted = 0L;
-
 
         totalAmountDisbursed = requisitionService.getTotalAmountDisbursed();
         newRequisition = new Requisition();
@@ -225,6 +227,7 @@ public class RequisitionBean implements Serializable {
                       requisitions.add(newRequisition);
                       requisitionService.makeRequisition(newRequisition, currentUser);
                       loadUserRequisitions();
+
                       FacesContext.getCurrentInstance().addMessage(null,
                               new FacesMessage(FacesMessage.SEVERITY_INFO, "Success.", null));
                       newRequisition = new Requisition();
@@ -555,12 +558,18 @@ public class RequisitionBean implements Serializable {
         return returnedBudgetLines;
     }
 
-    public void searchUserRequisitions(){
-        if (!(searchQuery == null || searchQuery.isEmpty())) {
-            filteredRequisitions = requisitionService.searchRequisitions(searchQuery);
-            return;
+    public void searchUserRequisitions() {
+        try {
+            if (!(searchQuery == null || searchQuery.isEmpty())) {
+                filteredRequisitions = requisitionService.searchRequisitions(searchQuery);
+                return;
+            }
+            filteredRequisitions = requisitionService.getRequisitionsByUser(currentUser);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
-        filteredRequisitions = requisitionService.getAllRequisitions();
     }
 
     public void searchAllRequisitions(){
@@ -595,6 +604,7 @@ public class RequisitionBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
                 requisitions.remove(selectedRequisition);
+                filteredRequisitions = requisitionService.getRequisitionsByUser(currentUser);
                 comment = "";
                 newChartBean.refreshChartData();
             } else {
@@ -862,4 +872,30 @@ public class RequisitionBean implements Serializable {
     public boolean isStepActive(int stepIndex) {
         return stepIndex <= getOverallProgress();
     }
+
+    public String getCurrentForm() {
+        return currentForm;
+    }
+
+    public void setCurrentForm(String currentForm) {
+        this.currentForm = currentForm;
+    }
+
+    public void prepareUpdateRequisition(Requisition requisition) {
+        selectedRequisition = requisition;
+        currentForm = "update";
+    }
+
+    public void cancelCurrentForm() {
+        this.currentForm = null;
+    }
+
+    public void prepareCreateRequisition() {
+        currentForm = "create";
+    }
+
+    public void prepareRequisitionDetails() {
+        currentForm = "create";
+    }
+
 }

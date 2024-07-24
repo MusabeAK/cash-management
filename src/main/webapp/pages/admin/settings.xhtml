@@ -5,52 +5,6 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/template/template.xhtml">
     <ui:define name="content" class="form-container">
-        <style type="text/css">
-           .wrap-panel{
-               margin: 0;
-           }
-            .inner-div{
-                justify-content: center;
-                background-color: white;
-                padding: 3px 25px;
-                margin: 0;
-                border-radius: 10px;
-                height: 100%;
-            }
-
-           .inner-div h3{
-               margin-left: 20px;
-               font-weight: bolder;
-               color: #343C6A;
-
-           }
-            .add-button{
-                float: right;
-            }
-
-            .inner-div .custom-grid{
-                justify-content: space-between;
-                height: 100%;
-                display: inline;
-
-            }
-
-           .inner-div .custom-grid input{
-               width: 90%;
-           }
-
-           .inner-div .custom-grid label{
-               font-weight: bold;
-           }
-
-           .inner-div .custom-button3:hover{
-               font-weight: bold;
-               transition: font-weight 0.3s ease;
-               background-color: #0dda6f !important;
-               border: #32de84 !important;
-           }
-
-        </style>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
         <f:event listener="#{userBean.loadCurrentUser()}" type="preRenderView"/>
 

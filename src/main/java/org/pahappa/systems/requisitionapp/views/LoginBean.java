@@ -23,7 +23,7 @@ import static org.pahappa.systems.requisitionapp.models.utils.Permission.VIEW_DA
 import static org.pahappa.systems.requisitionapp.models.utils.Permission.VIEW_USERS;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 @Component
 public class LoginBean {
     private String identifier;

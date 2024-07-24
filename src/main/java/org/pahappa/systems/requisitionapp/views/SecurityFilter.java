@@ -4,6 +4,7 @@ import org.pahappa.systems.requisitionapp.constant.Hyperlink;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Role;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;

@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="updateRequisition" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+            <p:outputPanel id="updateRequisitionPanel" rendered="#{requisitionBean.currentForm != null}" >
+                <div class="inner-div">
+                    <h3>Submit/Update Requisition</h3>
+                    <p:messages id="updateRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="editRequisitionSubject" value="Reason: "/>
+                        <p:inputText id="editRequisitionSubject" value="#{requisitionBean.selectedRequisition.subject}" required="true" requiredMessage="Please add your reason">
+
+                        </p:inputText>
+
+                        <p:outputLabel for="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}">Comment: </p:outputLabel>
+
+                        <h:outputText id="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}"/>
+
+
+                        <p:outputLabel for="editRequisitionAmount" value="Amount"/>
+                        <p:inputText id="editRequisitionAmount" placeholder="UGX..." value="#{requisitionBean.selectedRequisition.amount}" required="true" requiredMessage="Please add an amount for your requisition" validatorMessage="Amount should be a number">
+                            <f:convertNumber/>
+                        </p:inputText>
+
+                        <p:outputLabel for="editRequisitionDescription" value="Description"/>
+                        <p:inputText id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
+
+                        </p:inputText>
+
+                        <p:outputLabel for="editRequisitionDateNeeded" value="Date Needed" />
+                        <p:datePicker id="editRequisitionDateNeeded" value="#{requisitionBean.selectedRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please select a date for when you need your requisition" style="width: 100%;"/>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Submit"
+                                     oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)"
+                                     styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}"
+                                     action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-check" />
+                    <p:commandButton value="Update"
+                                     styleClass="custom-button3"
+                                     actionListener="#{requisitionBean.updateRequisition}"
+                                     icon="pi pi-pencil" />
+                    <p:commandButton value="Cancel" styleClass="custom-button2"
+                                     action="#{requisitionBean.cancelCurrentForm()}" icon="pi pi-times"
+                                     oncomplete="window.location.reload();"
+                                     update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable @form"/>
+                    </div>
+            </p:outputPanel>
+    </h:form>
+
+</ui:composition>

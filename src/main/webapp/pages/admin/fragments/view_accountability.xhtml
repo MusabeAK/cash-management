@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
+    <h:form id="viewAccountability">
+    <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
+              widgetVar="viewAccountabilityDialog"
+              id="viewAccountabilityDialog"
+              modal="true"
+              resizable="true"
+              showEffect="fade"
+              hideEffect="fade"
+              closable="true"
+              maximizable="true"
+              minimizable="true"
+              width="600px"
+              visible="#{facesContext.validationFailed}">
+        <p:outputPanel id="viewAccountabilityPanel" rendered="#{accountabilityBean.selectedAccountability != null}">
+            <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <p:panelGrid columns="2" styleClass="custom-grid">
+                <p:outputLabel for="accountabilityDescriptionView" value="Description: "/>
+                <h:outputText id="accountabilityDescriptionView" value="#{accountabilityBean.selectedAccountability.description}">
+                </h:outputText>
+
+                <p:outputLabel for="accountabilityAmountView" value="Amount Used: "/>
+                <h:outputText id="accountabilityAmountView" value="#{accountabilityBean.selectedAccountability.amountUsed}"/>
+
+                <p:outputLabel for="accountabilityStatus" value="Status: "/>
+                <h:outputText id="accountabilityStatus" value="#{accountabilityBean.selectedAccountability.status}"/>
+
+                <p:outputLabel for="accountabilityImageView" value="Image: "/>
+                <p:commandButton id="accountabilityImageView" value="Download Image"
+                                 ajax="false"
+                                 onclick="PrimeFaces.monitorDownload(start, stop);"
+                                 icon="pi pi-download"
+                                 rendered="#{accountabilityBean.selectedAccountability != null and accountabilityBean.selectedAccountability.image != null}">
+                    <p:fileDownload value="#{accountabilityBean.imageDownload}" />
+                </p:commandButton>
+
+            </p:panelGrid>
+
+        </p:outputPanel>
+    </p:dialog>
+</h:form>
+</ui:composition>

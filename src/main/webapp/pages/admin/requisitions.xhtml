@@ -5,6 +5,9 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/template/template.xhtml">
     <ui:define name="content" class="form-container">
+
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+        <f:event type="preRenderComponent" listener="#{requisitionBean.cancelCurrentForm()}" />
         <script type="text/javascript">
             function handleCreateRequisitionOnClick(xhr, status, args) {
                 // Check if there are any error messages with severity 'error'
@@ -67,8 +70,6 @@
             }
 
         </script>
-        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
-
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
             <h:outputText value="My Requisitions" styleClass="top-bar-title" />
@@ -79,8 +80,8 @@
             <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
                 <p:autoUpdate/>
             </p:growl>
-            <h:form id="userRequisitions" style="margin-top: 30px">
-                <h:panelGroup id="userRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+            <h:form id="userRequisitions" style="margin-top: 30px" >
+                <h:panelGroup id="userRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS') and (requisitionBean.currentForm == null)}">
                     <div class="search-container">
                         <h3>My requisitions</h3>
                         <div class="search-and-filter">
@@ -95,7 +96,10 @@
                     <div class="table-header">
                         <h:outputText value="#{requisitionBean.filteredRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
-                            <p:commandButton icon="pi pi-user-plus" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button" oncomplete="PF('createRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :createRequisition:createRequisitionPanel"/>
+                            <p:commandButton icon="pi pi-user-plus"
+                                             rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button"
+                                             action="#{requisitionBean.prepareCreateRequisition()}"
+                                             update=":userRequisitions:myRequisitionsTable :formCreateRequisition @form"/>
 
                             <p:commandButton icon="pi pi-trash" update=":userRequisitions:userRequisitionsTable" value="Delete All" action="#" styleClass="delete-all-button">
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete all Requisitions?"
@@ -114,8 +118,8 @@
                                  rows="5"
                                  id="myRequisitionsTable"
                                  paginatorPosition="bottom">
-                        <p:ajax event="rowSelect" process="myRequisitionsTable" listener="#{requisitionBean.rowSelect}" update=":requisitionDetailsForm:requisitionDetailsPanel" oncomplete="PF('requisitionDetailsDialog').show(); console.log('Dialog shown, selected requisition:', #{requisitionBean.selectedRequisition != null});" />
-                        <p:column headerText="Id">
+                        <p:ajax event="rowSelect" process="myRequisitionsTable" listener="#{requisitionBean.rowSelect}"  />
+                        <p:column headerText="Id" filterBy="#{requisitionBean.convertIdToString(requisition.id)}" filterMatchMode="contains" filterPosition="top" filterStyle="height: 10px; font-size: 10px">
                             <h:outputText value="#{requisitionBean.convertIdToString(requisition.id) }"/>
                         </p:column>
                         <p:column headerText="Reason">
@@ -130,361 +134,34 @@
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Actions">
-                            <p:commandButton icon="pi pi-upload"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.selectRequisition(requisition)}" oncomplete="PF('updateRequisitionDialog').show()" update=":userRequisitions:userRequisitionsTable :updateRequisition:updateRequisitionPanel"/>
+                            <p:commandButton icon="pi pi-upload"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.prepareUpdateRequisition(requisition)}" update=":userRequisitions:myRequisitionsTable :formUpdateRequisition @form"/>
 
                             <p:commandButton icon="pi pi-trash" rendered="#{requisition.status == 'DRAFT' or requisition.status == 'REJECTED'}" action="#{requisitionBean.deleteRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable" title="Delete" styleClass="delete-button" style="color:red" >
                                 <p:confirm header="Confirm Deletion" message="Do you want to delete this requisition?"
                                            icon="pi pi-info-circle"/>
                             </p:commandButton>
 
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :addAccountability:addAccountabilityPanel" oncomplete="PF('addAccountabilityDialog').show()" style="background-color: #32de84; border-color: #32de84;"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.accountability != null and requisition.accountability.status != 'REJECTED'}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :viewAccountability:viewAccountabilityPanel :viewAccountability:viewAccountabilityDialog" oncomplete="PF('viewAccountabilityDialog').show()"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability.status == 'REJECTED' }" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable :updateAccountability:updateAccountabilityPanel :updateAccountability:updateAccountabilityDialog" oncomplete="PF('updateAccountabilityDialog').show()" style="background-color: #EC1212 !important; border: #EC1212 !important;"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable "  style="background-color: #32de84; border-color: #32de84;"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.accountability != null and requisition.accountability.status != 'REJECTED'}" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable "/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability.status == 'REJECTED' }" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable " style="background-color: #EC1212 !important; border: #EC1212 !important;"/>
 
                         </p:column>
                     </p:dataTable>
 
                 </h:panelGroup>
+
             </h:form>
+
+            <h:panelGroup id="formCreateRequisition">
+                <ui:include src="#{requisitionBean.currentForm == 'create' ? '/pages/admin/fragments/create_requisition.xhtml':null}" />
+            </h:panelGroup>
+
+            <h:panelGroup id="formUpdateRequisition">
+                <ui:include src="#{requisitionBean.currentForm == 'update' ? '/pages/admin/fragments/update_requisition.xhtml':null}" />
+            </h:panelGroup>
 
             <!-- Dialogs -->
 
-            <h:form id="createRequisition">
-                <p:dialog header="Create a Requisition"
-                          widgetVar="createRequisitionDialog"
-                          modal="true"
-                          resizable="true"
-                          showEffect="fade"
-                          hideEffect="fade"
-                          closable="true"
-                          maximizable="true"
-                          minimizable="true"
-                          width="600px"
-                          visible="#{facesContext.validationFailed}">
-                    <p:outputPanel id="createRequisitionPanel" rendered="true">
-                    <p:messages id="createRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                        <p:autoUpdate/>
-                    </p:messages>
-                        <h:outputText rendered="#{!loginBean.hasPermission('CREATE_REQUISITION')}" value="User does not have access to this function"/>
-                        <p:panelGrid columns="2" styleClass="custom-grid" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}">
-                            <p:outputLabel for="subject" >Reason: </p:outputLabel>
-                            <p:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true" requiredMessage="Add a reason for your requisition" validatorMessage="Reason can not be more than 60 characters">
-                                <f:validateLength maximum="60"/>
-                            </p:inputText>
-
-                            <p:outputLabel for="description">Description: </p:outputLabel>
-                            <p:inputText id="description" value="#{requisitionBean.newRequisition.description}" required="true" requiredMessage="Add a description for your requisition" validatorMessage="Description can not be morethan 255 characters">
-                                <f:validateLength maximum="255"/>
-                            </p:inputText>
-
-                            <p:outputLabel for="amount">Amount: </p:outputLabel>
-                            <p:inputText id="amount" placeholder="UGX..." value="#{requisitionBean.newRequisition.amount}" required="true" requiredMessage="No amount given" validatorMessage="Amount should be a number">
-                                <f:convertNumber/>
-                            </p:inputText>
-
-                            <p:outputLabel for="budgetLineName" value="Budget Line: "/>
-                            <p:autoComplete id="budgetLineName" value="#{requisitionBean.budgetLineName}" completeMethod="#{requisitionBean.searchBudgetLines}" required="true" requiredMessage="Select a budget line">
-                            </p:autoComplete>
-
-                            <p:outputLabel for="editBudgetLineStartDate" value="Date Needed: "  />
-                            <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please add a date when you need this requisition"/>
-                        </p:panelGrid>
-
-                        <p:commandButton value="Create" styleClass="custom-button1" oncomplete="handleCreateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.makeRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-check" update=":createRequisition:createRequisitionPanel :userRequisitions:userRequisitionsTable"/>
-                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('createRequisitionDialog').hide()" icon="pi pi-times"/>
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
-
-            <h:form id="updateRequisition">
-                <p:dialog header="Submit/Edit your requisition"
-                          widgetVar="updateRequisitionDialog"
-                          modal="true"
-                          resizable="true"
-                          showEffect="fade"
-                          hideEffect="fade"
-                          closable="true"
-                          maximizable="true"
-                          minimizable="true"
-                          width="600px"
-                          visible="#{facesContext.validationFailed}">
-                    <p:outputPanel id="updateRequisitionPanel" rendered="true">
-                        <p:messages id="updateRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                            <p:autoUpdate/>
-                        </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="editRequisitionSubject" value="Reason: "/>
-                            <p:inputText id="editRequisitionSubject" value="#{requisitionBean.selectedRequisition.subject}" required="true" requiredMessage="Please add your reason">
-
-                            </p:inputText>
-
-                            <p:outputLabel for="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}">Comment: </p:outputLabel>
-
-                            <h:outputText id="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}"/>
-
-
-                            <p:outputLabel for="editRequisitionAmount" value="Amount"/>
-                            <p:inputText id="editRequisitionAmount" placeholder="UGX..." value="#{requisitionBean.selectedRequisition.amount}" required="true" requiredMessage="Please add an amount for your requisition" validatorMessage="Amount should be a number">
-                                <f:convertNumber/>
-                            </p:inputText>
-
-                            <p:outputLabel for="editRequisitionDescription" value="Description"/>
-                            <p:inputText id="editRequisitionDescription" value="#{requisitionBean.selectedRequisition.description}" required="true" requiredMessage="Add a description for your requisition">
-
-                            </p:inputText>
-
-                            <p:outputLabel for="editRequisitionDateNeeded" value="Date Needed"/>
-                            <p:datePicker id="editRequisitionDateNeeded" value="#{requisitionBean.selectedRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please select a date for when you need your requisition"/>
-
-                        </p:panelGrid>
-
-                        <p:commandButton value="Submit" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-check" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable" />
-                        <p:commandButton value="Update" styleClass="custom-button3" oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)" actionListener="#{requisitionBean.updateRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-pencil" update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable"/>
-                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('updateRequisitionDialog').hide()" icon="pi pi-times"/>
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
-
-            <h:form id="addAccountability" enctype="multipart/form-data">
-                <p:dialog header="Accountability"
-                          widgetVar="addAccountabilityDialog"
-                          modal="true"
-                          resizable="true"
-                          showEffect="fade"
-                          hideEffect="fade"
-                          closable="true"
-                          maximizable="true"
-                          minimizable="true"
-                          width="600px"
-                          visible="#{facesContext.validationFailed}">
-                    <p:outputPanel id="addAccountabilityPanel" rendered="true">
-                        <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                            <p:autoUpdate/>
-                        </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: "/>
-                            <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
-                                    <f:convertNumber/>
-                            </p:inputText>
-
-
-                            <p:outputLabel for="accountabilityDescription" value="Description: "/>
-                            <p:inputText id="accountabilityDescription" value="#{accountabilityBean.newAccountability.description}" required="true">
-
-                            </p:inputText>
-
-
-                            <p:outputLabel for="accountabilityImage" value="Image: "/>
-                            <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImage" value="#{accountabilityBean.uploadedFile}"
-                                              mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
-
-                            </p:fileUpload>
-
-                        </p:panelGrid>
-
-                        <p:commandButton value="Add" styleClass="custom-button1" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.addAccountability}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" oncomplete="handleAddAccountabilityOnClick(xhr, status, args)" icon="pi pi-check"/>
-                        <p:commandButton value="Cancel" styleClass="custom-button2" update=":addAccountability:addAccountabilityPanel :userRequisitions:userRequisitionsTable" onclick="PF('addAccountabilityDialog').hide()" icon="pi pi-times"/>
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
-
-            <h:form id="viewAccountability">
-                <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
-                          widgetVar="viewAccountabilityDialog"
-                          id="viewAccountabilityDialog"
-                          modal="true"
-                          resizable="true"
-                          showEffect="fade"
-                          hideEffect="fade"
-                          closable="true"
-                          maximizable="true"
-                          minimizable="true"
-                          width="600px"
-                          visible="#{facesContext.validationFailed}">
-                    <p:outputPanel id="viewAccountabilityPanel" rendered="#{accountabilityBean.selectedAccountability != null}">
-                        <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                            <p:autoUpdate/>
-                        </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="accountabilityDescriptionView" value="Description: "/>
-                            <h:outputText id="accountabilityDescriptionView" value="#{accountabilityBean.selectedAccountability.description}">
-                            </h:outputText>
-
-                            <p:outputLabel for="accountabilityAmountView" value="Amount Used: "/>
-                            <h:outputText id="accountabilityAmountView" value="#{accountabilityBean.selectedAccountability.amountUsed}"/>
-
-                            <p:outputLabel for="accountabilityStatus" value="Status: "/>
-                            <h:outputText id="accountabilityStatus" value="#{accountabilityBean.selectedAccountability.status}"/>
-
-                            <p:outputLabel for="accountabilityImageView" value="Image: "/>
-                            <p:commandButton id="accountabilityImageView" value="Download Image"
-                                             ajax="false"
-                                             onclick="PrimeFaces.monitorDownload(start, stop);"
-                                             icon="pi pi-download"
-                                             rendered="#{accountabilityBean.selectedAccountability != null and accountabilityBean.selectedAccountability.image != null}">
-                                <p:fileDownload value="#{accountabilityBean.imageDownload}" />
-                            </p:commandButton>
-
-                        </p:panelGrid>
-
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
-
-            <h:form id="updateAccountability" enctype="multipart/form-data">
-                <p:dialog header="Update Accountability"
-                          widgetVar="updateAccountabilityDialog"
-                          id="updateAccountabilityDialog"
-                          modal="true"
-                          resizable="true"
-                          showEffect="fade"
-                          hideEffect="fade"
-                          closable="true"
-                          maximizable="true"
-                          minimizable="true"
-                          width="600px"
-                          visible="#{facesContext.validationFailed}">
-                    <p:outputPanel id="updateAccountabilityPanel" rendered="true">
-                        <p:messages id="updateAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                            <p:autoUpdate/>
-                        </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
-                            <p:outputLabel for="accountabilityAmountUsedUpdate" value="Amount Used: "/>
-                            <p:inputText id="accountabilityAmountUsedUpdate" placeholder="UGX..." value="#{accountabilityBean.selectedAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
-                                <f:convertNumber/>
-                            </p:inputText>
-
-
-                            <p:outputLabel for="accountabilityDescriptionUpdate" value="Description: "/>
-                            <p:inputText id="accountabilityDescriptionUpdate" value="#{accountabilityBean.selectedAccountability.description}" required="true">
-
-                            </p:inputText>
-
-
-                            <p:outputLabel for="accountabilityImageUpdate" value="Image: "/>
-                            <p:fileUpload chooseIcon="pi pi-upload" uploadIcon="pi pi-upload" id="accountabilityImageUpdate" value="#{accountabilityBean.uploadedFile}"
-                                          mode="simple" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" required="true" requiredMessage="Please add an image backing your accountability">
-
-                            </p:fileUpload>
-                        </p:panelGrid>
-
-                        <p:commandButton update=":updateAccountability:updateAccountabilityPanel :userRequisitions:userRequisitionsTable" actionListener="#{accountabilityBean.updateAccountability}" action="#{budgetLineCategoryManagedBean.loadBudgetLines}" styleClass="custom-button1" oncomplete="handleUpdateAccountabilityOnClick(xhr, status, args)" value="Update"/>
-                        <p:commandButton styleClass="custom-button2" onclick="PF('updateAccountabilityDialog').hide()" value="Cancel"/>
-
-                    </p:outputPanel>
-                </p:dialog>
-
-            </h:form>
-
-
-            <h:form id="requisitionDetailsForm">
-                <p:dialog header="Requisition #{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}"
-                          widgetVar="requisitionDetailsDialog"
-                          modal="true"
-                          minimizable="true"
-                          maximizable="true"
-                          minWidth="800"
-                          width="800px"
-                          minHeight="400"
-                          fitViewport="true"
-                          id="requisitionDetailsDialog"
-                          styleClass="custom-dialog">
-                    <p:outputPanel id="requisitionDetailsPanel" styleClass="requisition-details-panel" >
-                        <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
-                        <h:panelGroup columns="1" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
-
-                            <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
-                                <h:outputText styleClass="panel-header" value="Status"/>
-                                <div class="pipeline">
-                                    <div class="card">
-                                        <!-- PrimeFaces Steps Component -->
-                                        <p:steps model="#{requisitionBean.stepModel}" activeIndex="#{requisitionBean.overallProgress}"  styleClass="custom-steps "/>
-                                    </div>
-                                </div>
-                            </h:panelGroup>
-
-                            <h:panelGrid columns="2" styleClass="details-grid" cellpadding="10px" columnClasses="column-1, column-2">
-
-                                <h:panelGroup layout="block" styleClass="field-group">
-                                    <h:outputLabel value="Reason" />
-                                    <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group">
-                                    <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" />
-                                    <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group">
-                                    <h:outputLabel value="Amount" />
-                                    <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group">
-                                    <h:outputLabel value="Budget Line" />
-                                    <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group">
-                                    <h:outputLabel value="Date Needed" />
-                                    <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">
-                                        <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
-                                    </h:outputText>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}">
-                                    <h:outputLabel value="Time Since Submitted" />
-                                    <h:outputText value="#{requisitionBean.timeSinceSubmitted}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}">
-                                    <h:outputLabel value="Time from Submitted to Rejected" />
-                                    <h:outputText value="#{requisitionBean.submittedToRejectedTime}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}">
-                                    <h:outputLabel value="Time from Submitted to Reviewed" />
-                                    <h:outputText value="#{requisitionBean.submittedToReviewedTime}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
-                                    <h:outputLabel value="Time from Submitted to Approved" />
-                                    <h:outputText value="#{requisitionBean.submittedToApprovedTime}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}">
-                                    <h:outputLabel value="Time from Submitted to Disbursed" />
-                                    <h:outputText value="#{requisitionBean.submittedToDisbursedTime}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
-                                    <h:outputLabel value="Time from Reviewed to Approved" />
-                                    <h:outputText value="#{requisitionBean.reviewedToApprovedTime}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}">
-                                    <h:outputLabel value="Time from Approved to Disbursed" />
-                                    <h:outputText value="#{requisitionBean.approvedToDisbursedTime}"/>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}">
-                                    <h:outputLabel value="Comment:" />
-                                    <h:outputText value="#{requisitionBean.selectedRequisition.comment}" />
-                                </h:panelGroup>
-                            </h:panelGrid>
-                            <h:panelGroup layout="block" styleClass="field-group" style="margin: 10px; height: 20vh">
-                                <h:outputLabel value="Description" />
-                                <h:outputText value="#{requisitionBean.selectedRequisition.description}" />
-                            </h:panelGroup>
-                        </h:panelGroup>
-
-                        <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="custom-button3">
-                            <p:printer target="requisitionDetailsPanel"/>
-                        </p:commandButton>
-
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
 
         </div>
     </ui:define>
