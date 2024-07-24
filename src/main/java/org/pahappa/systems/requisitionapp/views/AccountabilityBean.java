@@ -85,6 +85,7 @@ public class AccountabilityBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability added", null));
             uploadedFile = null;
+            currentForm = null;
             newChartBean.refreshChartData();
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
@@ -109,7 +110,11 @@ public class AccountabilityBean implements Serializable {
             }
             selectedAccountability.setStatus(AccountabilityStatus.SUBMITTED);
             accountabilityService.updateAccountability(selectedAccountability);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability Updated", null));
+            currentForm = null;
             newChartBean.refreshChartData();
+
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
@@ -272,6 +277,11 @@ public class AccountabilityBean implements Serializable {
 
     public void prepareViewAccountability(Requisition requisition) {
         currentForm = "view_accountability";
+        selectRequisition(requisition);
+    }
+
+    public void prepareEditAccountability(Requisition requisition) {
+        currentForm = "edit_accountability";
         selectRequisition(requisition);
     }
 

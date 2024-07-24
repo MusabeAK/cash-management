@@ -561,7 +561,12 @@ public class RequisitionBean implements Serializable {
     public void searchUserRequisitions() {
         try {
             if (!(searchQuery == null || searchQuery.isEmpty())) {
-                filteredRequisitions = requisitionService.searchRequisitions(searchQuery);
+                filteredRequisitions = userRequisitions.stream()
+                        .filter(req -> searchQuery.isEmpty()
+                                || req.getSubject().toLowerCase().contains(searchQuery.toLowerCase())
+                                || req.getComment().toLowerCase().contains(searchQuery.toLowerCase())
+                                || req.getDescription().toLowerCase().contains(searchQuery.toLowerCase()))
+                        .collect(Collectors.toList());
                 return;
             }
             filteredRequisitions = requisitionService.getRequisitionsByUser(currentUser);

@@ -48,7 +48,7 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{requisitionBean.filteredRequisitions}"
+                    <p:dataTable value="#{requisitionBean.userRequisitions}"
                                  var="requisition"
                                  rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}"
                                  selectionMode="single"
@@ -83,7 +83,7 @@
 
                             <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability == null}" action="#{accountabilityBean.prepareAddAccountability(requisition)}" update=":userRequisitions:myRequisitionsTable :formAddAccountability @form"  style="background-color: #32de84; border-color: #32de84;"/>
                             <p:commandButton value="Accountability" rendered="#{requisition.accountability != null and requisition.accountability.status != 'REJECTED'}" action="#{accountabilityBean.prepareViewAccountability(requisition)}" update=":userRequisitions:myRequisitionsTable :formViewAccountability @form"/>
-                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability.status == 'REJECTED' }" action="#{accountabilityBean.selectRequisition(requisition)}" update=":userRequisitions:userRequisitionsTable " style="background-color: #EC1212 !important; border: #EC1212 !important;"/>
+                            <p:commandButton value="Accountability" rendered="#{requisition.status == 'DISBURSED' and requisition.accountability.status == 'REJECTED' }" action="#{accountabilityBean.prepareEditAccountability(requisition)}" update=":userRequisitions:myRequisitionsTable :formEditAccountability @form" style="background-color: #EC1212 !important; border: #EC1212 !important;"/>
 
                         </p:column>
                     </p:dataTable>
@@ -110,6 +110,10 @@
 
             <h:panelGroup id="formViewAccountability">
                 <ui:include src="#{accountabilityBean.currentForm == 'view_accountability' ? '/pages/admin/fragments/view_accountability.xhtml':null}" />
+            </h:panelGroup>
+
+            <h:panelGroup id="formEditAccountability">
+                <ui:include src="#{accountabilityBean.currentForm == 'edit_accountability' ? '/pages/admin/fragments/update_accountability.xhtml':null}" />
             </h:panelGroup>
 
             <!-- Dialogs -->
