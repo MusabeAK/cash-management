@@ -60,6 +60,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     private int activeBudgetLineCount;
     private double budgetLineSummedTotal;
 
+    private String currentForm;
+
     @PostConstruct
     public void init() {
         activeBudgetLineCount = budgetLineService.getActiveBudgetLineCount();
@@ -542,5 +544,21 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void rowSelect(SelectEvent event) {
         selectedBudgetLine = (BudgetLine) event.getObject();
+    }
+
+    public String getCurrentForm() {
+        return currentForm;
+    }
+
+    public void setCurrentForm(String currentForm) {
+        this.currentForm = currentForm;
+    }
+
+    public void cancelCurrentForm(){
+        currentForm = null;
+    }
+
+    public void prepareCreateBudgetLine(){
+        currentForm = "create_budget_line";
     }
 }

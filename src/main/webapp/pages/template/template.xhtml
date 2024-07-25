@@ -511,7 +511,7 @@
             width: 50%;
         }
 
-        .requisition-details-panel {
+       .requisition-details-panel {
             padding: 20px;
             background-color: #fff;
             border-radius: 5px;
@@ -520,7 +520,7 @@
         .full-width-panel {
             width: 100%;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
+            /*border: 1px solid #ddd;*/
             padding: 10px;
             border-radius: 5px;
             background-color: #fff !important;
@@ -551,7 +551,7 @@
             padding: 10px;
             border-radius: 5px;
             background-color: #fff !important;
-            height: 18vh;
+            height: auto;
         }
 
         .field-group label {
@@ -562,11 +562,11 @@
             margin-bottom: 0;
             margin-right: 30px;
             text-align: left;
+            color: #343C6A;
         }
 
         .field-group:last-child {
             text-align: justify;
-
         }
 
         @media screen and (max-width: 768px) {
@@ -694,7 +694,7 @@
             // If no validation errors or error messages, delay the page reload by 5 seconds
             setTimeout(function() {
                 window.location.reload();
-            }, 2000);
+            }, 1000);
         }
 
 

@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="updateBudgetLineForm">
+    <p:dialog header="Edit Budget Line."
+              widgetVar="editBudgetLineDialog"
+              modal="true"
+              resizable="true"
+              showEffect="fade"
+              hideEffect="fade"
+              closable="true"
+              maximizable="true"
+              minimizable="true"
+              minWidth="800"
+              visible="#{facesContext.validationFailed}">
+        <p:outputPanel id="editBudgetLinePanel" rendered="true">
+            <p:messages id="editBudgetLineMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <p:panelGrid columns="2" styleClass="custom-grid">
+                <p:outputLabel for="editBudgetLineName" value="Budget Line Title: "/>
+                <p:inputText id="editBudgetLineName" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.title}" required="true" requiredMessage="Budget Line Title is required" validatorMessage="Invalid Title">
+                    <f:validateLength minimum="3" maximum="32"/>
+                </p:inputText>
+
+                <p:outputLabel for="editBudgetLineAmount" value="Budget Line Amount: "/>
+                <p:inputText id="editBudgetLineAmount" placeholder="UGX..." value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}" required="true" requiredMessage="Budget Line Amount is required" validatorMessage="Amount must be a number">
+                    <f:convertNumber/>
+                </p:inputText>
+
+                <p:outputLabel for="editBudgetLineStartDate" value="Start Date: "  />
+                <p:datePicker id="editBudgetLineStartDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.startDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Budget Line Start Date is required"/>
+
+                <p:outputLabel for="ediBudgetLineEndDate" value="End Date: "  />
+                <p:datePicker id="ediBudgetLineEndDate" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.endDate}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Budget Line End Date is required"/>
+
+            </p:panelGrid>
+
+            <p:commandButton value="Update" styleClass="custom-button1" oncomplete="handleEditBudgetLineOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetLinePanel" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}" icon="pi pi-check"/>
+            <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineDialog').hide();" icon="pi pi-times" update=":updateBudgetLineForm:editBudgetLinePanel"/>
+        </p:outputPanel>
+    </p:dialog>
+</h:form>
+
+</ui:composition>
