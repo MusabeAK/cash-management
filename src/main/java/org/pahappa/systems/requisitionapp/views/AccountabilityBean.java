@@ -85,7 +85,6 @@ public class AccountabilityBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability added", null));
             uploadedFile = null;
-            currentForm = null;
             newChartBean.refreshChartData();
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
@@ -112,7 +111,6 @@ public class AccountabilityBean implements Serializable {
             accountabilityService.updateAccountability(selectedAccountability);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability Updated", null));
-            currentForm = null;
             newChartBean.refreshChartData();
 
         } catch (Exception e){

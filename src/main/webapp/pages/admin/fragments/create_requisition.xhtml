@@ -36,9 +36,14 @@
                <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please add a date when you need this requisition" style="width: 100%;"/>
             </p:panelGrid>
 
-            <p:commandButton value="Create" icon="pi pi-check" styleClass="custom-button1" actionListener="#{requisitionBean.makeRequisition}" action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" update=":createRequisitionForm:createRequisitionPanel :userRequisitions:userRequisitionsTable"/>
+            <p:commandButton value="Create" icon="pi pi-check" styleClass="custom-button1"
+                             actionListener="#{requisitionBean.makeRequisition}"
+                             action="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
+                             oncomplete="handleCreateOnComplete(xhr, status, args)"
+                             update=":createRequisitionForm:createRequisitionPanel :userRequisitions:userRequisitionsTable"/>
 
-            <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" process="@this" actionListener="#{requisitionBean.cancelCurrentForm()}" oncomplete="window.location.reload();" update=":createRequisitionForm:createRequisitionPanel"/>
+            <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" process="@this" actionListener="#{requisitionBean.cancelCurrentForm()}" oncomplete="window.location.reload();"
+                             update=":createRequisitionForm:createRequisitionPanel"/>
 
          </div>
       </p:outputPanel>

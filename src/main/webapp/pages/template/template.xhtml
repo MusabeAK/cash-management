@@ -682,6 +682,22 @@
         });
 
 
+        function handleCreateOnComplete(xhr, status, args) {
+            // Check if there are any error messages with severity 'error'
+            var errorMessages = $('.ui-messages-error');
+
+            if (args.validationFailed || errorMessages.length > 0) {
+                // If there are validation errors or error messages, do not reload the page
+                return;
+            }
+
+            // If no validation errors or error messages, delay the page reload by 5 seconds
+            setTimeout(function() {
+                window.location.reload();
+            }, 2000);
+        }
+
+
     </script>
 
 </h:head>

@@ -39,12 +39,14 @@
                     </p:panelGrid>
 
                     <p:commandButton value="Submit"
-                                     oncomplete="handleUpdateRequisitionOnClick(xhr, status, args)"
                                      styleClass="custom-button1" actionListener="#{requisitionBean.submitRequisition}"
-                                     action="#{budgetLineCategoryManagedBean.loadBudgetLines()}" icon="pi pi-check" />
+                                     action="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
+                                     oncomplete="handleCreateOnComplete(xhr, status, args)"
+                                     icon="pi pi-check" />
                     <p:commandButton value="Update"
                                      styleClass="custom-button3"
                                      actionListener="#{requisitionBean.updateRequisition}"
+                                     oncomplete="handleCreateOnComplete(xhr, status, args)"
                                      icon="pi pi-pencil" />
                     <p:commandButton value="Cancel"
                                      styleClass="custom-button2"

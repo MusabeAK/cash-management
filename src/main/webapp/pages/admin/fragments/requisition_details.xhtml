@@ -7,7 +7,7 @@
     <h:form id="requisitionDetailsForm" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
         <p:outputPanel id="requisitionDetailsPanel" styleClass="requisition-details-panel" rendered="#{requisitionBean.currentForm != null}">
             <div class="inner-div">
-                <h3>Update Requisition</h3>
+                <h3>View Requisition</h3>
                 <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
                     <p:autoUpdate/>
                 </p:messages>
@@ -31,11 +31,6 @@
                         <h:panelGroup layout="block" styleClass="field-group">
                             <h:outputLabel value="Reason" />
                             <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
-                        </h:panelGroup>
-
-                        <h:panelGroup layout="block" styleClass="field-group">
-                            <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="Comment:" />
-                            <h:outputText rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}" />
                         </h:panelGroup>
 
                         <h:panelGroup layout="block" styleClass="field-group">
