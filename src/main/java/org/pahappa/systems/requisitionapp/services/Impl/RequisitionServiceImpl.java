@@ -86,6 +86,13 @@ public class RequisitionServiceImpl implements RequisitionService {
         return requisitionDAO.searchRequisitions(searchTerm);
     }
 
+    public List<Requisition> searchRequisitionsByUser(String searchTerm, User user) {
+        if (searchTerm == null || searchTerm.isEmpty()) {
+            return requisitionDAO.getAllRequisitions();
+        }
+        return requisitionDAO.searchRequisitionsByUser(searchTerm, user);
+    }
+
     @Override
     public List<BudgetLine> searchBudgetLines(String query){
         List<BudgetLine> budgetLines = budgetLineDAO.getAllBudgetLines();

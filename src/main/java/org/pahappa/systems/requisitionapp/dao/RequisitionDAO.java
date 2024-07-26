@@ -73,4 +73,14 @@ public class RequisitionDAO {
                 .getResultList();
     }
 
+    public List<Requisition> searchRequisitionsByUser(String searchTerm, User user) {
+        String query = "FROM Requisition WHERE user.username LIKE :user and (description LIKE :searchTerm " +
+                "OR subject LIKE :searchTerm)";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, Requisition.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .setParameter("user",   "%"+user.getUsername() + "%" )
+                .getResultList();
+    }
+
 }
