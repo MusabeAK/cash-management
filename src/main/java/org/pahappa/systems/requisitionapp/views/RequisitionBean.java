@@ -235,9 +235,11 @@ public class RequisitionBean implements Serializable {
                       if (!currentUserRequisitions.isEmpty() || !userRequisitions.isEmpty()) {
                           for (Requisition requisition : currentUserRequisitions) {
                               if (requisition.getAccountability() == null && !requisition.getStatus().equals(RequisitionStatus.REJECTED)) {
-                                  FacesContext.getCurrentInstance().addMessage(null,
-                                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
-                                  return;
+                                  if (!requisition.getStatus().equals(RequisitionStatus.CANCELLED)){
+                                      FacesContext.getCurrentInstance().addMessage(null,
+                                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
+                                      return;
+                                  }
                               }
                               if (requisition.getAccountability() != null){
                                   if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)){
@@ -449,7 +451,9 @@ public class RequisitionBean implements Serializable {
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Submitted", null));
-            loadUserRequisitions();
+            //loadUserRequisitions();
+            // filteredRequisitions.add(selectedRequisition);
+            filteredRequisitions = requisitionService.getAllRequisitions();
             newChartBean.refreshChartData();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -655,7 +659,6 @@ public class RequisitionBean implements Serializable {
                 requisitionService.updateRequisition(selectedRequisition);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
-                filteredRequisitions = requisitionService.getRequisitionsByUser(currentUser);
                 comment = "";
                 newChartBean.refreshChartData();
             } else {
@@ -681,8 +684,7 @@ public class RequisitionBean implements Serializable {
 
     public void loadAllRequisitions(){
         try {
-            requisitions = requisitionService.getAllRequisitions();
-            filteredRequisitions = requisitions;
+            filteredRequisitions = requisitionService.getAllRequisitions();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));

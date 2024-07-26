@@ -28,6 +28,11 @@
                     </h:panelGroup>
 
                     <h:panelGroup layout="block" styleClass="field-group">
+                        <p:outputLabel for="reviewBudgetLineComment" value="Comment: "/>
+                        <h:outputText id="reviewBudgetLineComment" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="field-group">
                         <p:outputLabel for="reviewBudgetLineAmount" value="Amount: "/>
                         <h:outputText id="reviewBudgetLineAmount" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.initialAmount}"/>
                     </h:panelGroup>
@@ -59,6 +64,13 @@
                                  oncomplete="handleCreateOnComplete(xhr, status, args)"
                                  actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}"
                                  update=":budgetLine:budgetLineTable"/>
+                <p:commandButton value="Request Changes"
+                                 styleClass="custom-button3"
+                                 rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED'}"
+                                 actionListener="#{budgetLineCategoryManagedBean.requestChanges}"
+                                 icon="pi pi-pencil"
+                                 oncomplete="handleCreateOnComplete(xhr, status, args)"/>
+
                 <p:commandButton value="Print"
                                  type="button" icon="pi pi-print" styleClass="custom-button3">
                     <p:printer target="reviewBudgetLinePanel"/>

@@ -233,6 +233,29 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     add pool to collect expired budget line amounts
      */
 
+    public void requestChanges(){
+        if (!selectedBudgetLine.getStatus().equals(BudgetLineStatus.SUBMITTED)) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot request changes for a budget line that has not been submitted", null));
+            return;
+        }
+        try {
+            if (selectedBudgetLine.getComment().isEmpty() || selectedBudgetLine.getComment() == null){
+                selectedBudgetLine.setComment("Changes Requested");
+            }
+            selectedBudgetLine.setStatus(BudgetLineStatus.DRAFT);
+            budgetLineService.updateBudgetLine(selectedBudgetLine);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
+            loadBudgetLines();
+            newChartBean.refreshChartData();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
+            e.printStackTrace();
+        }
+    }
+
     public void approveBudgetLine() {
         if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_BUDGET_LINE)){
             FacesContext.getCurrentInstance().addMessage(null,

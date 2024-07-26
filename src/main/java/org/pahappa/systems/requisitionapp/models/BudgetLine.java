@@ -33,6 +33,9 @@ public class BudgetLine {
     @Column(name = "end_date")
     private Date endDate;
 
+    @Column(name = "comment")
+    private String comment;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private BudgetLineStatus status;
@@ -161,5 +164,13 @@ public class BudgetLine {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
