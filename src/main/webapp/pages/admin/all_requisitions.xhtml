@@ -136,11 +136,11 @@
                 <div class="search-container">
                     <h3>All Requisitions</h3>
                     <div class="search-and-filter">
-                        <div class="search">
-                            <p:inputText id="searchBar2" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
-                                <p:ajax event="keyup" update=":allRequisitions:allRequisitionsTable" listener="#{requisitionBean.searchRequisitions()}"/>
-                            </p:inputText>
-                        </div>
+<!--                        <div class="search">-->
+<!--                            <p:inputText id="searchBar2" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">-->
+<!--                                <p:ajax event="keyup" update=":allRequisitions:allRequisitionsTable" listener="#{requisitionBean.searchRequisitions()}"/>-->
+<!--                            </p:inputText>-->
+<!--                        </div>-->
                     </div>
                 </div>
 
@@ -157,7 +157,7 @@
                              paginatorPosition="bottom">
                     <p:ajax event="rowSelect" process="requisitionsTable" listener="#{requisitionBean.rowSelect}" update=":requisitionDetailsForm:requisitionDetailsPanel" oncomplete="PF('requisitionDetailsDialog').show(); console.log('Dialog shown, selected requisition:', #{requisitionBean.selectedRequisition != null});" />
                     <p:column headerText="Id">
-                        <h:outputText value="#{requisition.id}"/>
+                        <h:outputText value="#{requisitionBean.convertIdToString(requisition.id)}"/>
                     </p:column>
 
                     <p:column headerText="User">
@@ -220,7 +220,7 @@
         </div>
 
         <h:form id="reviewRequisitionoperations">
-            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+            <p:dialog header="Review Requisition #{requisitionBean.convertedId()}"
                       widgetVar="reviewRequisitionDialogoperations"
                       id="reviewRequisitionDialogoperations"
                       modal="true"
@@ -278,7 +278,7 @@
         </h:form>
 
         <h:form id="reviewRequisition">
-            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+            <p:dialog header="Review Requisition #{requisitionBean.convertedId()}"
                       widgetVar="reviewRequisitionDialog"
                       id="reviewRequisitionDialog"
                       modal="true"
@@ -336,7 +336,7 @@
         </h:form>
 
         <h:form id="reviewRequisitionFinance">
-            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+            <p:dialog header="Review Requisition #{requisitionBean.convertedId()}"
                       widgetVar="reviewRequisitionDialogFinance"
                       id="reviewRequisitionDialogFinance"
                       modal="true"
@@ -394,7 +394,7 @@
 
         <!-- Work on this  -->
         <h:form id="viewAccountability">
-            <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
+            <p:dialog header="View Accountability for Requisition #{accountabilityBean.convertedId()}"
                       widgetVar="viewAccountabilityDialog"
                       id="viewAccountabilityDialog"
                       modal="true"
@@ -469,7 +469,7 @@
                         </h:panelGroup>
                         <h:panelGrid columns="2" styleClass="details-grid">
                             <h:outputText value="Id:" />
-                            <h:outputText value="#{requisitionBean.selectedRequisition.id}" />
+                            <h:outputText value="#{requisitionBean.convertedId()}" />
 
                             <h:outputText value="Reason:" />
                             <h:outputText value="#{requisitionBean.selectedRequisition.subject}" />

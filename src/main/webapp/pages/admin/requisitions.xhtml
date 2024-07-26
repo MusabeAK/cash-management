@@ -68,6 +68,9 @@
 
         </script>
         <style type="text/css">
+
+
+
             @media print {
                 * {
                     -webkit-print-color-adjust: exact !important;
@@ -152,11 +155,11 @@
                     <div class="search-container">
                         <h3>My requisitions</h3>
                         <div class="search-and-filter">
-                            <div class="search">
-                                <p:inputText id="searchBar" value="#" styleClass="search-bar" placeholder="Search...">
-                                    <p:ajax event="keyup" />
-                                </p:inputText>
-                            </div>
+<!--                            <div class="search">-->
+<!--                                <p:inputText id="searchBar" value="#{requisitionBean.mySearchQuery}" styleClass="search-bar" placeholder="Search...">-->
+<!--                                    <p:ajax event="keyup" listener="#{requisitionBean.searchMyRequisitions()}" update=":userRequisitions:userRequisitionsTable"/>-->
+<!--                                </p:inputText>-->
+<!--                            </div>-->
                         </div>
                     </div>
 
@@ -184,7 +187,7 @@
                                  paginatorPosition="bottom">
                         <p:ajax event="rowSelect" process="myRequisitionsTable" listener="#{requisitionBean.rowSelect}" update=":requisitionDetailsForm:requisitionDetailsPanel" oncomplete="PF('requisitionDetailsDialog').show(); console.log('Dialog shown, selected requisition:', #{requisitionBean.selectedRequisition != null});" />
                         <p:column headerText="Id">
-                            <h:outputText value="#{requisition.id}"/>
+                            <h:outputText value="#{requisitionBean.convertIdToString(requisition.id)}"/>
                         </p:column>
                         <p:column headerText="Reason">
                             <h:outputText value="#{requisition.subject}"/>
@@ -228,13 +231,14 @@
                           maximizable="true"
                           minimizable="true"
                           width="600px"
+                          styleClass="colored-header-dialog"
                           visible="#{facesContext.validationFailed}">
                     <p:outputPanel id="createRequisitionPanel" rendered="true">
                     <p:messages id="createRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                         <p:autoUpdate/>
                     </p:messages>
                         <h:outputText rendered="#{!loginBean.hasPermission('CREATE_REQUISITION')}" value="User does not have access to this function"/>
-                        <p:panelGrid columns="2" styleClass="custom-grid" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}">
+                        <p:panelGrid columns="2" styleClass="details-grid" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}">
                             <p:outputLabel for="subject" >Reason: </p:outputLabel>
                             <p:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true" requiredMessage="Add a reason for your requisition">
                             </p:inputText>
@@ -263,7 +267,7 @@
             </h:form>
 
             <h:form id="updateRequisition">
-                <p:dialog header="Submit/Edit your requisition"
+                <p:dialog header="Submit/Edit your Requisition"
                           widgetVar="updateRequisitionDialog"
                           modal="true"
                           resizable="true"
@@ -278,7 +282,7 @@
                         <p:messages id="updateRequisitionPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                             <p:autoUpdate/>
                         </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:panelGrid columns="2" styleClass="details-grid">
                             <p:outputLabel for="editRequisitionSubject" value="Reason: "/>
                             <p:inputText id="editRequisitionSubject" value="#{requisitionBean.selectedRequisition.subject}" required="true" requiredMessage="Please add your reason">
 
@@ -327,7 +331,7 @@
                         <p:messages id="addAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                             <p:autoUpdate/>
                         </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:panelGrid columns="2" styleClass="details-grid">
                             <p:outputLabel for="accountabilityAmountUsed" value="Amount Used: "/>
                             <p:inputText id="accountabilityAmountUsed" placeholder="UGX..." value="#{accountabilityBean.newAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
                                     <f:convertNumber/>
@@ -355,7 +359,7 @@
             </h:form>
 
             <h:form id="viewAccountability">
-                <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
+                <p:dialog header="View accountability for Requisition"
                           widgetVar="viewAccountabilityDialog"
                           id="viewAccountabilityDialog"
                           modal="true"
@@ -371,7 +375,7 @@
                         <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                             <p:autoUpdate/>
                         </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:panelGrid columns="2" styleClass="details-grid">
                             <p:outputLabel for="accountabilityDescriptionView" value="Description: "/>
                             <h:outputText id="accountabilityDescriptionView" value="#{accountabilityBean.selectedAccountability.description}">
                             </h:outputText>
@@ -414,7 +418,7 @@
                         <p:messages id="updateAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                             <p:autoUpdate/>
                         </p:messages>
-                        <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:panelGrid columns="2" styleClass="details-grid">
                             <p:outputLabel for="accountabilityAmountUsedUpdate" value="Amount Used: "/>
                             <p:inputText id="accountabilityAmountUsedUpdate" placeholder="UGX..." value="#{accountabilityBean.selectedAccountability.amountUsed}" required="true" requiredMessage="Please enter the amount you used" validatorMessage="Amount should be a number">
                                 <f:convertNumber/>
@@ -472,7 +476,7 @@
                         </h:panelGroup>
                         <h:panelGrid columns="2" styleClass="details-grid">
                         <h:outputText value="Id:" />
-                        <h:outputText value="#{requisitionBean.selectedRequisition.id}" />
+                        <h:outputText value="#{requisitionBean.convertedId()}" />
 
                         <h:outputText value="Reason:" />
                         <h:outputText value="#{requisitionBean.selectedRequisition.subject}" />

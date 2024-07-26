@@ -49,6 +49,7 @@ public class UserBean implements Serializable {
     private String newRole;
     private Gender selectedGender;
     private boolean userLoaded = false;
+    private User currentUser;
 
     @PostConstruct
     public void init() {
@@ -65,6 +66,7 @@ public class UserBean implements Serializable {
                 .collect(Collectors.toList());
 
         users = filteredUsers = userService.getAllUsers();
+        currentUser = new User();
     }
 
     private final UserService userService;
@@ -140,8 +142,6 @@ public class UserBean implements Serializable {
             user.setRole(role);
             user.setPhoneNumber(phone);
             userService.addUser(user);
-
-            user = new User();
             filteredUsers = userService.getAllUsers();
 
             FacesContext.getCurrentInstance().addMessage(null,
@@ -156,6 +156,8 @@ public class UserBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "User registered successfully, but email could not be sent.", null));
             }
+
+            user = new User();
 
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -193,20 +195,20 @@ public class UserBean implements Serializable {
 
     public void updateCurrentUser(){
         try{
-            String username =ServiceUtils.testUserNameInput(selectedUser.getUsername());
-            String password = ServiceUtils.testPasswordInput(selectedUser.getPassword());
-            String firstname = ServiceUtils.testStringInput(selectedUser.getFirstName(), "First Name");
-            String lastname = ServiceUtils.testStringInput(selectedUser.getLastName(), "Last Name");
-            String email = ServiceUtils.testEmailInput(selectedUser.getEmail());
-            String phone = ServiceUtils.testPhoneNumberInput(selectedUser.getPhoneNumber());
+            String username =ServiceUtils.testUserNameInput(currentUser.getUsername());
+            String password = ServiceUtils.testPasswordInput(currentUser.getPassword());
+            String firstname = ServiceUtils.testStringInput(currentUser.getFirstName(), "First Name");
+            String lastname = ServiceUtils.testStringInput(currentUser.getLastName(), "Last Name");
+            String email = ServiceUtils.testEmailInput(currentUser.getEmail());
+            String phone = ServiceUtils.testPhoneNumberInput(currentUser.getPhoneNumber());
 
-            selectedUser.setUsername(username);
-            selectedUser.setFirstName(firstname);
-            selectedUser.setLastName(lastname);
-            selectedUser.setEmail(email);
-            selectedUser.setPhoneNumber(phone);
-            selectedUser.setPassword(password);
-            userService.updateUser(selectedUser);
+            currentUser.setUsername(username);
+            currentUser.setFirstName(firstname);
+            currentUser.setLastName(lastname);
+            currentUser.setEmail(email);
+            currentUser.setPhoneNumber(phone);
+            currentUser.setPassword(password);
+            userService.updateUser(currentUser);
 
             filteredUsers = userService.getAllUsers();
             FacesContext.getCurrentInstance().addMessage(null,
@@ -422,4 +424,12 @@ public class UserBean implements Serializable {
         this.selectedGender = selectedGender;
     }
 
+    public User getCurrentUser() {
+        currentUser = LoginBean.getCurrentUser();
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
 }

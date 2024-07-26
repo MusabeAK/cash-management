@@ -255,4 +255,16 @@ public class AccountabilityBean implements Serializable {
     public void setTotalAmountUsed(double totalAmountUsed) {
         this.totalAmountUsed = totalAmountUsed;
     }
+
+    public String convertIdToString(int id){
+        return String.format("RQ%08d", id);
+    }
+
+    public String convertedId(){
+        if (selectedRequisition == null){
+            return "";
+        }
+        return String.format("RQ%08d", selectedRequisition.getId());
+    }
+
 }

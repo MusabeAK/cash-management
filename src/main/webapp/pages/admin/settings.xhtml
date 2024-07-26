@@ -71,7 +71,7 @@
                                 <div style="height: 6px">
 
                                 </div>
-                                <p:inputText id="userName" value="#{userBean.selectedUser.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid Username">
+                                <p:inputText id="userName" value="#{userBean.currentUser.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid Username">
                                     <f:validateRegex pattern="[a-zA-Z0-9_]*"/>
                                     <f:validateLength minimum="3" maximum="16"/>
                                     <f:validateRequired/>
@@ -83,7 +83,7 @@
                                 <div style="height: 6px">
 
                                 </div>
-                                <p:inputText id="efirstName" value="#{userBean.selectedUser.firstName}" required="true" requiredMessage="First name is required" validatorMessage="Invalid first name">
+                                <p:inputText id="efirstName" value="#{userBean.currentUser.firstName}" required="true" requiredMessage="First name is required" validatorMessage="Invalid first name">
                                     <f:validateRegex pattern="[a-zA-Z]*"/>
                                     <f:validateLength minimum="3" maximum="32"/>
                                     <f:validateRequired/>
@@ -94,7 +94,7 @@
                                 <div style="height: 6px">
 
                                 </div>
-                                <p:inputText id="elastName" value="#{userBean.selectedUser.lastName}" rendered="true" required="true" requiredMessage="Last name is required" validatorMessage="Invalid last name">
+                                <p:inputText id="elastName" value="#{userBean.currentUser.lastName}" rendered="true" required="true" requiredMessage="Last name is required" validatorMessage="Invalid last name">
                                     <f:validateRegex pattern="[a-zA-Z]*"/>
                                     <f:validateLength minimum="3" maximum="32"/>
                                     <f:validateRequired/>
@@ -105,7 +105,7 @@
                                 <div style="height: 6px">
 
                                 </div>
-                                <p:inputText id="eemail" value="#{userBean.selectedUser.email}" required="true" requiredMessage="Email address is required" validatorMessage="Invalid email address">
+                                <p:inputText id="eemail" value="#{userBean.currentUser.email}" required="true" requiredMessage="Email address is required" validatorMessage="Invalid email address">
                                     <f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)"/>
                                 </p:inputText>
                             </p:outputLabel>
@@ -114,21 +114,21 @@
                                 <div style="height: 6px">
 
                                 </div>
-                                <p:password id="epassword" value="#{userBean.selectedUser.password}"  />
+                                <p:password id="epassword" value="#{userBean.currentUser.password}"  />
                             </p:outputLabel>
 
                             <p:outputLabel for="ephone" value="Phone Number">
                                 <div style="height: 6px">
 
                                 </div>
-                                <p:inputText id="ephone" value="#{userBean.selectedUser.phoneNumber}"  />
+                                <p:inputText id="ephone" value="#{userBean.currentUser.phoneNumber}"  />
                             </p:outputLabel>
 
                             <p:outputLabel for="egender" value="Gender:">
                                 <div style="height: 6px">
 
                                 </div>
-                                <p:selectOneMenu id="egender" value="#{userBean.selectedUser.gender}" style="width: 90%">
+                                <p:selectOneMenu id="egender" value="#{userBean.currentUser.gender}" style="width: 90%">
                                     <f:selectItem itemLabel="Select Gender" itemValue="" />
                                     <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
                                 </p:selectOneMenu>

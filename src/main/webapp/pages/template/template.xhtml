@@ -14,6 +14,53 @@
         /**
  Add custom styles here
   */
+        
+
+        body .ui-dialog .ui-dialog-titlebar {
+            background-color: #1C56A5;
+            color: white;
+        }
+
+        /* Styling for the dialog control buttons (minimize, maximize, close) */
+        body .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon {
+            background-color: #f0f0f0; /* Light grey background */
+            color: #333; /* Dark grey icon color */
+            border: 1px solid #ccc;
+        }
+
+        body .ui-dialog .ui-dialog-titlebar-icon:hover {
+            background-color: #e0e0e0; /* Slightly darker on hover */
+        }
+
+        /* Specific styling for close button */
+        body .ui-dialog .ui-dialog-titlebar-icon .ui-dialog-titlebar-close{
+            background-color: #ff5252; /* Red background for close button */
+            color: white;
+        }
+
+        body .ui-dialog .ui-dialog-titlebar-close:hover {
+            background-color: #ff1744; /* Darker red on hover */
+        }
+
+        /* Specific styling for maximize button */
+        body .ui-dialog .ui-dialog-titlebar-maximize {
+            background-color: #4caf50; /* Green background for maximize button */
+            color: white;
+        }
+
+        body .ui-dialog .ui-dialog-titlebar-maximize:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        /* Specific styling for minimize button */
+        body .ui-dialog .ui-dialog-titlebar-minimize {
+            background-color: #2196f3; /* Blue background for minimize button */
+            color: white;
+        }
+
+        body .ui-dialog .ui-dialog-titlebar-minimize:hover {
+            background-color: #1e88e5; /* Darker blue on hover */
+        }
 
 
         @media print {

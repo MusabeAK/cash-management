@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @ViewScoped
@@ -44,6 +45,7 @@ public class RequisitionBean implements Serializable {
     private Requisition selectedRequisition;
     private String comment;
     private String searchQuery;
+    private String mySearchQuery;
     private List<Requisition> filteredRequisitions;
     private double totalAmountDisbursed;
 
@@ -508,11 +510,28 @@ public class RequisitionBean implements Serializable {
 
     public void searchRequisitions(){
         if (!(searchQuery == null || searchQuery.isEmpty())) {
-            filteredRequisitions = requisitionService.searchRequisitions(searchQuery);
+            requisitions = requisitionService.searchRequisitions(searchQuery);
             return;
         }
-        filteredRequisitions = requisitionService.getAllRequisitions();
+        requisitions = requisitionService.getAllRequisitions();
     }
+
+    public void searchMyRequisitions(){
+        if (mySearchQuery == null || mySearchQuery.isEmpty()){
+            try {
+                userRequisitions = requisitionService.getRequisitionsByUser(currentUser);
+                userRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
+            } catch (Exception e){
+                e.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+            }
+        }
+        userRequisitions = userRequisitions.stream()
+                .filter(r -> r.getSubject().toLowerCase().contains(mySearchQuery.toLowerCase()) || convertIdToString(r.getId()).contains(mySearchQuery.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
 
     public void requestChanges(){
         if (!(LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION))){
@@ -787,4 +806,24 @@ public class RequisitionBean implements Serializable {
         }
         return 0;
     }
+
+    public String getMySearchQuery() {
+        return mySearchQuery;
+    }
+
+    public void setMySearchQuery(String mySearchQuery) {
+        this.mySearchQuery = mySearchQuery;
+    }
+
+    public String convertIdToString(int id){
+        return String.format("RQ%08d", id);
+    }
+
+    public String convertedId(){
+        if (selectedRequisition == null){
+            return "";
+        }
+        return String.format("RQ%08d", selectedRequisition.getId());
+    }
+
 }
