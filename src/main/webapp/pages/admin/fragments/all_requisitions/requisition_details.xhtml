@@ -5,17 +5,12 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <h:form id="requisitionDetailsForm" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
-        <p:outputPanel id="requisitionDetailsPanel" styleClass="requisition-details-panel" rendered="#{requisitionBean.currentForm != null}">
+        <p:outputPanel id="requisitionDetailsPanel" rendered="#{requisitionBean.currentForm != null}">
+            <h:outputText value="No requisition selected" rendered="#{(requisitionBean.selectedRequisition == null)}" />
             <div class="inner-div">
-                <h3><h:outputText value="Requisition #{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" /></h3>
-                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
-                    <p:autoUpdate/>
-                </p:messages>
+                <h3><h:outputText value="Requisition #{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" /> </h3>
+                <h:panelGroup columns="1" rendered="#{(requisitionBean.selectedRequisition != null)}" layout="block">
 
-
-                <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
-
-                <h:panelGroup columns="1" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
                     <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
                         <h3>Status</h3>
                         <div class="pipeline">
@@ -27,7 +22,6 @@
                     </h:panelGroup>
 
                     <h:panelGrid columns="1" styleClass="details-grid" cellpadding="10px" columnClasses="column-1, column-2">
-
                         <h:panelGrid columns="2" styleClass="details-grid" columnClasses="column-1, column-2">
                             <h:panelGroup layout="block" styleClass="field-group">
                                 <h:outputLabel value="Reason" />
@@ -54,7 +48,6 @@
                                 </h:outputText>
                             </h:panelGroup>
                         </h:panelGrid>
-
 
                         <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}">
                             <h:outputLabel value="Time Since Submitted" />
@@ -103,6 +96,7 @@
                             <h:outputLabel value="Description" />
                             <h:outputText value="#{requisitionBean.selectedRequisition.description}" />
                         </h:panelGroup>
+
                     </h:panelGrid>
 
                 </h:panelGroup>
@@ -111,10 +105,16 @@
                     <p:printer target="requisitionDetailsPanel"/>
                 </p:commandButton>
 
-                <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" process="@this" actionListener="#{requisitionBean.cancelCurrentForm()}" oncomplete="window.location.reload();" update=":requisitionDetailsForm:requisitionDetailsPanel"/>
+                <h:commandButton value="Back" icon="pi pi-arrow-left" styleClass="custom-button2" process="@this"
+                                 actionListener="#{requisitionBean.cancelCurrentForm()}"
+                                 oncomplete="window.location.reload()"
+                                 style="float: right; background-color: gray !important"/>
+
 
             </div>
 
         </p:outputPanel>
+
     </h:form>
+
 </ui:composition>

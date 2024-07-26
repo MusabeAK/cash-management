@@ -4,7 +4,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:form id="addAccountability" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+    <h:form id="addAccountability" enctype="multipart/form-data" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
         <p:outputPanel id="addAccountabilityPanel" rendered="#{accountabilityBean.currentForm != null}">
             <div class="inner-div">
                 <h3>Add Accountability</h3>

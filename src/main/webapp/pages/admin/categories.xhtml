@@ -1,0 +1,223 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
+
+    <ui:define name="content" class="form-container">
+        <style type="text/css">
+            .details-grid {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .details-grid td {
+                padding: 15px 10px;
+            }
+
+            .details-grid .ui-outputtext {
+                margin-bottom: 10px;
+            }
+
+            .details-grid tr {
+                height: 30px;
+            }
+
+            .full-width-panel {
+                width: 100%;
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                margin-bottom: 20px;
+                padding: 10px 10px 30px;
+            }
+
+            .panel-header {
+                display: block;
+                text-align: center;
+                align-items: center;
+                font-weight: bold;
+                margin-bottom: 15px;
+                text-decoration: underline;
+            }
+
+            .pipeline {
+                width: 100%;
+                position: relative;
+            }
+
+            .custom-progress {
+                width: 100% !important;
+                height: 20px !important;
+            }
+
+            .status-container {
+                display: flex;
+                justify-content: space-between;
+                position: relative;
+                height: 20px;
+                margin-top: 5px;
+            }
+
+            .status {
+                position: relative;
+                text-align: center;
+                font-size: 12px;
+                width: 25%;
+            }
+        </style>
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+
+        <h:panelGroup layout="block" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
+            <h:outputText value="Budget Lines" styleClass="top-bar-title" />
+        </h:panelGroup>
+
+        <div class="content">
+            <h:form id="budgetLineCategoryForm">
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true"
+                                 width="350">
+                    <p:commandButton value="No" type="button"
+                                     styleClass="ui-confirmdialog-no ui-button-flat"/>
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" style="background-color: #EC1212 !important; border: #EC1212 !important;" update=":usersForm:usersTable"/>
+                </p:confirmDialog>
+
+                <div class="cards-container">
+                    <h:panelGroup class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
+                            <h:outputText id="card1" value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Total Balance in All Active Budget Lines" styleClass="card-title"/>
+                            <h:outputText id="card2" value="#{budgetLineCategoryManagedBean.budgetLineSummedTotal}" styleClass="card-number"/>
+                        </div>
+                    </h:panelGroup>
+
+                    <h:panelGroup class="card">
+                        <i class="pi pi-users card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Active Budget Lines" styleClass="card-title"/>
+                            <h:outputText id="card3" value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
+                        </div>
+                    </h:panelGroup>
+                </div>
+
+                <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
+                    <p:autoUpdate/>
+                </p:growl>
+
+                <h:panelGroup id="budgetLineCategoryTable"
+                              rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY') and (budgetLineCategoryManagedBean.currentForm == null)}">
+                    <div class="search-container">
+                        <h3>All Budget Line Categories</h3>
+                        <div class="search-and-filter">
+                            <div class="search">
+                                <p:inputText id="searchBar" value="#{budgetLineCategoryManagedBean.categorySearchQuery}" styleClass="search-bar" placeholder="Search...">
+                                    <p:ajax event="keyup" update=":budgetLineCategoryForm:budgetLineCategoryTable" listener="#{budgetLineCategoryManagedBean.searchCategories}"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-header">
+                        <h:outputText id="card4" value="#{budgetLineCategoryManagedBean.filteredBudgetLineCategories.size()}#{budgetLineCategoryManagedBean.budgetLineCategoryStringLabel()}" styleClass="total-users"/>
+                        <div class="table-header-buttons">
+                            <p:commandButton icon="pi pi-plus"
+                                             update=":budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel"
+                                             style="margin-right: 20px" value="Add Category" styleClass="add-button"
+                                             oncomplete="PF('addBudgetLineCategoryDialog').show()"
+                                             rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE_CATEGORY')}"/>
+
+                        </div>
+                    </div>
+
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.filteredBudgetLineCategories}" var="category" paginator="true" rows="3" paginatorPosition="bottom" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
+                        <p:column headerText="ID">
+                            <h:outputText value="#{budgetLineCategoryManagedBean.convertBudgetLineCategoryIdToString(category.id)}"/>
+                        </p:column>
+                        <p:column headerText="Category Name">
+                            <h:outputText value="#{category.categoryName}"/>
+                        </p:column>
+
+                        <p:column headerText="Actions">
+                            <p:commandButton icon="pi pi-pencil" styleClass="edit-button" action="#{budgetLineCategoryManagedBean.selectBudgetLineCategory(category)}" oncomplete="PF('editBudgetLineCategoryDialog').show();" update=":budgetLineCategoryForm:budgetLineCategoryTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:card4" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE_CATEGORY')}"/>
+
+                            <p:commandButton icon="pi pi-trash" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE_CATEGORY')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLineCategory(category)}" update="@form budgetLineCategoryForm :budgetLineCategoryForm:budgetLineCategoryTable :budgetLineCategoryForm:card4" title="Delete" styleClass="delete-button" style="color:red" >
+                                <p:confirm header="Confirm Deletion" message="Do you want to delete this Budget Line Category?"
+                                           icon="pi pi-info-circle"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+
+            </h:form>
+
+
+
+            <h:form id="addBudgetLineCategoryForm">
+                <p:dialog header="Add New Budget Line Category."
+                          widgetVar="addBudgetLineCategoryDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          maximizable="true"
+                          minimizable="true"
+                          minWidth="800"
+                          width="600px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="addBudgetLineCategoryPanel" rendered="true">
+                        <p:messages id="addBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="newBudgetLineCategoryName" value="Category Name: "/>
+                            <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
+                            </p:inputText>
+                        </p:panelGrid>
+
+                        <p:commandButton value="Add" action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}" styleClass="custom-button1" oncomplete="handleAddBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel :budgetLineCategoryForm:card4" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
+                        <p:commandButton value="Cancel" styleClass="custom-button2" update=":addBudgetLineCategoryForm:addBudgetLineCategoryPanel" onclick="PF('addBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="updateBudgetLineCategoryForm">
+                <p:dialog header="Edit Budget Line Category Name."
+                          widgetVar="editBudgetLineCategoryDialog"
+                          modal="true"
+                          resizable="true"
+                          showEffect="fade"
+                          hideEffect="fade"
+                          closable="true"
+                          maximizable="true"
+                          minimizable="true"
+                          minWidth="800"
+                          width="600px"
+                          visible="#{facesContext.validationFailed}">
+                    <p:outputPanel id="editBudgetLineCategoryPanel" rendered="true">
+                        <p:messages id="editBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="editedBudgetLineCategoryName" value="Category Name: "/>
+                            <p:inputText id="editedBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.selectedBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
+                            </p:inputText>
+                        </p:panelGrid>
+
+                        <p:commandButton value="Edit" action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}" styleClass="custom-button1" oncomplete="handleEditBudgetLineCategoryOnClick(xhr, status, args)" update=":updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-pencil"/>
+                        <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineCategoryDialog').hide();" update=":updateBudgetLineCategoryForm:editBudgetLineCategoryPanel" icon="pi pi-times"/>
+                    </p:outputPanel>
+
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -4,33 +4,26 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:form id="addBudgetLineCategoryForm">
-    <p:dialog header="Add New Budget Line Category."
-              widgetVar="addBudgetLineCategoryDialog"
-              modal="true"
-              resizable="true"
-              showEffect="fade"
-              hideEffect="fade"
-              closable="true"
-              maximizable="true"
-              minimizable="true"
-              minWidth="800"
-              width="600px"
-              visible="#{facesContext.validationFailed}">
-        <p:outputPanel id="addBudgetLineCategoryPanel" rendered="true">
-            <p:messages id="addBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
-                <p:autoUpdate/>
-            </p:messages>
-            <p:panelGrid columns="2" styleClass="custom-grid">
-                <p:outputLabel for="newBudgetLineCategoryName" value="Category Name: "/>
-                <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
-                </p:inputText>
-            </p:panelGrid>
+    <h:form id="addBudgetLineCategoryForm" rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINE_CATEGORY')}">
+            <p:outputPanel id="addBudgetLineCategoryPanel" rendered="#{budgetLineCategoryManagedBean.currentForm == null}">
+                <div class="inner-div">
+                    <h3>Create Requisition</h3>
+                    <p:messages id="addBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid">
+                        <p:outputLabel for="newBudgetLineCategoryName" value="Category Name: "/>
+                        <p:inputText id="newBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.newBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
+                        </p:inputText>
+                    </p:panelGrid>
 
-            <p:commandButton value="Add" action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}" styleClass="custom-button1" oncomplete="handleAddBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel :budgetLineCategoryForm:card4" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
-            <p:commandButton value="Cancel" styleClass="custom-button2" update=":addBudgetLineCategoryForm:addBudgetLineCategoryPanel" onclick="PF('addBudgetLineCategoryDialog').hide();" icon="pi pi-times"/>
+                    <p:commandButton value="Add" action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}" styleClass="custom-button1" oncomplete="handleCreateOnComplete(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel :budgetLineCategoryForm:card4" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
+                    <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2"
+                                     process="@this"
+                                     actionListener="#{requisitionBean.cancelCurrentForm()}"
+                                     oncomplete="window.location.reload();"
+                                     update=":addbudgetLineCategory:addbudgetLineCategoryPanel"/>                </div>
+
         </p:outputPanel>
-    </p:dialog>
-</h:form>
-
+    </h:form>
 </ui:composition>

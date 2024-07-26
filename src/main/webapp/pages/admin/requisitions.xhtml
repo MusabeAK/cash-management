@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{requisitionBean.filteredRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
+                        <h:outputText value="#{requisitionBean.userRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus"
                                              rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button"
@@ -58,8 +58,10 @@
                                  rows="5"
                                  id="myRequisitionsTable"
                                  paginatorPosition="bottom">
-                        <p:ajax event="rowSelect" process="myRequisitionsTable" listener="#{requisitionBean.rowSelect}" update=":userRequisitions:myRequisitionsTable :formRequisitionDetails @form"  />
-                        <p:column headerText="Id" filterBy="#{requisitionBean.convertIdToString(requisition.id)}" filterMatchMode="contains" filterPosition="top" filterStyle="height: 10px; font-size: 10px">
+                        <p:ajax event="rowSelect" process="myRequisitionsTable"
+                                listener="#{requisitionBean.prepareRequisitionDetails}"
+                                update=":userRequisitions:myRequisitionsTable :formRequisitionDetails @form"  />
+                        <p:column headerText="Id" >
                             <h:outputText value="#{requisitionBean.convertIdToString(requisition.id) }"/>
                         </p:column>
                         <p:column headerText="Reason">

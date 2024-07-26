@@ -32,6 +32,7 @@ public class NavigationBean implements Serializable {
         links.add(new NavLink("Roles", "roles", "pi pi-id-card", Permission.VIEW_ROLES));
         links.add(new NavLink("All Requisitions", "all_requisitions", "pi pi-file", Permission.VIEW_ALL_REQUISITIONS))   ;
         links.add(new NavLink("Requisitions", "requisitions", "pi pi-file", Permission.VIEW_REQUISITIONS))   ;
+        links.add(new NavLink("Categories", "categories", "pi pi-chart-line", Permission.VIEW_BUDGET_LINE_CATEGORY))   ;
         links.add(new NavLink("Budget Line", "budgetlines", "pi pi-chart-line", Permission.VIEW_BUDGET_LINES))   ;
         links.add(new NavLink("Settings", "settings", "pi pi-cog", Permission.VIEW_SETTINGS));
 

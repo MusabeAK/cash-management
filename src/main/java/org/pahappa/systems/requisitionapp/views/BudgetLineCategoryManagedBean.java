@@ -531,7 +531,8 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public List<BudgetLineCategory> getFilteredBudgetLineCategories() {
-        return filteredBudgetLineCategories;
+        Set<BudgetLineCategory> uniqueCategories = new HashSet<>(filteredBudgetLineCategories);
+        return new ArrayList<>(uniqueCategories);
     }
 
     public String budgetLineCategoryStringLabel(){
@@ -543,6 +544,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
     }
 
     public void rowSelect(SelectEvent event) {
+        currentForm = "review_budget_line";
         selectedBudgetLine = (BudgetLine) event.getObject();
     }
 
@@ -560,5 +562,10 @@ public class BudgetLineCategoryManagedBean implements Serializable {
 
     public void prepareCreateBudgetLine(){
         currentForm = "create_budget_line";
+    }
+
+    public void prepareEditBudgetLine(BudgetLine budgetLine){
+        selectBudgetLine(budgetLine);
+        currentForm = "edit_budget_line";
     }
 }
