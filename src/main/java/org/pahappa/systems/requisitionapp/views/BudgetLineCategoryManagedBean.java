@@ -199,6 +199,32 @@ public class BudgetLineCategoryManagedBean implements Serializable {
         }
     }
 
+    public void submitBudgetLine(){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.EDIT_BUDGET_LINE)){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
+            return;
+        }
+        try {
+            if (!selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot submit a budget line that is not in draft", null));
+                return;
+            }
+            selectedBudgetLine.setBalance(selectedBudgetLine.getInitialAmount());
+            selectedBudgetLine.setFloatAmount(selectedBudgetLine.getBalance());
+            selectedBudgetLine.setStatus(BudgetLineStatus.SUBMITTED);
+            budgetLineService.updateBudgetLine(selectedBudgetLine);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", null));
+            // loadBudgetLines();
+            newChartBean.refreshChartData();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error" + e.getMessage(), null));
+        }
+    }
+
     /*
     to-do
     add a check so that budget line cannot be deleted if there exist any requisitions where accountability has not been provided (done)

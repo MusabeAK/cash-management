@@ -6,7 +6,7 @@
     <h:form id="viewAccountability" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
         <p:outputPanel id="viewAccountabilityPanel" rendered="#{(accountabilityBean.selectedAccountability != null) and (accountabilityBean.currentForm != null)}">
             <div class="inner-div">
-                <h3>Accountability</h3>
+                <h3>Accountability for Requisition <h:outputText value="#{accountabilityBean.convertedId()}"/> </h3>
                 <p:messages id="viewAccountabilityPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                     <p:autoUpdate/>
                 </p:messages>

@@ -63,6 +63,8 @@ public class RoleBean implements Serializable {
             roleService.createRole(role);
 
             roles = roleService.getAllRoles();
+            filteredRoles.add(role);
+            filteredRoles = roleService.getAllRoles();
             userBean.init();
 
             FacesContext.getCurrentInstance().addMessage(null,
@@ -96,6 +98,10 @@ public class RoleBean implements Serializable {
         }
     }
 
+    public int permissionCount(Role role){
+        return role.getPermissions().size();
+    }
+
     public void deleteRole(Role role){
         try {
             Role defaultRole = roleService.getRoleByName("DEFAULT");
@@ -106,6 +112,8 @@ public class RoleBean implements Serializable {
 
             }
             roleService.deleteRole(role);
+            filteredRoles.remove(role);
+            roles.remove(role);
             roles = roleService.getAllRoles();
             userBean.init();
             FacesContext.getCurrentInstance().addMessage(null,
@@ -205,6 +213,7 @@ public class RoleBean implements Serializable {
     }
 
     public List<Role> getFilteredRoles() {
+        filteredRoles.sort((r1, r2) -> Long.compare(r2.getId(), r1.getId()));
         return filteredRoles;
     }
 

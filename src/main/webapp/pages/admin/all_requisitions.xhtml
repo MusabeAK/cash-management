@@ -233,7 +233,7 @@
         </div>
 
         <h:form id="reviewRequisitionoperations">
-            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+            <p:dialog header="Review Requisition #{requisitionBean.convertedId()}"
                       widgetVar="reviewRequisitionDialogoperations"
                       id="reviewRequisitionDialogoperations"
                       modal="true"
@@ -291,7 +291,7 @@
         </h:form>
 
         <h:form id="reviewRequisition">
-            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+            <p:dialog header="Review Requisition #{requisitionBean.convertedId()}"
                       widgetVar="reviewRequisitionDialog"
                       id="reviewRequisitionDialog"
                       modal="true"
@@ -349,7 +349,7 @@
         </h:form>
 
         <h:form id="reviewRequisitionFinance">
-            <p:dialog header="Review requisition #{requisitionBean.selectedRequisition.id}"
+            <p:dialog header="Review Requisition #{requisitionBean.convertedId()}"
                       widgetVar="reviewRequisitionDialogFinance"
                       id="reviewRequisitionDialogFinance"
                       modal="true"
@@ -407,7 +407,7 @@
 
         <!-- Work on this  -->
         <h:form id="viewAccountability">
-            <p:dialog header="View accountability for requisition #{accountabilityBean.selectedRequisition.id}"
+            <p:dialog header="View Accountability for #{accountabilityBean.convertedId()}"
                       widgetVar="viewAccountabilityDialog"
                       id="viewAccountabilityDialog"
                       modal="true"

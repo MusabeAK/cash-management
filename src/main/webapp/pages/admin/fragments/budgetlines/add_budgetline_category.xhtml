@@ -18,8 +18,9 @@
                     </p:panelGrid>
 
                     <p:commandButton value="Add" action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}" styleClass="custom-button1" oncomplete="handleCreateOnComplete(xhr, status, args)" update=":budgetLine:budgetLineTable :addBudgetLineForm:addBudgetPanel :budgetLineCategoryForm:budgetLineCategoryTable :addBudgetLineCategoryForm:addBudgetLineCategoryPanel :budgetLineCategoryForm:card4" actionListener="#{budgetLineCategoryManagedBean.addBudgetLineCategory}" icon="pi pi-check"/>
-                    <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2"
+                    <p:commandButton value="Back" icon="pi pi-arrow-left" styleClass="custom-button2"
                                      process="@this"
+                                     style="background-color: gray !important"
                                      actionListener="#{requisitionBean.cancelCurrentForm()}"
                                      oncomplete="window.location.reload();"
                                      update=":addbudgetLineCategory:addbudgetLineCategoryPanel"/>                </div>

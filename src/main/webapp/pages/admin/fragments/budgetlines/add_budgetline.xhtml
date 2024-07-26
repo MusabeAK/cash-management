@@ -33,6 +33,11 @@
                         <f:convertNumber/>
                     </p:inputText>
 
+                    <p:outputLabel for="budgetLineDescription" value="Budget Line Description: "/>
+                    <p:inputText id="budgetLineDescription" value="#{budgetLineCategoryManagedBean.newBudgetLine.description}" required="true" requiredMessage="Budget Line Description is required" validatorMessage="Invalid Description">
+                        <f:validateLength minimum="3" maximum="255"/>
+                    </p:inputText>
+
                     <p:outputLabel for="budgetLineStartDate" value="Start Date: "  />
                     <p:datePicker id="budgetLineStartDate"
                                   value="#{budgetLineCategoryManagedBean.newBudgetLine.startDate}"
@@ -59,7 +64,8 @@
                                  action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}"/>
 
 
-                <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" process="@this"
+                <p:commandButton value="Back" icon="pi pi-arrow-left" styleClass="custom-button2" process="@this"
+                                 style="background-color: gray !important"
                                  actionListener="#{requisitionBean.cancelCurrentForm()}" oncomplete="window.location.reload();"
                                  update=":addBudgetLineForm:addBudgetPanel"/>            </div>
         </p:outputPanel>

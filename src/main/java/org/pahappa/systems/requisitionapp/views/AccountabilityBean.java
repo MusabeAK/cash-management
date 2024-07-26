@@ -286,4 +286,15 @@ public class AccountabilityBean implements Serializable {
     public void cancelCurrentForm() {
         currentForm = null;
     }
+
+    public String convertIdToString(int id){
+        return String.format("RQ%08d", id);
+    }
+
+    public String convertedId(){
+        if (selectedRequisition == null){
+            return "";
+        }
+        return convertIdToString(selectedRequisition.getId());
+    }
 }

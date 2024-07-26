@@ -67,6 +67,33 @@
                 width: 25%;
             }
         </style>
+        <script type="text/javascript">
+            function handleAddBudgetLineCategoryOnClick(xhr, status, args) {
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('addBudgetLineCategoryDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
+                }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('addBudgetLineCategoryDialog').hide();
+            }
+
+            function handleEditBudgetLineCategoryOnClick(xhr, status, args) {
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editBudgetLineCategoryDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
+                }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editBudgetLineCategoryDialog').hide();
+            }
+        </script>
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
 
         <h:panelGroup layout="block" styleClass="top-bar">

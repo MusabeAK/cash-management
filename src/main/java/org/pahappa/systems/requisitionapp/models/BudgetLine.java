@@ -37,6 +37,8 @@ public class BudgetLine {
     @Enumerated(EnumType.STRING)
     private BudgetLineStatus status;
 
+    @Column(name = "description")
+    private String description;
 
     @OneToMany(mappedBy = "budgetLine")
     private List<Requisition> requisitions;
@@ -151,5 +153,13 @@ public class BudgetLine {
     @Override
     public String toString() {
         return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

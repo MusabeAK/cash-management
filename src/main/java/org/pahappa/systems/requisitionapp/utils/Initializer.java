@@ -34,6 +34,8 @@ public class Initializer {
     @PostConstruct
     public void init() {
         createAdminUser();
+        createEmployeeRole();
+        createFinanceRole();
         /*
         createEmployeeUser();
         createOperationsUser();
@@ -73,6 +75,38 @@ public class Initializer {
             e.printStackTrace();
         }
     }
+
+    private void createEmployeeRole(){
+        List<Role> roles = roleService.getAllRoles();
+        for(Role role : roles){
+            if(role.getName().equals("EMPLOYEE")){
+                return;
+            }
+        }
+        Role role = new Role();
+        role.setName("EMPLOYEE");
+        role.setPermissions(Set.of(Permission.VIEW_SETTINGS, Permission.VIEW_REQUISITIONS, Permission.VIEW_BUDGET_LINES, Permission.CREATE_REQUISITION, Permission.CREATE_ACCOUNTABILITY, Permission.EDIT_REQUISITION, Permission.EDIT_ACCOUNTABILITY, Permission.DELETE_REQUISITION));
+        roleService.createRole(role);
+    }
+
+    private void createFinanceRole(){
+        List<Role> roles = roleService.getAllRoles();
+        for(Role role : roles){
+            if(role.getName().equals("FINANCE")){
+                return;
+            }
+        }
+        Role role = new Role();
+        role.setName("FINANCE");
+        role.setPermissions(Set.of(Permission.VIEW_SETTINGS, Permission.VIEW_REQUISITIONS, Permission.VIEW_BUDGET_LINES, Permission.CREATE_BUDGET_LINE, Permission.EDIT_BUDGET_LINE, Permission.DELETE_BUDGET_LINE, Permission.CREATE_BUDGET_LINE_CATEGORY, Permission.EDIT_BUDGET_LINE_CATEGORY));
+        roleService.createRole(role);
+    }
+
+    private void createOperationsRole(){
+
+    }
+
+
 /*
     private void createEmployeeUser(){
         List<User> users = userService.getAllUsers();

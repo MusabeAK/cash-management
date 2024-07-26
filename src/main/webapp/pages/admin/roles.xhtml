@@ -136,7 +136,10 @@
                 </div>
             </div>
 
-                <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}" value="#{roleBean.filteredRoles}" var="role" paginator="true" rows="5" paginatorPosition="bottom">
+                <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}"
+                             value="#{roleBean.filteredRoles}"
+                             var="role"
+                             paginator="true" rows="5" paginatorPosition="bottom">
 
                     <p:column headerText="Id">
                         <h:outputText value="#{roleBean.convertRoleIdToString(role.id)}"/>
@@ -146,8 +149,8 @@
                         <h:outputText value="#{role.name}"/>
                     </p:column>
 
-                    <p:column headerText="Permissions">
-                        <h:outputText value="#{role.permissions}"/>
+                    <p:column headerText="No. of Permissions">
+                        <h:outputText value="#{roleBean.permissionCount(role)}"/>
                     </p:column>
 
 

@@ -184,10 +184,12 @@ public class RequisitionBean implements Serializable {
                                           new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
                                   return;
                               }
-                              if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)){
-                                  FacesContext.getCurrentInstance().addMessage(null,
-                                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot make another requisition until previous requisition's accountability is approved.", null));
-                                  return;
+                              if (requisition.getAccountability() != null){
+                                  if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)){
+                                      FacesContext.getCurrentInstance().addMessage(null,
+                                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot make another requisition until previous requisition's accountability is approved.", null));
+                                      return;
+                                  }
                               }
                           }
                       }
@@ -429,7 +431,7 @@ public class RequisitionBean implements Serializable {
     }
 
     public void reviewAndApproveRequisition(){
-        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REVIEW_REQUISITION) || !LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION)){
+        if (!LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REVIEW_REQUISITION)){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
@@ -608,7 +610,6 @@ public class RequisitionBean implements Serializable {
                 requisitionService.updateRequisition(selectedRequisition);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
-                requisitions.remove(selectedRequisition);
                 filteredRequisitions = requisitionService.getRequisitionsByUser(currentUser);
                 comment = "";
                 newChartBean.refreshChartData();
@@ -646,6 +647,16 @@ public class RequisitionBean implements Serializable {
         return String.format("RQ%08d", id);
     }
 
+    public String convertedId(){
+        if (selectedRequisition == null){
+            return "";
+        }
+        return convertIdToString(selectedRequisition.getId());
+    }
+
+    public void cancelRequisition(Requisition requisition){
+        requisition.setStatus(RequisitionStatus.CANCELLED);
+    }
     /*
     to-do
     get different types of requisitions
@@ -688,14 +699,14 @@ public class RequisitionBean implements Serializable {
 
     public List<Requisition> getRequisitions() {
         List<Requisition> allRequisitions = requisitionService.getAllRequisitions();
-        List<Requisition> returnedRequisitions = new ArrayList<>();
-        for(Requisition requisition : allRequisitions){
-            if (!requisition.getStatus().equals(RequisitionStatus.DRAFT)){
-                returnedRequisitions.add(requisition);
-            }
-        }
-        returnedRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
-        return returnedRequisitions;
+//        List<Requisition> returnedRequisitions = new ArrayList<>();
+//        for(Requisition requisition : allRequisitions){
+//            if (!requisition.getStatus().equals(RequisitionStatus.DRAFT)){
+//                returnedRequisitions.add(requisition);
+//            }
+//        }
+        allRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
+        return allRequisitions;
     }
 
     public String requisitionsStringLabel(){

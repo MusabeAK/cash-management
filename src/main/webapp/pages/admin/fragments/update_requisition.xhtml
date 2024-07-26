@@ -20,7 +20,7 @@
 
                         <p:outputLabel for="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}">Comment: </p:outputLabel>
 
-                        <h:outputText id="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}"/>
+                        <p:inputText id="Comment" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}" value="#{requisitionBean.selectedRequisition.comment}"/>
 
 
                         <p:outputLabel for="editRequisitionAmount" value="Amount"/>
@@ -50,7 +50,8 @@
                                      icon="pi pi-pencil" />
                     <p:commandButton value="Cancel"
                                      styleClass="custom-button2"
-                                     action="#{requisitionBean.cancelCurrentForm()}" icon="pi pi-times"
+                                     style="background-color: gray !important"
+                                     action="#{requisitionBean.cancelCurrentForm()}" icon="pi pi-arrow-left"
                                      oncomplete="window.location.reload();"
                                      update=":updateRequisition:updateRequisitionPanel :userRequisitions:userRequisitionsTable @form"/>
                     </div>
