@@ -148,7 +148,6 @@ public class UserBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "User Creation Success", null));
 
-
             try{
                 mailService.send("ahumuzaariyo@gmail.com", "tiadbqtshilfdprn", user.getEmail(), "Log In Details", "Your username is: " + user.getUsername() + "\nYour password is: " + password);
             } catch (Exception e){
@@ -157,13 +156,12 @@ public class UserBean implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "User registered successfully, but email could not be sent.", null));
             }
 
-            username=firstName=lastName=email=phoneNumber="";
-
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "User creation failed: "+e.getMessage(), null));
             System.out.println("Error Creating User:  "+e.getMessage());
         }
+        username=firstName=lastName=email=phoneNumber=password="";
     }
 
     public void updateUser(){

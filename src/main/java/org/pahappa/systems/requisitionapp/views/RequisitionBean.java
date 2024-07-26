@@ -1,6 +1,7 @@
 package org.pahappa.systems.requisitionapp.views;
 
 import com.sun.faces.application.NavigationHandlerImpl;
+import org.pahappa.systems.requisitionapp.exceptions.UserDoesNotExistException;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
@@ -20,6 +21,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,9 +47,17 @@ public class RequisitionBean implements Serializable {
     private List<Requisition> draftRequisitions;
     private List<Requisition> reviewedRequisitions;
     private List<Requisition> approvedRequisitions;
+    private List<Requisition> filteredUserRequisitions;
     private Requisition selectedRequisition;
     private String comment;
     private String searchQuery;
+
+    private String searchAllQuery;
+
+
+
+    private List<String> requisitionStatuses;
+    private RequisitionStatus selectedStatus;
     private List<Requisition> filteredRequisitions;
     private double totalAmountDisbursed;
 
@@ -80,6 +90,7 @@ public class RequisitionBean implements Serializable {
 
         totalAmountDisbursed = requisitionService.getTotalAmountDisbursed();
         newRequisition = new Requisition();
+        filteredUserRequisitions = new ArrayList<>();
         requisitions = requisitionService.getAllRequisitions();
         filteredRequisitions = requisitionService.getAllRequisitions();
         userRequisitions = new ArrayList<>();
@@ -101,6 +112,50 @@ public class RequisitionBean implements Serializable {
             if (requisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
                 approvedRequisitions.add(requisition);
             }
+        }
+        requisitionStatuses = Arrays.stream(RequisitionStatus.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+    
+    public void filterUserRequisitionsByStatus(){
+        applyUserFilters();
+    }
+
+    public void searchRequisitions(){
+        applyUserFilters();
+    }
+
+    public void filterRequisitionsByStatus(){
+        applyFilters();
+    }
+
+    public void searchAllRequisitions(){
+        applyFilters();
+    }
+
+    private void applyUserFilters(){
+        if ((searchQuery == null || searchQuery.isEmpty()) && selectedStatus == null){
+            filteredUserRequisitions = getUserRequisitions();
+            filteredUserRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
+        } else {
+            filteredUserRequisitions = getUserRequisitions().stream()
+                    .filter(r -> searchQuery == null || searchQuery.isEmpty() || r.getSubject().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .filter(r -> selectedStatus == null || r.getStatus().equals(selectedStatus))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private void applyFilters(){
+        if ((searchAllQuery == null || searchAllQuery.isEmpty()) && selectedStatus == null ){
+            filteredRequisitions = requisitionService.getAllRequisitions();
+            filteredRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
+
+        } else {
+            filteredRequisitions = requisitionService.getAllRequisitions().stream()
+                    .filter(r -> searchAllQuery == null || searchAllQuery.isEmpty() || r.getSubject().toLowerCase().contains(searchAllQuery.toLowerCase()))
+                    .filter(r -> selectedStatus == null || r.getStatus().equals(selectedStatus))
+                    .collect(Collectors.toList());
         }
     }
 
@@ -227,6 +282,7 @@ public class RequisitionBean implements Serializable {
                       newRequisition.setUser(currentUser);
                       userRequisitions.add(newRequisition);
                       requisitions.add(newRequisition);
+                      filteredRequisitions.add(newRequisition);
                       requisitionService.makeRequisition(newRequisition, currentUser);
                       loadUserRequisitions();
 
@@ -579,17 +635,6 @@ public class RequisitionBean implements Serializable {
         }
     }
 
-    public void searchAllRequisitions(){
-        if(searchQuery == null || searchQuery.isEmpty()){
-            return;
-        }
-        requisitions = requisitions.stream()
-                .filter(req -> searchQuery.isEmpty()
-                        || req.getSubject().toLowerCase().contains(searchQuery.toLowerCase())
-                        || req.getComment().toLowerCase().contains(searchQuery.toLowerCase())
-                        || req.getDescription().toLowerCase().contains(searchQuery.toLowerCase()))
-                .collect(Collectors.toList());
-    }
 
     public void requestChanges(){
         if (!(LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION))){
@@ -627,7 +672,7 @@ public class RequisitionBean implements Serializable {
     public void loadUserRequisitions(){
         try {
             userRequisitions = getUserRequisitions();
-            filteredRequisitions = getUserRequisitions();
+            filteredRequisitions = getFilteredRequisitions();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
@@ -637,6 +682,7 @@ public class RequisitionBean implements Serializable {
     public void loadAllRequisitions(){
         try {
             requisitions = requisitionService.getAllRequisitions();
+            filteredRequisitions = requisitions;
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
@@ -656,6 +702,7 @@ public class RequisitionBean implements Serializable {
 
     public void cancelRequisition(Requisition requisition){
         requisition.setStatus(RequisitionStatus.CANCELLED);
+        requisitionService.updateRequisition(requisition);
     }
     /*
     to-do
@@ -717,7 +764,7 @@ public class RequisitionBean implements Serializable {
         this.requisitions = requisitions;
     }
 
-    public List<Requisition> getUserRequisitions() {
+    public List<Requisition> getUserRequisitions(){
         currentUser = LoginBean.getCurrentUser();
         if (currentUser != null) {
             try {
@@ -731,6 +778,10 @@ public class RequisitionBean implements Serializable {
             }
         } else
             return Collections.emptyList();
+    }
+
+    public void loadUserRequisitionsListener(){
+        filteredUserRequisitions = getUserRequisitions();
     }
 
     public void setUserRequisitions(List<Requisition> userRequisitions) {
@@ -786,6 +837,7 @@ public class RequisitionBean implements Serializable {
     }
 
     public List<Requisition> getFilteredRequisitions() {
+        filteredRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
         return filteredRequisitions;
     }
 
@@ -918,5 +970,41 @@ public class RequisitionBean implements Serializable {
     public void prepareAllRequisitionDetails(SelectEvent event) {
         rowSelect(event);
         currentForm = "requisition_details";
+    }
+
+    public List<String> getRequisitionStatuses() {
+        return requisitionStatuses;
+    }
+
+    public void setRequisitionStatuses(List<String> requisitionStatuses) {
+        this.requisitionStatuses = requisitionStatuses;
+    }
+
+    public RequisitionStatus getSelectedStatus() {
+        return selectedStatus;
+    }
+
+    public void setSelectedStatus(RequisitionStatus selectedStatus) {
+        this.selectedStatus = selectedStatus;
+    }
+
+    public String getSearchAllQuery() {
+        return searchAllQuery;
+    }
+
+    public void setSearchAllQuery(String searchAllQuery) {
+        this.searchAllQuery = searchAllQuery;
+    }
+
+    public List<Requisition> getFilteredUserRequisitions() {
+//        if (filteredUserRequisitions.isEmpty()){
+//            return getUserRequisitions();
+//        }
+        filteredUserRequisitions.sort((r1, r2) -> Integer.compare(r2.getId(), r1.getId()));
+        return filteredUserRequisitions;
+    }
+
+    public void setFilteredUserRequisitions(List<Requisition> filteredUserRequisitions) {
+        this.filteredUserRequisitions = filteredUserRequisitions;
     }
 }

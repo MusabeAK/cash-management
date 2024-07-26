@@ -237,6 +237,9 @@ public class RequisitionServiceImpl implements RequisitionService {
     @Override
     public String getDayOfWeek(Date date){
         Calendar calendar = Calendar.getInstance();
+        if (date == null) {
+            return "Monday";  // or any other appropriate default value
+        }
         calendar.setTime(date);
         return new SimpleDateFormat("EEEE").format(calendar.getTime());
     }
@@ -253,9 +256,10 @@ public class RequisitionServiceImpl implements RequisitionService {
     }
 
     @Override
-    public Map<String, Long> getCreationFrequencyByDayOfWeek(){
+    public Map<String, Long> getCreationFrequencyByDayOfWeek() {
         List<Requisition> requisitions = requisitionDAO.getAllRequisitions();
         return requisitions.stream()
+                .filter(req -> req.getSubmittedTimestamp() != null)
                 .collect(Collectors.groupingBy(
                         req -> getDayOfWeek(req.getSubmittedTimestamp()),
                         Collectors.counting()

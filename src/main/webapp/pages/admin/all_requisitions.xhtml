@@ -139,19 +139,26 @@
                     <h3>All Requisitions</h3>
                     <div class="search-and-filter">
                         <div class="search">
-                            <p:inputText id="searchBar2" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
-                                <p:ajax event="keyup" listener="#{requisitionBean.searchAllRequisitions()}" update=":allRequisitions:allRequisitionsTable @form"/>
+                            <p:inputText id="searchBar2" value="#{requisitionBean.searchAllQuery}" styleClass="search-bar" placeholder="Search...">
+                                <p:ajax event="keyup" listener="#{requisitionBean.searchAllRequisitions}"  update=":allRequisitions:allRequisitionsTable @form"/>
                             </p:inputText>
+                        </div>
+                        <div class="filter">
+                            <h:selectOneMenu value="#{requisitionBean.selectedStatus}" styleClass="gender-filter">
+                                <f:selectItem itemLabel="Status" itemValue="#{null}" />
+                                <f:selectItems value="#{requisitionBean.requisitionStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+                                <p:ajax event="change" update=":allRequisitions:allRequisitionsTable" listener="#{requisitionBean.filterRequisitionsByStatus}"/>
+                            </h:selectOneMenu>
                         </div>
                     </div>
                 </div>
 
                 <div class="table-header">
-                    <h:outputText value="#{requisitionBean.requisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
+                    <h:outputText value="#{requisitionBean.filteredRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                 </div>
 
 
-                <p:dataTable value="#{requisitionBean.requisitions}"
+                <p:dataTable value="#{requisitionBean.filteredRequisitions}"
                              rendered="#{loginBean.hasPermission('VIEW_ALL_REQUISITIONS')}"
                              var="requisition"
                              paginator="true"

@@ -9,6 +9,7 @@
         <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
         <f:event type="preRenderComponent" listener="#{requisitionBean.cancelCurrentForm()}" />
         <f:event type="preRenderComponent" listener="#{accountabilityBean.cancelCurrentForm()}" />
+        <f:event listener="#{requisitionBean.loadUserRequisitionsListener}" type="preRenderComponent"/>
 
         <h:panelGroup layout="block" styleClass="top-bar">
             <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
@@ -26,15 +27,22 @@
                         <h3>My requisitions</h3>
                         <div class="search-and-filter">
                             <div class="search">
-                                <p:inputText id="searchBar" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
-                                    <p:ajax event="keyup" update=":userRequisitions:userRequisitionsTable @form" listener="#{requisitionBean.searchUserRequisitions()}"/>
+                                <p:inputText id="searchBar2" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
+                                    <p:ajax event="keyup" listener="#{requisitionBean.searchRequisitions}"  update=":userRequisitions:userRequisitionsTable @form"/>
                                 </p:inputText>
+                            </div>
+                            <div class="filter">
+                                <h:selectOneMenu value="#{requisitionBean.selectedStatus}" styleClass="gender-filter">
+                                    <f:selectItem itemLabel="Status" itemValue="#{null}" />
+                                    <f:selectItems value="#{requisitionBean.requisitionStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+                                    <p:ajax event="change" update=":userRequisitions:userRequisitionsTable" listener="#{requisitionBean.filterUserRequisitionsByStatus}"/>
+                                </h:selectOneMenu>
                             </div>
                         </div>
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{requisitionBean.userRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
+                        <h:outputText value="#{requisitionBean.filteredUserRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus"
                                              rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button"
@@ -48,7 +56,7 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{requisitionBean.userRequisitions}"
+                    <p:dataTable value="#{requisitionBean.filteredUserRequisitions}"
                                  var="requisition"
                                  rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}"
                                  selectionMode="single"

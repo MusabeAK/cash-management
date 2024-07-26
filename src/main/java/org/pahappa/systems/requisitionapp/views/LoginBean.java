@@ -89,6 +89,10 @@ public class LoginBean {
     public static User getCurrentUser() {
         // Used to fetch currently logged in user
         FacesContext context = FacesContext.getCurrentInstance();
+        if (context == null) {
+            // Log this occurrence or handle it appropriately
+            return null;
+        }
         ExternalContext externalContext = context.getExternalContext();
         return (User) externalContext.getSessionMap().get("currentUser");
     }
