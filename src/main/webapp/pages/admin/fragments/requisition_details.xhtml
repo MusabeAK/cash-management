@@ -111,8 +111,10 @@
                     <p:printer target="requisitionDetailsPanel"/>
                 </p:commandButton>
 
-                <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" process="@this" actionListener="#{requisitionBean.cancelCurrentForm()}" oncomplete="window.location.reload();" update=":requisitionDetailsForm:requisitionDetailsPanel"/>
-
+                <p:commandButton value="Back" icon="pi pi-arrow-left" styleClass="custom-button2" process="@this"
+                                 actionListener="#{requisitionBean.cancelCurrentForm()}"
+                                 oncomplete="window.location.reload();"
+                                 update=":requisitionDetailsForm:requisitionDetailsPanel " style="float: right; background-color: gray !important"/>
             </div>
 
         </p:outputPanel>

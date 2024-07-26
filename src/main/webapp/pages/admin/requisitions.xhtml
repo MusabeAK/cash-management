@@ -24,17 +24,17 @@
                 <h:panelGroup id="userRequisitionsTable" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS') and ((requisitionBean.currentForm == null) and (accountabilityBean.currentForm == null))}">
                     <div class="search-container">
                         <h3>My requisitions</h3>
-                        <div class="search-and-filter">
+                        <div class="search-and-filter" style="visibility: hidden">
                             <div class="search">
                                 <p:inputText id="searchBar" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
-                                    <p:ajax event="keyup" update=":userRequisitions:userRequisitionsTable @form" listener="#{requisitionBean.searchUserRequisitions()}"/>
+                                    <p:ajax event="keyup" update=":userRequisitions:myRequisitionsTable" listener="#{requisitionBean.searchUserRequisitions()}"/>
                                 </p:inputText>
                             </div>
                         </div>
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{requisitionBean.userRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
+                        <h:outputText value="#{requisitionBean.filteredRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus"
                                              rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button"
@@ -48,7 +48,7 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{requisitionBean.userRequisitions}"
+                    <p:dataTable value="#{requisitionBean.filteredRequisitions}"
                                  var="requisition"
                                  rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}"
                                  selectionMode="single"

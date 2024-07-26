@@ -184,10 +184,12 @@ public class RequisitionBean implements Serializable {
                                           new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
                                   return;
                               }
-                              if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)){
-                                  FacesContext.getCurrentInstance().addMessage(null,
-                                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot make another requisition until previous requisition's accountability is approved.", null));
-                                  return;
+                              if (requisition.getAccountability() != null) {
+                                  if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)){
+                                      FacesContext.getCurrentInstance().addMessage(null,
+                                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot make another requisition until previous requisition's accountability is approved.", null));
+                                      return;
+                                  }
                               }
                           }
                       }
@@ -561,12 +563,7 @@ public class RequisitionBean implements Serializable {
     public void searchUserRequisitions() {
         try {
             if (!(searchQuery == null || searchQuery.isEmpty())) {
-                filteredRequisitions = userRequisitions.stream()
-                        .filter(req -> searchQuery.isEmpty()
-                                || req.getSubject().toLowerCase().contains(searchQuery.toLowerCase())
-                                || req.getComment().toLowerCase().contains(searchQuery.toLowerCase())
-                                || req.getDescription().toLowerCase().contains(searchQuery.toLowerCase()))
-                        .collect(Collectors.toList());
+                filteredRequisitions = requisitionService.searchRequisitionsByUser(searchQuery,currentUser);
                 return;
             }
             filteredRequisitions = requisitionService.getRequisitionsByUser(currentUser);
@@ -575,18 +572,15 @@ public class RequisitionBean implements Serializable {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
+
     }
 
     public void searchAllRequisitions(){
-        if(searchQuery == null || searchQuery.isEmpty()){
-            return;
+        if(!(searchQuery == null || searchQuery.isEmpty())){
+            requisitions = requisitionService.searchRequisitions(searchQuery);
         }
-        requisitions = requisitions.stream()
-                .filter(req -> searchQuery.isEmpty()
-                        || req.getSubject().toLowerCase().contains(searchQuery.toLowerCase())
-                        || req.getComment().toLowerCase().contains(searchQuery.toLowerCase())
-                        || req.getDescription().toLowerCase().contains(searchQuery.toLowerCase()))
-                .collect(Collectors.toList());
+        requisitions = requisitionService.getAllRequisitions();
+
     }
 
     public void requestChanges(){

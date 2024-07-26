@@ -137,10 +137,10 @@
 
                 <div class="search-container">
                     <h3>All Requisitions</h3>
-                    <div class="search-and-filter">
+                    <div class="search-and-filter" style="visibility: hidden">
                         <div class="search">
                             <p:inputText id="searchBar2" value="#{requisitionBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
-                                <p:ajax event="keyup" listener="#{requisitionBean.searchAllRequisitions()}" update=":allRequisitions:allRequisitionsTable @form"/>
+                                <p:ajax event="keyup" listener="#{requisitionBean.searchAllRequisitions()}" update=":allRequisitions:requisitionsTable "/>
                             </p:inputText>
                         </div>
                     </div>

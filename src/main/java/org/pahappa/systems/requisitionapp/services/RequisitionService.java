@@ -25,6 +25,8 @@ public interface RequisitionService {
 
     List<Requisition> searchRequisitions(String searchTerm);
 
+    List<Requisition> searchRequisitionsByUser(String searchTerm, User user);
+
     List<BudgetLine> searchBudgetLines(String query);
 
     double getTotalAmountDisbursed();
