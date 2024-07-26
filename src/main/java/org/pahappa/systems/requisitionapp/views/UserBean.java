@@ -143,7 +143,6 @@ public class UserBean implements Serializable {
             user.setPhoneNumber(phone);
             userService.addUser(user);
 
-            user = new User();
             filteredUsers = userService.getAllUsers();
 
             FacesContext.getCurrentInstance().addMessage(null,
