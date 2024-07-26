@@ -117,7 +117,7 @@ public class RequisitionBean implements Serializable {
                 .map(Enum::name)
                 .collect(Collectors.toList());
     }
-    
+
     public void filterUserRequisitionsByStatus(){
         applyUserFilters();
     }

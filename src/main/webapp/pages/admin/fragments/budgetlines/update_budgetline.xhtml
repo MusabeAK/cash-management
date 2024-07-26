@@ -38,13 +38,13 @@
                 <p:commandButton value="Submit" styleClass="custom-button1"
                                  oncomplete="handleCreateOnComplete(xhr, status, args)"
                                  update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetLinePanel"
-                                 actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}"
+                                 actionListener="#{budgetLineCategoryManagedBean.submitBudgetLine}"
                                  icon="pi pi-check"/>
                 <p:commandButton value="Update" styleClass="custom-button3"
                                  oncomplete="handleCreateOnComplete(xhr, status, args)"
                                  update=":budgetLine:budgetLineTable :updateBudgetLineForm:editBudgetLinePanel"
                                  actionListener="#{budgetLineCategoryManagedBean.updateBudgetLine}"
-                                 icon="pi pi-check"/>
+                                 icon="pi pi-pencil"/>
                 <p:commandButton value="Back" icon="pi pi-arrow-left" styleClass="custom-button2" process="@this"
                                  actionListener="#{requisitionBean.cancelCurrentForm()}"
                                  oncomplete="window.location.reload();"
