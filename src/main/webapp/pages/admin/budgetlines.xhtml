@@ -165,7 +165,12 @@
                         </div>
                     </div>
 
-                    <p:dataTable value="#{budgetLineCategoryManagedBean.filteredBudgetLines}"
+                    <p:dataTable value="#{loginBean.hasPermission('CREATE_BUDGET_LINE') ?
+                                 budgetLineCategoryManagedBean.filteredBudgetLines :
+                                 budgetLineCategoryManagedBean.filteredBudgetLines.stream()
+                                     .filter(bl -> bl.status == 'APPROVED' or
+                                             (loginBean.hasPermission('APPROVE_BUDGET_LINE') and bl.status == 'SUBMITTED'))
+                                     .toList()}"
                                  rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}"
                                  var="budgetLine"
                                  paginator="true"

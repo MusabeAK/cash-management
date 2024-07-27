@@ -4,6 +4,7 @@ import org.pahappa.systems.requisitionapp.models.Role;
 
 import org.pahappa.systems.requisitionapp.models.User;
 import org.pahappa.systems.requisitionapp.models.utils.Permission;
+import org.pahappa.systems.requisitionapp.models.utils.PermissionCategory;
 import org.pahappa.systems.requisitionapp.services.RoleService;
 import org.pahappa.systems.requisitionapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +37,8 @@ public class RoleBean implements Serializable {
     private String searchQuery;
     private List<Role> filteredRoles;
 
+    private List<PermissionCategory> permissionCategories;
+
     @PostConstruct
     public void init() {
         availablePermissions = Arrays.stream(Permission.values())
@@ -42,6 +46,16 @@ public class RoleBean implements Serializable {
                 .collect(Collectors.toSet());
         roles = roleService.getAllRoles();
         filteredRoles = roleService.getAllRoles();
+
+        permissionCategories = new ArrayList<>();
+
+        permissionCategories.add(new PermissionCategory("Users", Arrays.asList("VIEW_USERS", "EDIT_USER", "DELETE_USER", "CREATE_USER", "SEARCH_USERS")));
+        permissionCategories.add(new PermissionCategory("Roles", Arrays.asList("CREATE_ROLE", "DELETE_ROLE", "EDIT_ROLE", "VIEW_ROLES")));
+        permissionCategories.add(new PermissionCategory("Accountability", Arrays.asList("CREATE_ACCOUNTABILITY", "EDIT_ACCOUNTABILITY", "APPROVE_ACCOUNTABILITY")));
+        permissionCategories.add(new PermissionCategory("Requisitions", Arrays.asList("CREATE_REQUISITION", "EDIT_REQUISITION", "DELETE_REQUISITION", "APPROVE_REQUISITION", "REJECT_REQUISITION", "VIEW_REQUISITIONS", "VIEW_ALL_REQUISITIONS", "REVIEW_REQUISITION")));
+        permissionCategories.add(new PermissionCategory("Budget Lines", Arrays.asList("CREATE_BUDGET_LINE", "EDIT_BUDGET_LINE", "DELETE_BUDGET_LINE", "APPROVE_BUDGET_LINE", "REJECT_BUDGET_LINE", "VIEW_BUDGET_LINES")));
+        permissionCategories.add(new PermissionCategory("Budget Line Categories", Arrays.asList("CREATE_BUDGET_LINE_CATEGORY", "EDIT_BUDGET_LINE_CATEGORY", "DELETE_BUDGET_LINE_CATEGORY", "APPROVE_BUDGET_LINE_CATEGORY", "REJECT_BUDGET_LINE_CATEGORY", "VIEW_BUDGET_LINE_CATEGORY")));
+        permissionCategories.add(new PermissionCategory("Other", Arrays.asList("DISBURSE_MONEY", "VIEW_DASHBOARD", "VIEW_SETTINGS")));
     }
 
     private final RoleService roleService;
@@ -220,4 +234,9 @@ public class RoleBean implements Serializable {
     public void setFilteredRoles(List<Role> filteredRoles) {
         this.filteredRoles = filteredRoles;
     }
+
+    public List<PermissionCategory> getPermissionCategories() {
+        return permissionCategories;
+    }
+
 }

@@ -83,6 +83,9 @@
                                 <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
                             </h:outputText>
                         </p:column>
+                        <p:column headerText="Status">
+                            <h:outputText value="#{requisition.status}"/>
+                        </p:column>
                         <p:column headerText="Actions">
                             <p:commandButton icon="pi pi-upload"  rendered="#{loginBean.hasPermission('EDIT_REQUISITION') and requisition.status == 'DRAFT'}" styleClass="edit-button" action="#{requisitionBean.prepareUpdateRequisition(requisition)}" update=":userRequisitions:myRequisitionsTable :formUpdateRequisition @form"/>
 

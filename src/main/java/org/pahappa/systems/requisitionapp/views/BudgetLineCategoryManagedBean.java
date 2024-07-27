@@ -240,18 +240,17 @@ public class BudgetLineCategoryManagedBean implements Serializable {
             return;
         }
         try {
-            if (selectedBudgetLine.getComment().isEmpty() || selectedBudgetLine.getComment() == null){
+            if (selectedBudgetLine.getComment() == null || selectedBudgetLine.getComment().equals("")){
                 selectedBudgetLine.setComment("Changes Requested");
             }
             selectedBudgetLine.setStatus(BudgetLineStatus.DRAFT);
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
-            loadBudgetLines();
             newChartBean.refreshChartData();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
             e.printStackTrace();
         }
     }
