@@ -67,7 +67,7 @@
                         </h:panelGroup>
 
 
-                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}">
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'REVIEWED'}">
                             <h:outputLabel value="Time from Submitted to Reviewed" />
                             <h:outputText value="#{requisitionBean.submittedToReviewedTime}"/>
                         </h:panelGroup>
@@ -78,7 +78,7 @@
                         </h:panelGroup>
 
 
-                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'APPROVED'}">
                             <h:outputLabel value="Time from Submitted to Approved" />
                             <h:outputText value="#{requisitionBean.submittedToApprovedTime}"/>
                         </h:panelGroup>
@@ -88,7 +88,7 @@
                             <h:outputText value="#{requisitionBean.submittedToDisbursedTime}"/>
                         </h:panelGroup>
 
-                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'APPROVED'}">
                             <h:outputLabel value="Time from Reviewed to Approved" />
                             <h:outputText value="#{requisitionBean.reviewedToApprovedTime}"/>
                         </h:panelGroup>

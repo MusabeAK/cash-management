@@ -11,7 +11,7 @@
                 <p:messages id="reviewBudgetLinePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                     <p:autoUpdate/>
                 </p:messages>
-                <h:panelGrid columns="2" styleClass="details-grid">
+                <h:panelGrid columns="2" styleClass="details-grid" columnClasses="column-1, column-2">
                     <h:panelGroup layout="block" styleClass="field-group">
                         <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
                         <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory.categoryName}"/>
@@ -29,7 +29,8 @@
 
                     <h:panelGroup layout="block" styleClass="field-group">
                         <p:outputLabel for="reviewBudgetLineComment" value="Comment: "/>
-                        <h:outputText id="reviewBudgetLineComment" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
+                        <h:outputText rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status != 'SUBMITTED' and budgetLineCategoryManagedBean.selectedBudgetLine.comment != null}" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
+                        <p:inputText id="reviewBudgetLineComment" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED'}" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
                     </h:panelGroup>
 
                     <h:panelGroup layout="block" styleClass="field-group">

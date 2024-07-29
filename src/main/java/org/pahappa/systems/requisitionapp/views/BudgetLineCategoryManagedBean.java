@@ -166,7 +166,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                 // loadBudgetLines();
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line with that category name does not exist.", null));
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Budget Line Category with that name does not exist.", null));
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -261,7 +261,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
+        if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.SUBMITTED)) {
             selectedBudgetLine.setStatus(BudgetLineStatus.APPROVED);
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -279,7 +279,7 @@ public class BudgetLineCategoryManagedBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.DRAFT)) {
+        if (selectedBudgetLine.getStatus().equals(BudgetLineStatus.SUBMITTED)) {
             selectedBudgetLine.setStatus(BudgetLineStatus.REJECTED);
             budgetLineService.updateBudgetLine(selectedBudgetLine);
             FacesContext.getCurrentInstance().addMessage(null,

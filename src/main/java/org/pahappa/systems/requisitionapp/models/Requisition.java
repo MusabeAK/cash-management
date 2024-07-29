@@ -4,8 +4,6 @@ import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -124,10 +122,10 @@ public class Requisition {
             case DRAFT:
                 this.draftTimestamp = now;
                 break;
-            case HR_REVIEWED:
+            case REVIEWED:
                 this.hrReviewedTimestamp = now;
                 break;
-            case CEO_APPROVED:
+            case APPROVED:
                 this.ceoApprovedTimestamp = now;
                 break;
             case REJECTED:
@@ -146,9 +144,9 @@ public class Requisition {
         switch (status) {
             case DRAFT:
                 return draftTimestamp;
-            case HR_REVIEWED:
+            case REVIEWED:
                 return hrReviewedTimestamp;
-            case CEO_APPROVED:
+            case APPROVED:
                 return ceoApprovedTimestamp;
             case REJECTED:
                 return rejectedTimestamp;

@@ -99,7 +99,7 @@ public class RequisitionBean implements Serializable {
         draftRequisitions = new ArrayList<>();
         comment = "";
         for (Requisition requisition : requisitions) {
-            if (requisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+            if (requisition.getStatus().equals(RequisitionStatus.REVIEWED)){
                 reviewedRequisitions.add(requisition);
             }
         }
@@ -109,7 +109,7 @@ public class RequisitionBean implements Serializable {
             }
         }
         for (Requisition requisition : requisitions) {
-            if (requisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
+            if (requisition.getStatus().equals(RequisitionStatus.APPROVED)){
                 approvedRequisitions.add(requisition);
             }
         }
@@ -499,7 +499,7 @@ public class RequisitionBean implements Serializable {
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
 //            selectedRequisition.setComment(comment);
 //            comment = "";
-            selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
+            selectedRequisition.setStatus(RequisitionStatus.REVIEWED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition reviewed.", null));
@@ -539,8 +539,8 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
-            selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.REVIEWED)){
+            selectedRequisition.setStatus(RequisitionStatus.APPROVED);
 //            selectedRequisition.setComment(comment);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -558,7 +558,7 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.REVIEWED)){
             BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
             budgetLine.setFloatAmount(budgetLine.getBalance());
             budgetLineService.updateBudgetLine(budgetLine);
@@ -578,7 +578,7 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.APPROVED)){
             if (selectedRequisition.getAmount() > selectedRequisition.getBudgetLine().getBalance()){
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount greater than budget line balance.", null));
@@ -647,7 +647,7 @@ public class RequisitionBean implements Serializable {
             return;
         }
         try {
-            if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED) || selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
+            if (selectedRequisition.getStatus().equals(RequisitionStatus.REVIEWED) || selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
                 BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
                 budgetLine.setFloatAmount(budgetLine.getBalance());
                 budgetLineService.updateBudgetLine(budgetLine);

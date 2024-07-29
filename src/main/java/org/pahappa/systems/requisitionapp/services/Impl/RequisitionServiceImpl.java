@@ -158,17 +158,17 @@ public class RequisitionServiceImpl implements RequisitionService {
 
     @Override
     public long getSubmittedToCEOApprovedTime(Requisition requisition) {
-        return getTimeBetweenStatuses(requisition, RequisitionStatus.SUBMITTED, RequisitionStatus.CEO_APPROVED);
+        return getTimeBetweenStatuses(requisition, RequisitionStatus.SUBMITTED, RequisitionStatus.APPROVED);
     }
 
     @Override
     public long getHRReviewedToCEOApprovedTime(Requisition requisition) {
-        return getTimeBetweenStatuses(requisition, RequisitionStatus.HR_REVIEWED, RequisitionStatus.CEO_APPROVED);
+        return getTimeBetweenStatuses(requisition, RequisitionStatus.REVIEWED, RequisitionStatus.APPROVED);
     }
 
     @Override
     public long getCEOApprovedToDisbursedTime(Requisition requisition) {
-        return getTimeBetweenStatuses(requisition, RequisitionStatus.CEO_APPROVED, RequisitionStatus.DISBURSED);
+        return getTimeBetweenStatuses(requisition, RequisitionStatus.APPROVED, RequisitionStatus.DISBURSED);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class RequisitionServiceImpl implements RequisitionService {
 
     @Override
     public long getSubmittedToHRReviewedTime(Requisition requisition) {
-        return getTimeBetweenStatuses(requisition, RequisitionStatus.SUBMITTED, RequisitionStatus.HR_REVIEWED);
+        return getTimeBetweenStatuses(requisition, RequisitionStatus.SUBMITTED, RequisitionStatus.REVIEWED);
     }
 
     @Override
@@ -216,9 +216,9 @@ public class RequisitionServiceImpl implements RequisitionService {
         switch (status) {
             case DRAFT:
                 return requisition.getDraftTimestamp();
-            case HR_REVIEWED:
+            case REVIEWED:
                 return requisition.getHrReviewedTimestamp();
-            case CEO_APPROVED:
+            case APPROVED:
                 return requisition.getCeoApprovedTimestamp();
             case REJECTED:
                 return requisition.getRejectedTimestamp();
