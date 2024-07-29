@@ -198,6 +198,33 @@ public class RequisitionBean implements Serializable {
         currentStep = 2; // For example, the current step is "Reviewed"
     }
 
+    public boolean accountabilityRendering(){
+        try {
+            List<Requisition> userRequisitions = currentUser.getRequisitions();
+            List<Requisition> currentUserRequisitions = requisitionService.getRequisitionsByUser(currentUser);
+            if (!currentUserRequisitions.isEmpty() || !userRequisitions.isEmpty()) {
+                for (Requisition requisition : currentUserRequisitions) {
+                    if (requisition.getAccountability() == null && !requisition.getStatus().equals(RequisitionStatus.REJECTED)) {
+                        if (!requisition.getStatus().equals(RequisitionStatus.CANCELLED)) {
+                            return false;
+                        }
+                    }
+                    if (requisition.getAccountability() != null) {
+                        if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+            return false;
+        }
+    }
+
     public void makeRequisition() {
         Date currentDate = new Date();
 

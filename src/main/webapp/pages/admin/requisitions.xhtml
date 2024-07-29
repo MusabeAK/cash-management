@@ -45,7 +45,7 @@
                         <h:outputText value="#{requisitionBean.filteredUserRequisitions.size()} #{requisitionBean.requisitionsStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton icon="pi pi-plus"
-                                             rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}" value="Make Requisition" styleClass="add-button"
+                                             rendered="#{loginBean.hasPermission('CREATE_REQUISITION') and requisitionBean.accountabilityRendering() != false}" value="Make Requisition" styleClass="add-button"
                                              action="#{requisitionBean.prepareCreateRequisition()}"
                                              update=":userRequisitions:myRequisitionsTable :formCreateRequisition @form"/>
 
