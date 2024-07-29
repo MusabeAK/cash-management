@@ -36,6 +36,8 @@ public class Initializer {
         createAdminUser();
         createEmployeeRole();
         createFinanceRole();
+        createOperationsRole();
+        createCEORole();
         /*
         createEmployeeUser();
         createOperationsUser();
@@ -98,13 +100,37 @@ public class Initializer {
         }
         Role role = new Role();
         role.setName("FINANCE");
-        role.setPermissions(Set.of(Permission.VIEW_BUDGET_LINE_CATEGORY, Permission.VIEW_SETTINGS, Permission.VIEW_REQUISITIONS, Permission.VIEW_BUDGET_LINES, Permission.CREATE_BUDGET_LINE, Permission.EDIT_BUDGET_LINE, Permission.DELETE_BUDGET_LINE, Permission.CREATE_BUDGET_LINE_CATEGORY, Permission.EDIT_BUDGET_LINE_CATEGORY, Permission.APPROVE_ACCOUNTABILITY, Permission.DISBURSE_MONEY, Permission.VIEW_ALL_REQUISITIONS));
+        role.setPermissions(Set.of(Permission.VIEW_BUDGET_LINE_CATEGORY, Permission.VIEW_SETTINGS, Permission.VIEW_BUDGET_LINES, Permission.CREATE_BUDGET_LINE, Permission.EDIT_BUDGET_LINE, Permission.DELETE_BUDGET_LINE, Permission.CREATE_BUDGET_LINE_CATEGORY, Permission.EDIT_BUDGET_LINE_CATEGORY, Permission.APPROVE_ACCOUNTABILITY, Permission.DISBURSE_MONEY, Permission.VIEW_ALL_REQUISITIONS, Permission.DELETE_BUDGET_LINE_CATEGORY));
         roleService.createRole(role);
     }
 
     private void createOperationsRole(){
-
+        List<Role> roles = roleService.getAllRoles();
+        for(Role role : roles){
+            if(role.getName().equals("OPERATIONS")){
+                return;
+            }
+        }
+        Role role = new Role();
+        role.setName("OPERATIONS");
+        role.setPermissions(Set.of(Permission.VIEW_BUDGET_LINES, Permission.VIEW_SETTINGS, Permission.REVIEW_REQUISITION, Permission.REJECT_REQUISITION, Permission.VIEW_ALL_REQUISITIONS));
+        roleService.createRole(role);
     }
+
+    private void createCEORole(){
+        List<Role> roles = roleService.getAllRoles();
+        for(Role role : roles){
+            if(role.getName().equals("CEO")){
+                return;
+            }
+        }
+        Role role = new Role();
+        role.setName("CEO");
+        role.setPermissions(Set.of(Permission.VIEW_USERS, Permission.VIEW_BUDGET_LINES, Permission.VIEW_DASHBOARD, Permission.REJECT_REQUISITION, Permission.REJECT_BUDGET_LINE, Permission.APPROVE_BUDGET_LINE,  Permission.APPROVE_REQUISITION, Permission.VIEW_ALL_REQUISITIONS));
+        roleService.createRole(role);
+    }
+
+
 
 
 /*
