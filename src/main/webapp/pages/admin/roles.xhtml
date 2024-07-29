@@ -196,17 +196,19 @@
                                 </p:inputText>
 
                             <p:outputLabel value="Select Permissions"/>
-                                <p:accordionPanel multiple="true" widgetVar="options" scrollIntoView="center" toggleSpeed="0">
-                                    <c:forEach items="#{roleBean.permissionCategories}" var="category" varStatus="status">
+                            <p:accordionPanel multiple="true" widgetVar="options" scrollIntoView="center" toggleSpeed="0">
+                                <c:forEach items="#{roleBean.permissionCategories}" var="category" varStatus="status">
                                     <p:tab title="#{category.categoryName}">
-                                        <p:selectManyCheckbox id="permissions_#{status.index}" value="#{roleBean.selectedPermissions}" layout="responsive" columns="3">
+                                        <p:selectManyCheckbox id="permissions_#{status.index}"
+                                                              value="#{roleBean.categoryPermissions[category.categoryName]}"
+                                                              layout="responsive" columns="3">
                                             <f:selectItems value="#{category.permissions}" var="permission"
                                                            itemLabel="#{permission.replace('_', ' ')}"
                                                            itemValue="#{permission}"/>
                                         </p:selectManyCheckbox>
                                     </p:tab>
-                                    </c:forEach>
-                                </p:accordionPanel>
+                                </c:forEach>
+                            </p:accordionPanel>
 
                         </p:panelGrid>
 
@@ -237,21 +239,22 @@
                         </p:messages>
                         <p:panelGrid columns="2" styleClass="custom-grid" columnClasses="column-1,column-2">
                             <p:outputLabel for="eroleName" value="Role Name"/>
-                                <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
+                            <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
 
                             <p:outputLabel value="Select Permissions"/>
-                                <p:accordionPanel multiple="true" widgetVar="options" scrollIntoView="center" toggleSpeed="0">
-                                    <c:forEach items="#{roleBean.permissionCategories}" var="category" varStatus="status">
-                                        <p:tab title="#{category.categoryName}">
-                                            <p:selectManyCheckbox id="epermissions_#{status.index}" value="#{roleBean.updateSelectedPermissions}" layout="responsive" columns="3">
-                                                <f:selectItems value="#{category.permissions}" var="permission"
-                                                               itemLabel="#{permission.replace('_', ' ')}"
-                                                               itemValue="#{permission}"/>
-                                            </p:selectManyCheckbox>
-                                        </p:tab>
-                                    </c:forEach>
-                                </p:accordionPanel>
-
+                            <p:accordionPanel multiple="true" widgetVar="options" scrollIntoView="center" toggleSpeed="0">
+                                <c:forEach items="#{roleBean.permissionCategories}" var="category" varStatus="status">
+                                    <p:tab title="#{category.categoryName}">
+                                        <p:selectManyCheckbox id="epermissions_#{status.index}"
+                                                              value="#{roleBean.updateCategoryPermissions[category.categoryName]}"
+                                                              layout="responsive" columns="3">
+                                            <f:selectItems value="#{category.permissions}" var="permission"
+                                                           itemLabel="#{permission.replace('_', ' ')}"
+                                                           itemValue="#{permission}"/>
+                                        </p:selectManyCheckbox>
+                                    </p:tab>
+                                </c:forEach>
+                            </p:accordionPanel>
                         </p:panelGrid>
 
                         <p:commandButton value="Update" update=":rolesForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="custom-button1" oncomplete="editRoleOnClick(xhr, status, args)"/>
@@ -260,6 +263,5 @@
                 </p:outputPanel>
             </p:dialog>
         </h:form>
-
     </ui:define>
 </ui:composition>

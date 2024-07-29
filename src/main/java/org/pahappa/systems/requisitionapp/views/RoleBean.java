@@ -16,10 +16,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ManagedBean(name="roleBean")
@@ -39,8 +36,14 @@ public class RoleBean implements Serializable {
 
     private List<PermissionCategory> permissionCategories;
 
+    private Map<String, String[]> categoryPermissions;
+    private Map<String, String[]> updateCategoryPermissions;
+
     @PostConstruct
     public void init() {
+        selectedPermissions = new HashSet<>();
+        updateSelectedPermissions = new HashSet<>();
+
         availablePermissions = Arrays.stream(Permission.values())
                 .map(Enum::name)
                 .collect(Collectors.toSet());
@@ -56,6 +59,13 @@ public class RoleBean implements Serializable {
         permissionCategories.add(new PermissionCategory("Budget Lines", Arrays.asList("CREATE_BUDGET_LINE", "EDIT_BUDGET_LINE", "DELETE_BUDGET_LINE", "APPROVE_BUDGET_LINE", "REJECT_BUDGET_LINE", "VIEW_BUDGET_LINES")));
         permissionCategories.add(new PermissionCategory("Budget Line Categories", Arrays.asList("CREATE_BUDGET_LINE_CATEGORY", "EDIT_BUDGET_LINE_CATEGORY", "DELETE_BUDGET_LINE_CATEGORY", "APPROVE_BUDGET_LINE_CATEGORY", "REJECT_BUDGET_LINE_CATEGORY", "VIEW_BUDGET_LINE_CATEGORY")));
         permissionCategories.add(new PermissionCategory("Other", Arrays.asList("DISBURSE_MONEY", "VIEW_DASHBOARD", "VIEW_SETTINGS")));
+
+        categoryPermissions = new HashMap<>();
+        updateCategoryPermissions = new HashMap<>();
+        for (PermissionCategory category : permissionCategories) {
+            categoryPermissions.put(category.getCategoryName(), new String[0]);
+            updateCategoryPermissions.put(category.getCategoryName(), new String[0]);
+        }
     }
 
     private final RoleService roleService;
@@ -73,7 +83,14 @@ public class RoleBean implements Serializable {
         try {
             Role role = new Role();
             role.setName(roleName);
-            role.setPermissions(convertToPermissionSet(selectedPermissions));
+            Set<Permission> allPermissions = new HashSet<>();
+            for (String[] permissions : categoryPermissions.values()) {
+                allPermissions.addAll(convertToPermissionSet(Arrays.asList(permissions)));
+            }
+
+            System.out.println("All selected permissions: " + allPermissions);
+            role.setPermissions(allPermissions);
+
             roleService.createRole(role);
 
             roles = roleService.getAllRoles();
@@ -87,11 +104,12 @@ public class RoleBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error creating role", null));
             System.out.println("Error creating role: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }
 
-    private Set<Permission> convertToPermissionSet(Set<String> stringPermissions) {
+    private Set<Permission> convertToPermissionSet(Collection<String> stringPermissions) {
         return stringPermissions.stream()
                 .map(Permission::valueOf)
                 .collect(Collectors.toSet());
@@ -99,7 +117,13 @@ public class RoleBean implements Serializable {
 
     public void updateRole() {
         try {
-            selectedRole.setPermissions(convertToPermissionSet(updateSelectedPermissions));
+            Set<Permission> allPermissions = new HashSet<>();
+            for (String[] permissions : updateCategoryPermissions.values()) {
+                allPermissions.addAll(convertToPermissionSet(Arrays.asList(permissions)));
+            }
+
+            System.out.println("All updated permissions: " + allPermissions);
+            selectedRole.setPermissions(allPermissions);
             roleService.updateRole(selectedRole);
             roles = roleService.getAllRoles();
             userBean.init();
@@ -148,8 +172,6 @@ public class RoleBean implements Serializable {
 
     }
 
-
-
     public String getRoleName() {
         return roleName;
     }
@@ -159,6 +181,7 @@ public class RoleBean implements Serializable {
     }
 
     public Set<String> getSelectedPermissions() {
+        System.out.println("Getting selectedPermissions: " + selectedPermissions);
         return selectedPermissions;
     }
 
@@ -198,9 +221,22 @@ public class RoleBean implements Serializable {
         this.selectedRole = selectedRole;
     }
 
-    public void selectRole(Role role){
+    public void selectRole(Role role) {
         this.selectedRole = role;
-        this.updateSelectedPermissions = convertToStringSet(role.getPermissions());
+        // Populate updateCategoryPermissions with the current role's permissions
+        for (Map.Entry<String, String[]> entry : updateCategoryPermissions.entrySet()) {
+            String categoryName = entry.getKey();
+            List<String> categoryPerms = permissionCategories.stream()
+                    .filter(cat -> cat.getCategoryName().equals(categoryName))
+                    .findFirst()
+                    .map(PermissionCategory::getPermissions)
+                    .orElse(Collections.emptyList());
+
+            entry.setValue(role.getPermissions().stream()
+                    .map(Permission::name)
+                    .filter(categoryPerms::contains)
+                    .toArray(String[]::new));
+        }
     }
 
     private Set<String> convertToStringSet(Set<Permission> permissions) {
@@ -239,4 +275,23 @@ public class RoleBean implements Serializable {
         return permissionCategories;
     }
 
+    public Map<String, String[]> getCategoryPermissions() {
+        return categoryPermissions;
+    }
+
+    public void setCategoryPermissions(Map<String, String[]> categoryPermissions) {
+        this.categoryPermissions = categoryPermissions;
+    }
+
+    public void setPermissionCategories(List<PermissionCategory> permissionCategories) {
+        this.permissionCategories = permissionCategories;
+    }
+
+    public Map<String, String[]> getUpdateCategoryPermissions() {
+        return updateCategoryPermissions;
+    }
+
+    public void setUpdateCategoryPermissions(Map<String, String[]> updateCategoryPermissions) {
+        this.updateCategoryPermissions = updateCategoryPermissions;
+    }
 }

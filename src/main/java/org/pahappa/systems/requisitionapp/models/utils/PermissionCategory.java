@@ -26,4 +26,11 @@ public class PermissionCategory {
     public void setPermissions(List<String> permissions) {
         this.permissions = permissions;
     }
+
+    @Override
+    public String toString() {
+        return "PermissionCategory{" +
+                "categoryName='" + categoryName + '\'' +
+                '}';
+    }
 }
