@@ -30,7 +30,7 @@
                     <h:panelGroup layout="block" styleClass="field-group">
                         <p:outputLabel for="reviewBudgetLineComment" value="Comment: "/>
                         <h:outputText rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status != 'SUBMITTED' and budgetLineCategoryManagedBean.selectedBudgetLine.comment != null}" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
-                        <p:inputText id="reviewBudgetLineComment" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED'}" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
+                        <p:inputText id="reviewBudgetLineComment" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED' and (loginBean.hasPermission('APPROVE_BUDGET_LINE') or budgetLineCategoryManagedBean.selectedBudgetLine.comment != null)}" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
                     </h:panelGroup>
 
                     <h:panelGroup layout="block" styleClass="field-group">
@@ -67,7 +67,7 @@
                                  update=":budgetLine:budgetLineTable"/>
                 <p:commandButton value="Request Changes"
                                  styleClass="custom-button3"
-                                 rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED'}"
+                                 rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED' and loginBean.hasPermission('APPROVE_BUDGET_LINE')}"
                                  actionListener="#{budgetLineCategoryManagedBean.requestChanges}"
                                  icon="pi pi-pencil"
                                  oncomplete="handleCreateOnComplete(xhr, status, args)"/>

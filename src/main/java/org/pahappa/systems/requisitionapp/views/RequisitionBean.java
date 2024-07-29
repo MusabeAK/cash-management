@@ -641,7 +641,7 @@ public class RequisitionBean implements Serializable {
 
 
     public void requestChanges(){
-        if (!(LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION))){
+        if (!(LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REVIEW_REQUISITION))){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;

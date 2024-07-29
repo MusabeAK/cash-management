@@ -130,7 +130,7 @@
                                     </p:inputText>
                                 </div>
                                 <div class="filter">
-                                    <h:selectOneMenu value="#{budgetLineCategoryManagedBean.selectedStatus}" styleClass="gender-filter">
+                                    <h:selectOneMenu rendered="#{loginBean.hasPermission('APPROVE_BUDGET_LINE') or loginBean.hasPermission('CREATE_BUDGET_LINE')}" value="#{budgetLineCategoryManagedBean.selectedStatus}" styleClass="gender-filter">
                                         <f:selectItem itemLabel="Status" itemValue="#{null}" />
                                         <f:selectItems value="#{budgetLineCategoryManagedBean.budgetLineStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}" />
                                         <p:ajax event="change" update=":budgetLine:budgetLineTable" listener="#{budgetLineCategoryManagedBean.filterBudgetLinesByStatus}"/>
@@ -149,7 +149,8 @@
                     </div>
 
                     <div class="table-header">
-                        <h:outputText value="#{budgetLineCategoryManagedBean.filteredBudgetLines.size()}#{budgetLineCategoryManagedBean.budgetLinesStringLabel()}" styleClass="total-users"/>
+                        <h:outputText rendered="#{loginBean.hasPermission('APPROVE_BUDGET_LINE') or loginBean.hasPermission('CREATE_BUDGET_LINE')}" value="#{budgetLineCategoryManagedBean.filteredBudgetLines.size()}#{budgetLineCategoryManagedBean.budgetLinesStringLabel()}" styleClass="total-users"/>
+                        <h:outputText rendered="#{not (loginBean.hasPermission('APPROVE_BUDGET_LINE') or loginBean.hasPermission('CREATE_BUDGET_LINE'))}" value="#{budgetLineCategoryManagedBean.activeBudgetLineCount} #{budgetLineCategoryManagedBean.budgetLinesStringLabel()}" styleClass="total-users"/>
                         <div class="table-header-buttons">
                             <p:commandButton
                                     icon="pi pi-plus"
@@ -169,7 +170,7 @@
                                  budgetLineCategoryManagedBean.filteredBudgetLines :
                                  budgetLineCategoryManagedBean.filteredBudgetLines.stream()
                                      .filter(bl -> bl.status == 'APPROVED' or
-                                             (loginBean.hasPermission('APPROVE_BUDGET_LINE') and bl.status == 'SUBMITTED'))
+                                             (loginBean.hasPermission('APPROVE_BUDGET_LINE') and bl.status == 'SUBMITTED') or (loginBean.hasPermission('APPROVE_BUDGET_LINE') and bl.status == 'REJECTED'))
                                      .toList()}"
                                  rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}"
                                  var="budgetLine"
@@ -223,7 +224,7 @@
                         </p:column>
 
                         <p:column headerText="Actions" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE') or loginBean.hasPermission('DELETE_BUDGET_LINE')}">
-                            <p:commandButton icon="pi pi-pencil"
+                            <p:commandButton icon="pi pi-upload"
                                              rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE') and budgetLine.status == 'DRAFT'}"
                                              styleClass="edit-button"
                                              action="#{budgetLineCategoryManagedBean.prepareEditBudgetLine(budgetLine)}"

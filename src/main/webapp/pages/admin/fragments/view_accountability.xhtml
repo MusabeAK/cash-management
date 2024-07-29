@@ -31,8 +31,9 @@
                     </p:commandButton>
 
                 </p:panelGrid>
-                <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2"
+                <p:commandButton value="Back" icon="pi pi-arrow-left"
                                  process="@this"
+                                 style="background-color: gray; border: gray"
                                  actionListener="#{requisitionBean.cancelCurrentForm()}"
                                  oncomplete="window.location.reload();"
                                  update=":viewAccountability:viewAccountabilityPanel"/>

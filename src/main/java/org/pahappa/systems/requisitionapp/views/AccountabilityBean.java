@@ -41,6 +41,9 @@ public class AccountabilityBean implements Serializable {
     @Autowired
     private NewChartBean newChartBean;
 
+    @Autowired
+    private RequisitionBean requisitionBean;
+
     private User currentUser;
     private Accountability newAccountability;
     private Requisition selectedRequisition;
@@ -85,6 +88,7 @@ public class AccountabilityBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability added", null));
             uploadedFile = null;
+            requisitionBean.loadAllRequisitions();
             newChartBean.refreshChartData();
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
@@ -111,6 +115,7 @@ public class AccountabilityBean implements Serializable {
             accountabilityService.updateAccountability(selectedAccountability);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability Updated", null));
+            requisitionBean.loadAllRequisitions();
             newChartBean.refreshChartData();
 
         } catch (Exception e){
@@ -138,6 +143,7 @@ public class AccountabilityBean implements Serializable {
                 budgetLineService.updateBudgetLine(budgetLine);
                 selectedAccountability.setStatus(AccountabilityStatus.APPROVED);
                 accountabilityService.updateAccountability(selectedAccountability);
+                requisitionBean.loadAllRequisitions();
                 newChartBean.refreshChartData();
             }
         } catch (Exception e){
@@ -151,6 +157,7 @@ public class AccountabilityBean implements Serializable {
             if (selectedAccountability != null){
                 selectedAccountability.setStatus(AccountabilityStatus.REJECTED);
                 accountabilityService.updateAccountability(selectedAccountability);
+                requisitionBean.loadAllRequisitions();
                 newChartBean.refreshChartData();
             }
         } catch (Exception e){

@@ -98,7 +98,7 @@ public class Initializer {
         }
         Role role = new Role();
         role.setName("FINANCE");
-        role.setPermissions(Set.of(Permission.VIEW_SETTINGS, Permission.VIEW_REQUISITIONS, Permission.VIEW_BUDGET_LINES, Permission.CREATE_BUDGET_LINE, Permission.EDIT_BUDGET_LINE, Permission.DELETE_BUDGET_LINE, Permission.CREATE_BUDGET_LINE_CATEGORY, Permission.EDIT_BUDGET_LINE_CATEGORY));
+        role.setPermissions(Set.of(Permission.VIEW_BUDGET_LINE_CATEGORY, Permission.VIEW_SETTINGS, Permission.VIEW_REQUISITIONS, Permission.VIEW_BUDGET_LINES, Permission.CREATE_BUDGET_LINE, Permission.EDIT_BUDGET_LINE, Permission.DELETE_BUDGET_LINE, Permission.CREATE_BUDGET_LINE_CATEGORY, Permission.EDIT_BUDGET_LINE_CATEGORY, Permission.APPROVE_ACCOUNTABILITY, Permission.DISBURSE_MONEY, Permission.VIEW_ALL_REQUISITIONS));
         roleService.createRole(role);
     }
 

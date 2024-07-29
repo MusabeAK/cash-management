@@ -100,6 +100,7 @@ public class RoleBean implements Serializable {
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,"Role creation success", null));
+            clearForm();
         }catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error creating role", null));
@@ -107,6 +108,14 @@ public class RoleBean implements Serializable {
             e.printStackTrace();
         }
 
+    }
+
+    private void clearForm() {
+        this.roleName = "";
+
+        for (String key : categoryPermissions.keySet()) {
+            categoryPermissions.put(key, new String[0]);
+        }
     }
 
     private Set<Permission> convertToPermissionSet(Collection<String> stringPermissions) {
