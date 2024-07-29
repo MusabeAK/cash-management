@@ -74,8 +74,8 @@ public class AccountabilityBean implements Serializable {
             return;
         }
         try {
-            int amountRequested = selectedRequisition.getAmount();
-            int amountUsed = newAccountability.getAmountUsed();
+            double amountRequested = selectedRequisition.getAmount();
+            double amountUsed = newAccountability.getAmountUsed();
             if (amountUsed > amountRequested) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
@@ -104,8 +104,8 @@ public class AccountabilityBean implements Serializable {
         }
         handleFileUpload();
         try {
-            int amountRequested = selectedAccountability.getRequisition().getAmount();
-            int amountUsed = selectedAccountability.getAmountUsed();
+            double amountRequested = selectedAccountability.getRequisition().getAmount();
+            double amountUsed = selectedAccountability.getAmountUsed();
             if (amountUsed > amountRequested) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
@@ -128,15 +128,15 @@ public class AccountabilityBean implements Serializable {
         try {
             if (selectedAccountability != null){
                 BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
-                int amountRequested = selectedRequisition.getAmount();
-                int amountUsed = selectedAccountability.getAmountUsed();
+                double amountRequested = selectedRequisition.getAmount();
+                double amountUsed = selectedAccountability.getAmountUsed();
                 if (amountUsed > amountRequested) {
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
                     return;
                 }
-                int disparity = amountRequested - amountUsed;
-                int newBudgetLineBalance = budgetLine.getBalance() + disparity;
+                double disparity = amountRequested - amountUsed;
+                double newBudgetLineBalance = budgetLine.getBalance() + disparity;
                 budgetLine.setBalance(newBudgetLineBalance);
                 budgetLine.setFloatAmount(budgetLine.getBalance());
 

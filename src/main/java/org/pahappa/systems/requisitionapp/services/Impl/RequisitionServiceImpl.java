@@ -245,7 +245,7 @@ public class RequisitionServiceImpl implements RequisitionService {
     public String getDayOfWeek(Date date){
         Calendar calendar = Calendar.getInstance();
         if (date == null) {
-            return "Monday";  // or any other appropriate default value
+            return "Unknown";
         }
         calendar.setTime(date);
         return new SimpleDateFormat("EEEE").format(calendar.getTime());

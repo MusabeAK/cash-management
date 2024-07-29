@@ -19,13 +19,13 @@ public class BudgetLine {
     private String title;
 
     @Column(name = "initial_amount")
-    private int initialAmount;
+    private double initialAmount;
 
     @Column(name = "balance")
-    private int balance;
+    private double balance;
 
     @Column(name = "float_amount")
-    private int floatAmount;
+    private double floatAmount;
 
     @Column(name = "start_date")
     private Date startDate;
@@ -52,7 +52,7 @@ public class BudgetLine {
 
     public BudgetLine() {}
 
-    private BudgetLine(String title, BudgetLineStatus status, int initialAmount, Date startDate, Date endDate) {
+    private BudgetLine(String title, BudgetLineStatus status, double initialAmount, Date startDate, Date endDate) {
         this.title = title;
         this.status = status;
         this.initialAmount = initialAmount;
@@ -76,11 +76,11 @@ public class BudgetLine {
         this.title = title;
     }
 
-    public int getInitialAmount() {
+    public double getInitialAmount() {
         return initialAmount;
     }
 
-    public void setInitialAmount(int initialAmount) {
+    public void setInitialAmount(double initialAmount) {
         this.initialAmount = initialAmount;
     }
 
@@ -124,19 +124,19 @@ public class BudgetLine {
         this.requisitions = requisitions;
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
-    public int getFloatAmount() {
+    public double getFloatAmount() {
         return floatAmount;
     }
 
-    public void setFloatAmount(int floatAmount) {
+    public void setFloatAmount(double floatAmount) {
         this.floatAmount = floatAmount;
     }
 

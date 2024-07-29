@@ -439,9 +439,9 @@ public class RequisitionBean implements Serializable {
         try {
             selectedRequisition.setStatus(RequisitionStatus.SUBMITTED);
             BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
-            int amountUsed = selectedRequisition.getAmount();
-            int currentFloatAmount = budgetLine.getFloatAmount();
-            int newFloatAmount = currentFloatAmount - amountUsed;
+            double amountUsed = selectedRequisition.getAmount();
+            double currentFloatAmount = budgetLine.getFloatAmount();
+            double newFloatAmount = currentFloatAmount - amountUsed;
 
             budgetLine.setFloatAmount(newFloatAmount);
             budgetLineService.updateBudgetLine(budgetLine);
@@ -586,9 +586,9 @@ public class RequisitionBean implements Serializable {
             }
             try {
                 selectedRequisition.setStatus(RequisitionStatus.DISBURSED);
-                int currentBalance = selectedRequisition.getBudgetLine().getBalance();
-                int amountUsed = selectedRequisition.getAmount();
-                int newBalance = currentBalance - amountUsed;
+                double currentBalance = selectedRequisition.getBudgetLine().getBalance();
+                double amountUsed = selectedRequisition.getAmount();
+                double newBalance = currentBalance - amountUsed;
                 BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
                 budgetLine.setBalance(newBalance);
                 budgetLine.setFloatAmount(budgetLine.getBalance());

@@ -24,7 +24,7 @@ public class Requisition {
     private String description;
 
     @Column(name = "amount")
-    private int amount;
+    private double amount;
 
     @Column(name = "date_needed")
     private Date dateNeeded;
@@ -103,11 +103,11 @@ public class Requisition {
         this.dateNeeded = dateNeeded;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
