@@ -41,6 +41,9 @@ public class AccountabilityBean implements Serializable {
     @Autowired
     private NewChartBean newChartBean;
 
+    @Autowired
+    private RequisitionBean requisitionBean;
+
     private User currentUser;
     private Accountability newAccountability;
     private Requisition selectedRequisition;
@@ -71,8 +74,8 @@ public class AccountabilityBean implements Serializable {
             return;
         }
         try {
-            int amountRequested = selectedRequisition.getAmount();
-            int amountUsed = newAccountability.getAmountUsed();
+            double amountRequested = selectedRequisition.getAmount();
+            double amountUsed = newAccountability.getAmountUsed();
             if (amountUsed > amountRequested) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
@@ -85,6 +88,7 @@ public class AccountabilityBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability added", null));
             uploadedFile = null;
+            requisitionBean.loadAllRequisitions();
             newChartBean.refreshChartData();
         } catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
@@ -100,8 +104,8 @@ public class AccountabilityBean implements Serializable {
         }
         handleFileUpload();
         try {
-            int amountRequested = selectedAccountability.getRequisition().getAmount();
-            int amountUsed = selectedAccountability.getAmountUsed();
+            double amountRequested = selectedAccountability.getRequisition().getAmount();
+            double amountUsed = selectedAccountability.getAmountUsed();
             if (amountUsed > amountRequested) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
@@ -111,6 +115,7 @@ public class AccountabilityBean implements Serializable {
             accountabilityService.updateAccountability(selectedAccountability);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Accountability Updated", null));
+            requisitionBean.loadAllRequisitions();
             newChartBean.refreshChartData();
 
         } catch (Exception e){
@@ -123,21 +128,22 @@ public class AccountabilityBean implements Serializable {
         try {
             if (selectedAccountability != null){
                 BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
-                int amountRequested = selectedRequisition.getAmount();
-                int amountUsed = selectedAccountability.getAmountUsed();
+                double amountRequested = selectedRequisition.getAmount();
+                double amountUsed = selectedAccountability.getAmountUsed();
                 if (amountUsed > amountRequested) {
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cannot use more than was requested", null));
                     return;
                 }
-                int disparity = amountRequested - amountUsed;
-                int newBudgetLineBalance = budgetLine.getBalance() + disparity;
+                double disparity = amountRequested - amountUsed;
+                double newBudgetLineBalance = budgetLine.getBalance() + disparity;
                 budgetLine.setBalance(newBudgetLineBalance);
                 budgetLine.setFloatAmount(budgetLine.getBalance());
 
                 budgetLineService.updateBudgetLine(budgetLine);
                 selectedAccountability.setStatus(AccountabilityStatus.APPROVED);
                 accountabilityService.updateAccountability(selectedAccountability);
+                requisitionBean.loadAllRequisitions();
                 newChartBean.refreshChartData();
             }
         } catch (Exception e){
@@ -151,6 +157,7 @@ public class AccountabilityBean implements Serializable {
             if (selectedAccountability != null){
                 selectedAccountability.setStatus(AccountabilityStatus.REJECTED);
                 accountabilityService.updateAccountability(selectedAccountability);
+                requisitionBean.loadAllRequisitions();
                 newChartBean.refreshChartData();
             }
         } catch (Exception e){

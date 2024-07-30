@@ -1,8 +1,5 @@
 package org.pahappa.systems.requisitionapp.models.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class StatusPipeline {
     private String label;
     private int percentage;
@@ -35,9 +32,9 @@ public class StatusPipeline {
                 return -1;
             case SUBMITTED:
                 return 0;
-            case HR_REVIEWED:
+            case REVIEWED:
                 return 1;
-            case CEO_APPROVED:
+            case APPROVED:
                 return 2;
             case DISBURSED:
                 return 3;

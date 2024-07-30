@@ -11,7 +11,7 @@
                 <p:messages id="reviewBudgetLinePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                     <p:autoUpdate/>
                 </p:messages>
-                <h:panelGrid columns="2" styleClass="details-grid">
+                <h:panelGrid columns="2" styleClass="details-grid" columnClasses="column-1, column-2">
                     <h:panelGroup layout="block" styleClass="field-group">
                         <p:outputLabel for="reviewBudgetLineCategory" value="Category: "/>
                         <h:outputText id="reviewBudgetLineCategory" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.budgetLineCategory.categoryName}"/>
@@ -25,6 +25,12 @@
                     <h:panelGroup layout="block" styleClass="field-group">
                         <p:outputLabel for="reviewBudgetLineDescription" value="Description: "/>
                         <h:outputText id="reviewBudgetLineDescription" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.description}"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="field-group">
+                        <p:outputLabel for="reviewBudgetLineComment" value="Comment: "/>
+                        <h:outputText rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status != 'SUBMITTED' and budgetLineCategoryManagedBean.selectedBudgetLine.comment != null}" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
+                        <p:inputText id="reviewBudgetLineComment" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED' and (loginBean.hasPermission('APPROVE_BUDGET_LINE') or budgetLineCategoryManagedBean.selectedBudgetLine.comment != null)}" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}"/>
                     </h:panelGroup>
 
                     <h:panelGroup layout="block" styleClass="field-group">
@@ -59,6 +65,13 @@
                                  oncomplete="handleCreateOnComplete(xhr, status, args)"
                                  actionListener="#{budgetLineCategoryManagedBean.rejectBudgetLine}"
                                  update=":budgetLine:budgetLineTable"/>
+                <p:commandButton value="Request Changes"
+                                 styleClass="custom-button3"
+                                 rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.status == 'SUBMITTED' and loginBean.hasPermission('APPROVE_BUDGET_LINE')}"
+                                 actionListener="#{budgetLineCategoryManagedBean.requestChanges}"
+                                 icon="pi pi-pencil"
+                                 oncomplete="handleCreateOnComplete(xhr, status, args)"/>
+
                 <p:commandButton value="Print"
                                  type="button" icon="pi pi-print" styleClass="custom-button3">
                     <p:printer target="reviewBudgetLinePanel"/>

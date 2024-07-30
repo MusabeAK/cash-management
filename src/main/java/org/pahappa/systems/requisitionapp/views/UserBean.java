@@ -162,6 +162,8 @@ public class UserBean implements Serializable {
             System.out.println("Error Creating User:  "+e.getMessage());
         }
         username=firstName=lastName=email=phoneNumber=password="";
+        gender=null;
+
     }
 
     public void updateUser(){

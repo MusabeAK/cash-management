@@ -7,7 +7,7 @@
     <h:form id="updateBudgetLineForm" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE')}">
         <p:outputPanel id="editBudgetLinePanel" rendered="#{budgetLineCategoryManagedBean.currentForm != null}">
             <div class="inner-div">
-                <h3>Edit Budget Line</h3>
+                <h3>Submit/Edit Budget Line</h3>
                 <p:messages id="editBudgetLineMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
                     <p:autoUpdate/>
                 </p:messages>
@@ -20,6 +20,10 @@
                     <p:outputLabel for="editBudgetLineDescription" value="Budget Line Description: "/>
                     <p:inputText id="editBudgetLineDescription" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.description}" required="true" requiredMessage="Budget Line Description is required" validatorMessage="Invalid Description">
                         <f:validateLength minimum="3" maximum="255"/>
+                    </p:inputText>
+
+                    <p:outputLabel for="editBudgetLineComment" rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment != null}" value="Budget Line Comment: "/>
+                    <p:inputText rendered="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment != null}" id="editBudgetLineComment" value="#{budgetLineCategoryManagedBean.selectedBudgetLine.comment}" >
                     </p:inputText>
 
                     <p:outputLabel for="editBudgetLineAmount" value="Budget Line Amount: "/>

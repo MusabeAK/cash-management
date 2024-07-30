@@ -211,13 +211,13 @@
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
                                          update=":allRequisitions:allRequisitionsTable :reviewRequisition:reviewRequisitionPanel :reviewRequisition:reviewRequisitionDialog"
                                          oncomplete="PF('reviewRequisitionDialog').show()"
-                                         rendered="#{requisition.status == 'HR_REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' )}" />
+                                         rendered="#{requisition.status == 'REVIEWED' and loginBean.hasPermission('APPROVE_REQUISITION' )}" />
 
                         <p:commandButton value="Disburse" action="#{requisitionBean.selectRequisition(requisition)}"
                                          actionListener="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
                                          update=":allRequisitions:allRequisitionsTable :reviewRequisitionFinance:reviewRequisitionPanelFinance card1 :reviewRequisitionFinance:reviewRequisitionDialogFinance"
                                          oncomplete="PF('reviewRequisitionDialogFinance').show()"
-                                         rendered="#{requisition.status == 'CEO_APPROVED' and loginBean.hasPermission('DISBURSE_MONEY')}" />
+                                         rendered="#{requisition.status == 'APPROVED' and loginBean.hasPermission('DISBURSE_MONEY')}" />
                         <!-- Work on this  -->
                         <p:commandButton value="Accountability"
                                          action="#{accountabilityBean.selectRequisition(requisition)}"

@@ -99,7 +99,7 @@ public class RequisitionBean implements Serializable {
         draftRequisitions = new ArrayList<>();
         comment = "";
         for (Requisition requisition : requisitions) {
-            if (requisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+            if (requisition.getStatus().equals(RequisitionStatus.REVIEWED)){
                 reviewedRequisitions.add(requisition);
             }
         }
@@ -109,7 +109,7 @@ public class RequisitionBean implements Serializable {
             }
         }
         for (Requisition requisition : requisitions) {
-            if (requisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
+            if (requisition.getStatus().equals(RequisitionStatus.APPROVED)){
                 approvedRequisitions.add(requisition);
             }
         }
@@ -198,6 +198,33 @@ public class RequisitionBean implements Serializable {
         currentStep = 2; // For example, the current step is "Reviewed"
     }
 
+    public boolean accountabilityRendering(){
+        try {
+            List<Requisition> userRequisitions = currentUser.getRequisitions();
+            List<Requisition> currentUserRequisitions = requisitionService.getRequisitionsByUser(currentUser);
+            if (!currentUserRequisitions.isEmpty() || !userRequisitions.isEmpty()) {
+                for (Requisition requisition : currentUserRequisitions) {
+                    if (requisition.getAccountability() == null && !requisition.getStatus().equals(RequisitionStatus.REJECTED)) {
+                        if (!requisition.getStatus().equals(RequisitionStatus.CANCELLED)) {
+                            return false;
+                        }
+                    }
+                    if (requisition.getAccountability() != null) {
+                        if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
+            return false;
+        }
+    }
+
     public void makeRequisition() {
         Date currentDate = new Date();
 
@@ -235,9 +262,11 @@ public class RequisitionBean implements Serializable {
                       if (!currentUserRequisitions.isEmpty() || !userRequisitions.isEmpty()) {
                           for (Requisition requisition : currentUserRequisitions) {
                               if (requisition.getAccountability() == null && !requisition.getStatus().equals(RequisitionStatus.REJECTED)) {
-                                  FacesContext.getCurrentInstance().addMessage(null,
-                                          new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
-                                  return;
+                                  if (!requisition.getStatus().equals(RequisitionStatus.CANCELLED)){
+                                      FacesContext.getCurrentInstance().addMessage(null,
+                                              new FacesMessage(FacesMessage.SEVERITY_ERROR, "Provide accountability for previous requisition.", null));
+                                      return;
+                                  }
                               }
                               if (requisition.getAccountability() != null){
                                   if (!requisition.getAccountability().getStatus().equals(AccountabilityStatus.APPROVED)){
@@ -437,9 +466,9 @@ public class RequisitionBean implements Serializable {
         try {
             selectedRequisition.setStatus(RequisitionStatus.SUBMITTED);
             BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
-            int amountUsed = selectedRequisition.getAmount();
-            int currentFloatAmount = budgetLine.getFloatAmount();
-            int newFloatAmount = currentFloatAmount - amountUsed;
+            double amountUsed = selectedRequisition.getAmount();
+            double currentFloatAmount = budgetLine.getFloatAmount();
+            double newFloatAmount = currentFloatAmount - amountUsed;
 
             budgetLine.setFloatAmount(newFloatAmount);
             budgetLineService.updateBudgetLine(budgetLine);
@@ -449,7 +478,9 @@ public class RequisitionBean implements Serializable {
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Submitted", null));
-            loadUserRequisitions();
+            //loadUserRequisitions();
+            // filteredRequisitions.add(selectedRequisition);
+            filteredRequisitions = requisitionService.getAllRequisitions();
             newChartBean.refreshChartData();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -495,7 +526,7 @@ public class RequisitionBean implements Serializable {
         if (selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
 //            selectedRequisition.setComment(comment);
 //            comment = "";
-            selectedRequisition.setStatus(RequisitionStatus.HR_REVIEWED);
+            selectedRequisition.setStatus(RequisitionStatus.REVIEWED);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Requisition reviewed.", null));
@@ -535,8 +566,8 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
-            selectedRequisition.setStatus(RequisitionStatus.CEO_APPROVED);
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.REVIEWED)){
+            selectedRequisition.setStatus(RequisitionStatus.APPROVED);
 //            selectedRequisition.setComment(comment);
             requisitionService.updateRequisition(selectedRequisition);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -554,7 +585,7 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED)){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.REVIEWED)){
             BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
             budgetLine.setFloatAmount(budgetLine.getBalance());
             budgetLineService.updateBudgetLine(budgetLine);
@@ -574,7 +605,7 @@ public class RequisitionBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
-        if (selectedRequisition.getStatus().equals(RequisitionStatus.CEO_APPROVED)){
+        if (selectedRequisition.getStatus().equals(RequisitionStatus.APPROVED)){
             if (selectedRequisition.getAmount() > selectedRequisition.getBudgetLine().getBalance()){
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Amount greater than budget line balance.", null));
@@ -582,9 +613,9 @@ public class RequisitionBean implements Serializable {
             }
             try {
                 selectedRequisition.setStatus(RequisitionStatus.DISBURSED);
-                int currentBalance = selectedRequisition.getBudgetLine().getBalance();
-                int amountUsed = selectedRequisition.getAmount();
-                int newBalance = currentBalance - amountUsed;
+                double currentBalance = selectedRequisition.getBudgetLine().getBalance();
+                double amountUsed = selectedRequisition.getAmount();
+                double newBalance = currentBalance - amountUsed;
                 BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
                 budgetLine.setBalance(newBalance);
                 budgetLine.setFloatAmount(budgetLine.getBalance());
@@ -637,13 +668,13 @@ public class RequisitionBean implements Serializable {
 
 
     public void requestChanges(){
-        if (!(LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION))){
+        if (!(LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REJECT_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.APPROVE_REQUISITION) || LoginBean.getCurrentUser().getRole().getPermissions().contains(Permission.REVIEW_REQUISITION))){
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Current user does not have permission to access this function.", null));
             return;
         }
         try {
-            if (selectedRequisition.getStatus().equals(RequisitionStatus.HR_REVIEWED) || selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
+            if (selectedRequisition.getStatus().equals(RequisitionStatus.REVIEWED) || selectedRequisition.getStatus().equals(RequisitionStatus.SUBMITTED)){
                 BudgetLine budgetLine = budgetLineService.getBudgetLineById(selectedRequisition.getBudgetLine().getId());
                 budgetLine.setFloatAmount(budgetLine.getBalance());
                 budgetLineService.updateBudgetLine(budgetLine);
@@ -655,7 +686,6 @@ public class RequisitionBean implements Serializable {
                 requisitionService.updateRequisition(selectedRequisition);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Changes requested.", null));
-                filteredRequisitions = requisitionService.getRequisitionsByUser(currentUser);
                 comment = "";
                 newChartBean.refreshChartData();
             } else {
@@ -681,8 +711,7 @@ public class RequisitionBean implements Serializable {
 
     public void loadAllRequisitions(){
         try {
-            requisitions = requisitionService.getAllRequisitions();
-            filteredRequisitions = requisitions;
+            filteredRequisitions = requisitionService.getAllRequisitions();
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));

@@ -224,7 +224,7 @@ public class BudgetLineServiceImpl implements BudgetLineService {
                 activeBudgetLines.add(budgetLine);
             }
         }
-        return activeBudgetLines.stream().mapToInt(BudgetLine::getBalance).sum();
+        return activeBudgetLines.stream().mapToDouble(BudgetLine::getBalance).sum();
 
     }
 }

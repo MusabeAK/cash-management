@@ -22,7 +22,7 @@ public class Accountability {
     private byte[] image;
 
     @Column(name = "amount_used")
-    private int amountUsed;
+    private double amountUsed;
 
     @OneToOne
     @JoinColumn(name = "requisition_id")
@@ -63,11 +63,11 @@ public class Accountability {
         this.image = image;
     }
 
-    public int getAmountUsed() {
+    public double getAmountUsed() {
         return amountUsed;
     }
 
-    public void setAmountUsed(int amountUsed) {
+    public void setAmountUsed(double amountUsed) {
         this.amountUsed = amountUsed;
     }
 
