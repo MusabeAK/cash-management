@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="updateBudgetLineCategoryForm">
+    <p:dialog header="Edit Budget Line Category Name."
+              widgetVar="editBudgetLineCategoryDialog"
+              modal="true"
+              resizable="true"
+              showEffect="fade"
+              hideEffect="fade"
+              closable="true"
+              maximizable="true"
+              minimizable="true"
+              minWidth="800"
+              width="600px"
+              visible="#{facesContext.validationFailed}">
+        <p:outputPanel id="editBudgetLineCategoryPanel" rendered="true">
+            <p:messages id="editBudgetLineCategoryPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <p:panelGrid columns="2" styleClass="custom-grid">
+                <p:outputLabel for="editedBudgetLineCategoryName" value="Category Name: "/>
+                <p:inputText id="editedBudgetLineCategoryName" value="#{budgetLineCategoryManagedBean.selectedBudgetLineCategory.categoryName}" required="true" requiredMessage="Category name is required">
+                </p:inputText>
+            </p:panelGrid>
+
+            <p:commandButton value="Edit" action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}" styleClass="custom-button1" oncomplete="handleEditBudgetLineCategoryOnClick(xhr, status, args)" update=":budgetLine:budgetLineTable :updateBudgetLineCategoryForm:editBudgetLineCategoryPanel :budgetLineCategoryForm:budgetLineCategoryTable" actionListener="#{budgetLineCategoryManagedBean.updateBudgetLineCategory}" icon="pi pi-pencil"/>
+            <p:commandButton value="Cancel" styleClass="custom-button2" onclick="PF('editBudgetLineCategoryDialog').hide();" update=":updateBudgetLineCategoryForm:editBudgetLineCategoryPanel" icon="pi pi-times"/>
+        </p:outputPanel>
+
+    </p:dialog>
+</h:form>
+
+</ui:composition>

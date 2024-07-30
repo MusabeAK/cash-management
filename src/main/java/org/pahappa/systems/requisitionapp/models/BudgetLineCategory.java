@@ -8,7 +8,7 @@ import java.util.Objects;
 @Table(name = "budget_line_categories")
 public class BudgetLineCategory {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "budget_line_category_id")
     private int id;
 
@@ -63,8 +63,6 @@ public class BudgetLineCategory {
 
     @Override
     public String toString() {
-        return "BudgetLineCategory{" +
-                "categoryName='" + categoryName + '\'' +
-                '}';
+        return categoryName;
     }
 }

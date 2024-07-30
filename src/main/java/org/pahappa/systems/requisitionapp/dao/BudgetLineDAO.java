@@ -2,9 +2,11 @@ package org.pahappa.systems.requisitionapp.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.BudgetLineCategory;
+import org.pahappa.systems.requisitionapp.models.Requisition;
+import org.pahappa.systems.requisitionapp.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +16,7 @@ public class BudgetLineDAO {
 
     private final SessionFactory sessionFactory;
 
+    @Autowired
     public BudgetLineDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -51,5 +54,71 @@ public class BudgetLineDAO {
                 .list();
         return budgetLines;
     }
+
+    public BudgetLine getBudgetLineByTitle(String title) {
+        Session session = sessionFactory.getCurrentSession();
+        BudgetLine budgetLine = null;
+        try {
+            String hql = "FROM BudgetLine bl WHERE bl.title = :title";
+            budgetLine = (BudgetLine) session.createQuery(hql, BudgetLine.class)
+                    .setParameter("title", title)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return budgetLine;
+    }
+
+    public List<BudgetLine> searchBudgetLines(String searchTerm) {
+        String query = "FROM BudgetLine WHERE comment LIKE :searchTerm " +
+                "OR title LIKE :searchTerm ";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, BudgetLine.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
+    }
+
+    public List<Requisition> getBudgetLineRequisitions(long budgetLineId) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Requisition> requisitions = null;
+        try {
+            String hql = "FROM Requisition r WHERE r.budgetLine.id = :budgetLineId";
+            requisitions = session.createQuery(hql, Requisition.class)
+                    .setParameter("budgetLineId", budgetLineId)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return requisitions;
+    }
+
+    public List<BudgetLine> filterBudgetLineByCategory(BudgetLineCategory budgetLineCategory) {
+        List<BudgetLine> budgetLines = null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            String hql = "FROM BudgetLine bl WHERE bl.budgetLineCategory = :budgetLineCategory";
+            budgetLines = session.createQuery(hql, BudgetLine.class)
+                    .setParameter("budgetLineCategory", budgetLineCategory)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return budgetLines;
+    }
+
+    public List<BudgetLine> filterBudgetLineByStatus(String status) {
+        List<BudgetLine> budgetLines = null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            String hql = "FROM BudgetLine bl WHERE bl.status = :status";
+            budgetLines = session.createQuery(hql, BudgetLine.class)
+                    .setParameter("status", status)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return budgetLines;
+    }
+
 
 }

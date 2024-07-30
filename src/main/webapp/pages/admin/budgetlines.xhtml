@@ -1,11 +1,254 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
+
+    <ui:define name="content" class="form-container">
+        <style type="text/css">
+            .details-grid {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .details-grid td {
+                padding: 15px 10px;
+            }
+
+            .details-grid .ui-outputtext {
+                margin-bottom: 10px;
+            }
+
+            .details-grid tr {
+                height: 30px;
+            }
+
+            .full-width-panel {
+                width: 100%;
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                margin-bottom: 20px;
+                padding: 10px 10px 30px;
+            }
+
+            .panel-header {
+                display: block;
+                text-align: center;
+                align-items: center;
+                font-weight: bold;
+                margin-bottom: 15px;
+                text-decoration: underline;
+            }
+
+            .pipeline {
+                width: 100%;
+                position: relative;
+            }
+
+            .custom-progress {
+                width: 100% !important;
+                height: 20px !important;
+            }
+
+            .status-container {
+                display: flex;
+                justify-content: space-between;
+                position: relative;
+                height: 20px;
+                margin-top: 5px;
+            }
+
+            .status {
+                position: relative;
+                text-align: center;
+                font-size: 12px;
+                width: 25%;
+            }
+        </style>
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+        <f:event type="preRenderComponent" listener="#{budgetLineCategoryManagedBean.cancelCurrentForm()}" />
+
+        <h:panelGroup layout="block" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
+            <h:outputText value="Budget Lines" styleClass="top-bar-title" />
+        </h:panelGroup>
+
+        <div class="content">
+
+            <h:form id="budgetLine" style="margin-top: 20px">
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true"
+                                 width="350">
+                    <p:commandButton value="No" type="button"
+                                     styleClass="ui-confirmdialog-no ui-button-flat"/>
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" style="background-color: #EC1212 !important; border: #EC1212 !important;" update=":usersForm:usersTable"/>
+                </p:confirmDialog>
+
+                <div class="cards-container">
+                    <h:panelGroup class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
+                            <h:outputText id="card1" value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Total Balance in All Active Budget Lines" styleClass="card-title"/>
+                            <h:outputText id="card2" value="#{budgetLineCategoryManagedBean.budgetLineSummedTotal}" styleClass="card-number"/>
+                        </div>
+                    </h:panelGroup>
+
+                    <h:panelGroup class="card">
+                        <i class="pi pi-users card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Active Budget Lines" styleClass="card-title"/>
+                            <h:outputText id="card3" value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
+                        </div>
+                    </h:panelGroup>
+                </div>
+
+<!--                <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">-->
+<!--                    <p:autoUpdate/>-->
+<!--                </p:growl>-->
+
+
+
+                <h:panelGroup id="budgetLineTable"
+                              rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES') and (budgetLineCategoryManagedBean.currentForm == null)}">
+
+                    <div class="search-container">
+                        <h3>All Budget Lines</h3>
+                        <div class="search-and-filter">
+                            <div class="search-and-filter">
+                                <div class="search">
+                                    <p:inputText id="budgetLineSearchBar" value="#{budgetLineCategoryManagedBean.searchQuery}" styleClass="search-bar" placeholder="Search...">
+                                        <p:ajax event="keyup" update=":budgetLine:budgetLineTable" listener="#{budgetLineCategoryManagedBean.searchBudgetLines}"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="filter">
+                                    <h:selectOneMenu value="#{budgetLineCategoryManagedBean.selectedStatus}" styleClass="gender-filter">
+                                        <f:selectItem itemLabel="Status" itemValue="#{null}" />
+                                        <f:selectItems value="#{budgetLineCategoryManagedBean.budgetLineStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+                                        <p:ajax event="change" update=":budgetLine:budgetLineTable" listener="#{budgetLineCategoryManagedBean.filterBudgetLinesByStatus}"/>
+                                    </h:selectOneMenu>
+                                </div>
+                                <div class="filter">
+                                    <h:selectOneMenu value="#{budgetLineCategoryManagedBean.selectedCategory}" styleClass="gender-filter">
+                                        <f:selectItem itemLabel="Category" itemValue="#{null}" />
+                                        <f:selectItems value="#{budgetLineCategoryManagedBean.uniqueBudgetLineCategories}" var="category" itemLabel="#{category.categoryName}" itemValue="#{category}" />
+                                        <f:converter converterId="budgetLineCategoryConverter" />
+                                        <p:ajax event="change" update=":budgetLine:budgetLinesTable" listener="#{budgetLineCategoryManagedBean.filterBudgetLinesByCategory}"/>
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-header">
+                        <h:outputText value="#{budgetLineCategoryManagedBean.filteredBudgetLines.size()}#{budgetLineCategoryManagedBean.budgetLinesStringLabel()}" styleClass="total-users"/>
+                        <div class="table-header-buttons">
+                            <p:commandButton
+                                    icon="pi pi-plus"
+                                    actionListener="#{budgetLineCategoryManagedBean.prepareCreateBudgetLine()}"
+                                    update=":budgetLine:budgetLineTable :formAddBudgetLine @form"
+                                    rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE')}"
+                                    style="margin-right: 20px"
+                                    value="Add Budget Line"
+                                    styleClass="add-button"
+                                    process="@this">
+                            </p:commandButton>
+
+                        </div>
+                    </div>
+
+                    <p:dataTable value="#{budgetLineCategoryManagedBean.filteredBudgetLines}"
+                                 rendered="#{loginBean.hasPermission('VIEW_BUDGET_LINES')}"
+                                 var="budgetLine"
+                                 paginator="true"
+                                 rows="5"
+                                 selection="#{budgetLineCategoryManagedBean.selectedBudgetLine}"
+                                 selectionMode="single"
+                                 rowKey="#{budgetLine.id}"
+                                 id="budgetLinesTable"
+                                 paginatorPosition="bottom">
+                        <p:ajax event="rowSelect" process="budgetLinesTable"
+                                listener="#{budgetLineCategoryManagedBean.rowSelect}"
+                                update=":budgetLine:budgetLineTable :formReviewBudgetLine @form" />
+
+
+                        <p:column headerText="Id">
+                            <h:outputText value="#{budgetLineCategoryManagedBean.convertBudgetLineIdToString(budgetLine.id)}"/>
+                        </p:column>
+
+
+                        <p:column headerText="Title">
+                            <h:outputText value="#{budgetLine.title}"/>
+                        </p:column>
+
+                        <p:column headerText="Initial Amount">
+                            <h:outputText value="#{budgetLine.initialAmount}"/>
+                        </p:column>
+
+                        <p:column headerText="Current Balance">
+                            <h:outputText value="#{budgetLine.balance}"/>
+                        </p:column>
+
+                        <p:column headerText="Start Date">
+                            <h:outputText value="#{budgetLine.startDate}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="End Date">
+                            <h:outputText value="#{budgetLine.endDate}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Status">
+                            <h:outputText value="#{budgetLine.status}"/>
+                        </p:column>
+
+                        <p:column headerText="Budget Line Category">
+                            <h:outputText value="#{budgetLine.budgetLineCategory.categoryName}"/>
+                        </p:column>
+
+                        <p:column headerText="Actions" rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE') or loginBean.hasPermission('DELETE_BUDGET_LINE')}">
+                            <p:commandButton icon="pi pi-pencil"
+                                             rendered="#{loginBean.hasPermission('EDIT_BUDGET_LINE') and budgetLine.status == 'DRAFT'}"
+                                             styleClass="edit-button"
+                                             action="#{budgetLineCategoryManagedBean.prepareEditBudgetLine(budgetLine)}"
+                                             update="@form :budgetLine:budgetLineTable :formUpdateBudgetLine :budgetLine:card2 :budgetLine:card3"/>
+
+                            <p:commandButton icon="pi pi-trash" styleClass="delete-button" rendered="#{loginBean.hasPermission('DELETE_BUDGET_LINE')}" action="#{budgetLineCategoryManagedBean.deleteBudgetLine(budgetLine)}" update="@form :budgetLine:budgetLineTable :budgetLine:card2 :budgetLine:card3" >
+                                <p:confirm header="Confirm Deletion" message="Do you want to delete this Budget Line?"
+                                           icon="pi pi-info-circle"/>
+                            </p:commandButton>
+
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+
+            <h:panelGroup id="formAddBudgetLine">
+                <ui:include src="#{budgetLineCategoryManagedBean.currentForm == 'create_budget_line' ? '/pages/admin/fragments/budgetlines/add_budgetline.xhtml':null}" />
+            </h:panelGroup>
+
+
+            <h:panelGroup id="formUpdateBudgetLine">
+                <ui:include src="#{budgetLineCategoryManagedBean.currentForm == 'edit_budget_line' ? '/pages/admin/fragments/budgetlines/update_budgetline.xhtml':null}" />
+            </h:panelGroup>
+
+            <h:panelGroup id="formReviewBudgetLine">
+                <ui:include src="#{budgetLineCategoryManagedBean.currentForm == 'review_budget_line' ? '/pages/admin/fragments/budgetlines/review_budgetline.xhtml':null}" />
+            </h:panelGroup>
+            <!-- Dialogs -->
+
+        </div>
+    </ui:define>
+</ui:composition>

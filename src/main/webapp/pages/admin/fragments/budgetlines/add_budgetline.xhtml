@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="addBudgetLineForm" rendered="#{loginBean.hasPermission('CREATE_BUDGET_LINE')}">
+        <p:outputPanel id="addBudgetPanel" rendered="#{budgetLineCategoryManagedBean.currentForm != null}">
+            <div class="inner-div">
+                <h3>Create Budget Line</h3>
+
+                <p:messages id="addBudgetPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+
+                <p:panelGrid columns="2" styleClass="custom-grid" >
+                    <p:outputLabel for="budgetLineCategoryName" value="Budget Line Category: "/>
+                    <p:autoComplete id="budgetLineCategoryName"
+                                    value="#{budgetLineCategoryManagedBean.budgetLineCategoryName}"
+                                    completeMethod="#{budgetLineCategoryManagedBean.budgetLineCategoryList}"
+                                    required="true"
+                                    style="width: 100%"
+                                    requiredMessage="Budget Line Category is required">
+                    </p:autoComplete>
+
+                    <p:outputLabel for="budgetLineName" value="Budget Line Title: "/>
+                    <p:inputText id="budgetLineName" value="#{budgetLineCategoryManagedBean.newBudgetLine.title}" required="true" requiredMessage="Budget Line Title is required" validatorMessage="Invalid Title">
+                        <f:validateLength minimum="3" maximum="32"/>
+                    </p:inputText>
+
+                    <p:outputLabel for="budgetLineAmount" value="Budget Line Amount: "/>
+                    <p:inputText id="budgetLineAmount" placeholder="UGX..." value="#{budgetLineCategoryManagedBean.newBudgetLine.initialAmount}" required="true" requiredMessage="Add an amount" validatorMessage="Amount must be a number">
+                        <f:convertNumber/>
+                    </p:inputText>
+
+                    <p:outputLabel for="budgetLineStartDate" value="Start Date: "  />
+                    <p:datePicker id="budgetLineStartDate"
+                                  value="#{budgetLineCategoryManagedBean.newBudgetLine.startDate}"
+                                  pattern="dd-MM-yyyy" showOnFocus="true" showTime="false"
+                                  timeInput="false" required="true"
+                                  style="width: 100%"
+                                  requiredMessage="Please add a budget line start date"/>
+
+                    <p:outputLabel for="budgetLineEndDate" value="End Date: "  />
+                    <p:datePicker id="budgetLineEndDate"
+                                  value="#{budgetLineCategoryManagedBean.newBudgetLine.endDate}"
+                                  pattern="dd-MM-yyyy" showOnFocus="true"
+                                  showTime="false" timeInput="false"
+                                  required="true"
+                                  style="width: 100%"
+                                  requiredMessage="Please add a budget line end date"/>
+
+                </p:panelGrid>
+
+                <p:commandButton value="Add" styleClass="custom-button1"
+                                 oncomplete="handleCreateOnComplete(xhr, status, args)"
+                                 update=":addBudgetLineForm:addBudgetPanel"
+                                 actionListener="#{budgetLineCategoryManagedBean.addBudgetLineToBudgetLineCategory}" icon="pi pi-check"
+                                 action="#{budgetLineCategoryManagedBean.loadBudgetLineCategories}"/>
+
+
+                <p:commandButton value="Cancel" icon="pi pi-times" styleClass="custom-button2" process="@this"
+                                 actionListener="#{requisitionBean.cancelCurrentForm()}" oncomplete="window.location.reload();"
+                                 update=":addBudgetLineForm:addBudgetPanel"/>            </div>
+        </p:outputPanel>
+
+</h:form>
+
+</ui:composition>

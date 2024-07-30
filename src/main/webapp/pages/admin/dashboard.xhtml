@@ -1,11 +1,140 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
+
+    <ui:define name="content" class="form-container">
+
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+
+        <h:panelGroup layout="block" rendered="#{loginBean.hasPermission('VIEW_DASHBOARD')}" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
+            <h:outputText value="Dashboard" styleClass="top-bar-title" />
+        </h:panelGroup>
+
+        <div class="content">
+            <h:form id="mainView" rendered="#{loginBean.hasPermission('VIEW_DASHBOARD')}">
+                <p:messages id="messages" showDetail="false" closable="true" severity="info, error">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
+                </p:confirmDialog>
+
+                <div class="cards-container">
+                    <div class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
+                            <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <i class="pi pi-key card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Number of Registered Users" styleClass="card-title"/>
+                            <h:outputText value="#{userBean.users.size()}" styleClass="card-number"/>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <i class="pi pi-users card-icon"/>
+                        <div class="card-content">
+                            <h:outputText value="Active Budget Lines" styleClass="card-title"/>
+                            <h:outputText value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart pie-chart">
+                        <h3 class="chart-title">Requisitions with and without Accountability</h3>
+                        <p:barChart type="bar" id="barChart1" model="#{newChartBean.accountabilityModel}" styleClass="custom-chart" style="width: 100%; height: 400px;" />
+                    </div>
+                    <div class="chart pie-chart">
+                        <h3 class="chart-title">Budget Lines Status</h3>
+                        <p:pieChart type="pie" id="pieChart1" model="#{newChartBean.pieModel2}" styleClass="custom-chart" style="width: 100%; height: fit-content;" />
+                    </div>
+                    <div class="chart pie-chart full-width">
+                        <h3 class="chart-title">Frequency of requisitions</h3>
+                        <p:barChart type="bar" id="barChart2" model="#{newChartBean.requisitionFrequencyModel}" styleClass="custom-chart" style="width: 100%; height: 400px;" />
+                    </div>
+
+                </div>
+
+            </h:form>
+        </div>
+
+        <style>
+            .charts-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 20px;
+            }
+
+            .chart {
+                flex: 1 1 calc(50% - 20px);
+                min-width: 300px;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .chart.full-width {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+
+            @media (max-width: 768px) {
+                .chart {
+                    flex: 1 1 100%;
+                }
+            }
+
+            .custom-chart {
+                width: 100% !important;
+                max-width: 100%;
+                height: 400px;
+                position: relative;
+            }
+
+            .chart-title {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                color: #343C6A;
+                margin-bottom: 10px;
+            }
+
+            .pie-chart .custom-chart {
+                width: 80% !important;
+                height: fit-content !important;
+            }
+
+            .full-width .custom-chart {
+                max-width: 100%;
+            }
+        </style>
+
+        <script type="text/javascript">
+            function customizePieChart() {
+                this.cfg.legend= {
+                    show: true,
+                    location: 's',
+                    placement: 'outsideGrid'
+                };
+            }
+
+        </script>
+    </ui:define>
+</ui:composition>

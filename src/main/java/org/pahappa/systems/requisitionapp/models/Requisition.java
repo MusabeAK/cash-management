@@ -4,13 +4,15 @@ import org.pahappa.systems.requisitionapp.models.utils.RequisitionStatus;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
 @Table(name = "requisitions")
 public class Requisition {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "requisition_id")
     private int id;
 
@@ -32,6 +34,24 @@ public class Requisition {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private RequisitionStatus status;
+
+    @Column(name = "draft_timestamp")
+    private Date draftTimestamp;
+
+    @Column(name = "hr_reviewed_timestamp")
+    private Date hrReviewedTimestamp;
+
+    @Column(name = "ceo_approved_timestamp")
+    private Date ceoApprovedTimestamp;
+
+    @Column(name = "rejected_timestamp")
+    private Date rejectedTimestamp;
+
+    @Column(name = "disbursed_timestamp")
+    private Date disbursedTimestamp;
+
+    @Column(name = "submitted_timestamp")
+    private Date submittedTimestamp;
 
     @ManyToOne
     @JoinColumn(name = "budget_line_id")
@@ -99,6 +119,94 @@ public class Requisition {
 
     public void setStatus(RequisitionStatus status) {
         this.status = status;
+        Date now = new Date();
+        switch (status) {
+            case DRAFT:
+                this.draftTimestamp = now;
+                break;
+            case HR_REVIEWED:
+                this.hrReviewedTimestamp = now;
+                break;
+            case CEO_APPROVED:
+                this.ceoApprovedTimestamp = now;
+                break;
+            case REJECTED:
+                this.rejectedTimestamp = now;
+                break;
+            case DISBURSED:
+                this.disbursedTimestamp = now;
+                break;
+            case SUBMITTED:
+                this.submittedTimestamp = now;
+                break;
+        }
+    }
+
+    public Date getStatusTimestamp(RequisitionStatus status) {
+        switch (status) {
+            case DRAFT:
+                return draftTimestamp;
+            case HR_REVIEWED:
+                return hrReviewedTimestamp;
+            case CEO_APPROVED:
+                return ceoApprovedTimestamp;
+            case REJECTED:
+                return rejectedTimestamp;
+            case DISBURSED:
+                return disbursedTimestamp;
+            case SUBMITTED:
+                return submittedTimestamp;
+            default:
+                return null;
+        }
+    }
+
+    public Date getDraftTimestamp() {
+        return draftTimestamp;
+    }
+
+    public void setDraftTimestamp(Date draftTimestamp) {
+        this.draftTimestamp = draftTimestamp;
+    }
+
+    public Date getHrReviewedTimestamp() {
+        return hrReviewedTimestamp;
+    }
+
+    public void setHrReviewedTimestamp(Date hrReviewedTimestamp) {
+        this.hrReviewedTimestamp = hrReviewedTimestamp;
+    }
+
+    public Date getCeoApprovedTimestamp() {
+        return ceoApprovedTimestamp;
+    }
+
+    public void setCeoApprovedTimestamp(Date ceoApprovedTimestamp) {
+        this.ceoApprovedTimestamp = ceoApprovedTimestamp;
+    }
+
+    public Date getRejectedTimestamp() {
+        return rejectedTimestamp;
+    }
+
+    public void setRejectedTimestamp(Date rejectedTimestamp) {
+        this.rejectedTimestamp = rejectedTimestamp;
+    }
+
+    public Date getDisbursedTimestamp() {
+        return disbursedTimestamp;
+    }
+
+    public void setDisbursedTimestamp(Date disbursedTimestamp) {
+        this.disbursedTimestamp = disbursedTimestamp;
+    }
+
+    public Date getSubmittedTimestamp() {
+        return submittedTimestamp;
+    }
+
+    public void setSubmittedTimestamp(Date submittedTimestamp) {
+        this.submittedTimestamp = submittedTimestamp;
     }
 
     public BudgetLine getBudgetLine() {

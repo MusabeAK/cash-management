@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "budget_lines")
 public class BudgetLine {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "budget_line_id")
     private long id;
 
@@ -24,6 +24,9 @@ public class BudgetLine {
     @Column(name = "balance")
     private int balance;
 
+    @Column(name = "float_amount")
+    private int floatAmount;
+
     @Column(name = "start_date")
     private Date startDate;
 
@@ -33,6 +36,7 @@ public class BudgetLine {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private BudgetLineStatus status;
+
 
     @OneToMany(mappedBy = "budgetLine")
     private List<Requisition> requisitions;
@@ -123,6 +127,14 @@ public class BudgetLine {
         this.balance = balance;
     }
 
+    public int getFloatAmount() {
+        return floatAmount;
+    }
+
+    public void setFloatAmount(int floatAmount) {
+        this.floatAmount = floatAmount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -138,14 +150,6 @@ public class BudgetLine {
 
     @Override
     public String toString() {
-        return "BudgetLine{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", initialAmount=" + initialAmount +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", status=" + status +
-                ", budgetLineCategory=" + budgetLineCategory +
-                '}';
+        return title;
     }
 }

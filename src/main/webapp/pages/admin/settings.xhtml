@@ -1,11 +1,98 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
+    <ui:define name="content" class="form-container">
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+        <f:event listener="#{userBean.loadCurrentUser()}" type="preRenderView"/>
+
+        <h:panelGroup layout="block" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
+            <h:outputText value="Settings" styleClass="top-bar-title" />
+        </h:panelGroup>
+        <div class="content">
+            <p:outputPanel id="editUserPanel" rendered="true" styleClass="wrap-panel">
+                <div class="inner-div">
+                    <h3>Edit Your Profile</h3>
+                    <p:messages id="editUserPanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <h:form >
+                        <p:panelGrid columns="2" styleClass="custom-grid">
+                            <p:outputLabel for="userName" value="User Name">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="userName" value="#{userBean.currentUser.username}" required="true" requiredMessage="Username is required" validatorMessage="Invalid Username">
+                                    <f:validateRegex pattern="[a-zA-Z0-9_]*"/>
+                                    <f:validateLength minimum="3" maximum="16"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+
+                            <p:outputLabel for="efirstName" value="First Name">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="efirstName" value="#{userBean.currentUser.firstName}" required="true" requiredMessage="First name is required" validatorMessage="Invalid first name">
+                                    <f:validateRegex pattern="[a-zA-Z]*"/>
+                                    <f:validateLength minimum="3" maximum="32"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+                            <p:outputLabel for="elastName" value="Last Name">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="elastName" value="#{userBean.currentUser.lastName}" rendered="true" required="true" requiredMessage="Last name is required" validatorMessage="Invalid last name">
+                                    <f:validateRegex pattern="[a-zA-Z]*"/>
+                                    <f:validateLength minimum="3" maximum="32"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+                            <p:outputLabel for="eemail" value="Email:">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="eemail" value="#{userBean.currentUser.email}" required="true" requiredMessage="Email address is required" validatorMessage="Invalid email address">
+                                    <f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)"/>
+                                </p:inputText>
+                            </p:outputLabel>
+
+                            <p:outputLabel for="epassword" value="Password">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:password id="epassword" value="#{userBean.currentUser.password}"  />
+                            </p:outputLabel>
+
+                            <p:outputLabel for="ephone" value="Phone Number">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:inputText id="ephone" value="#{userBean.currentUser.phoneNumber}"  />
+                            </p:outputLabel>
+
+                            <p:outputLabel for="egender" value="Gender:">
+                                <div style="height: 6px">
+
+                                </div>
+                                <p:selectOneMenu id="egender" value="#{userBean.currentUser.gender}" style="width: 90%">
+                                    <f:selectItem itemLabel="Select Gender" itemValue="" />
+                                    <f:selectItems value="#{userBean.availableGenders}" var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
+                                </p:selectOneMenu>
+                            </p:outputLabel>
+                        </p:panelGrid>
+                        <p:commandButton value="Update" oncomplete="handleEditUserOnClick(xhr, status, args)" actionListener="#{userBean.updateCurrentUser}" icon="pi pi-pencil" styleClass="custom-button3" />
+                    </h:form>
+
+                </div>
+        </p:outputPanel>
+        </div>
+    </ui:define>
+</ui:composition>

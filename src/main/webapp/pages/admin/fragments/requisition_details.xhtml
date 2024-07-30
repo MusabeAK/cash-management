@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="requisitionDetailsForm" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+        <p:outputPanel id="requisitionDetailsPanel" styleClass="requisition-details-panel" rendered="#{requisitionBean.currentForm != null}">
+            <div class="inner-div">
+                <h3><h:outputText value="Requisition #{requisitionBean.convertIdToString(requisitionBean.selectedRequisition.id)}" /></h3>
+                <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+
+
+                <h:outputText value="No requisition selected" rendered="#{requisitionBean.selectedRequisition == null}" />
+
+                <h:panelGroup columns="1" rendered="#{requisitionBean.selectedRequisition != null}" layout="block">
+                    <h:panelGroup layout="block" styleClass="full-width-panel" rendered="#{requisitionBean.selectedRequisition.status != 'REJECTED'}">
+                        <h3>Status</h3>
+                        <div class="pipeline">
+                            <div class="card">
+                                <!-- PrimeFaces Steps Component -->
+                                <p:steps model="#{requisitionBean.stepModel}" activeIndex="#{requisitionBean.overallProgress}"  styleClass="custom-steps "/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+                    <h:panelGrid columns="1" styleClass="details-grid" cellpadding="10px" columnClasses="column-1, column-2">
+
+                        <h:panelGrid columns="2" styleClass="details-grid" columnClasses="column-1, column-2">
+                            <h:panelGroup layout="block" styleClass="field-group">
+                                <h:outputLabel value="Reason" />
+                                <h:outputText value="#{ requisitionBean.selectedRequisition.subject}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup layout="block" styleClass="field-group">
+                                <h:outputLabel value="Amount" />
+                                <h:outputText value="#{requisitionBean.selectedRequisition.amount}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2" styleClass="details-grid" columnClasses="column-1, column-2">
+
+                            <h:panelGroup layout="block" styleClass="field-group">
+                                <h:outputLabel value="Budget Line" />
+                                <h:outputText value="#{requisitionBean.selectedRequisition.budgetLine.title}"/>
+                            </h:panelGroup>
+
+                            <h:panelGroup layout="block" styleClass="field-group">
+                                <h:outputLabel value="Date Needed" />
+                                <h:outputText value="#{requisitionBean.selectedRequisition.dateNeeded}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy" timeZone="Africa/Kampala"/>
+                                </h:outputText>
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status != 'DISBURSED'}">
+                            <h:outputLabel value="Time Since Submitted" />
+                            <h:outputText value="#{requisitionBean.timeSinceSubmitted}"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.comment != null and requisitionBean.selectedRequisition.comment != ''}">
+                            <h:outputLabel value="Comment:" />
+                            <h:outputText value="#{requisitionBean.selectedRequisition.comment}" />
+                        </h:panelGroup>
+
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'HR_REVIEWED'}">
+                            <h:outputLabel value="Time from Submitted to Reviewed" />
+                            <h:outputText value="#{requisitionBean.submittedToReviewedTime}"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'REJECTED'}">
+                            <h:outputLabel value="Time from Submitted to Rejected" />
+                            <h:outputText value="#{requisitionBean.submittedToRejectedTime}"/>
+                        </h:panelGroup>
+
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
+                            <h:outputLabel value="Time from Submitted to Approved" />
+                            <h:outputText value="#{requisitionBean.submittedToApprovedTime}"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}">
+                            <h:outputLabel value="Time from Submitted to Disbursed" />
+                            <h:outputText value="#{requisitionBean.submittedToDisbursedTime}"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'CEO_APPROVED'}">
+                            <h:outputLabel value="Time from Reviewed to Approved" />
+                            <h:outputText value="#{requisitionBean.reviewedToApprovedTime}"/>
+                        </h:panelGroup>
+
+
+                        <h:panelGroup layout="block" styleClass="field-group" rendered="#{requisitionBean.selectedRequisition.status == 'DISBURSED'}">
+                            <h:outputLabel value="Time from Approved to Disbursed" />
+                            <h:outputText value="#{requisitionBean.approvedToDisbursedTime}"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" styleClass="field-group">
+                            <h:outputLabel value="Description" />
+                            <h:outputText value="#{requisitionBean.selectedRequisition.description}" />
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                </h:panelGroup>
+
+                <p:commandButton value="Print" type="button" icon="pi pi-print" styleClass="custom-button3">
+                    <p:printer target="requisitionDetailsPanel"/>
+                </p:commandButton>
+
+                <p:commandButton value="Back" icon="pi pi-arrow-left" styleClass="custom-button2" process="@this"
+                                 actionListener="#{requisitionBean.cancelCurrentForm()}"
+                                 oncomplete="window.location.reload();"
+                                 update=":requisitionDetailsForm:requisitionDetailsPanel " style="float: right; background-color: gray !important"/>
+            </div>
+
+        </p:outputPanel>
+    </h:form>
+</ui:composition>

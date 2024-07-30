@@ -7,4 +7,35 @@
 <application>
 <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
 </application>
+
+    <managed-bean>
+        <managed-bean-name>budgetLineCategoryManagedBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.BudgetLineCategoryManagedBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>requisitionBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.RequisitionBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>accountabilityBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.AccountabilityBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>newChartBean</managed-bean-name>
+        <managed-bean-class>org.pahappa.systems.requisitionapp.views.utils.NewChartBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <converter>
+        <converter-id>budgetLineCategoryConverter</converter-id>
+        <converter-class>org.pahappa.systems.requisitionapp.views.utils.BudgetLineCategoryConverter</converter-class>
+    </converter>
+
+
 </faces-config>

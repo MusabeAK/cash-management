@@ -1,0 +1,256 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/template/template.xhtml">
+    <ui:define name="content" class="form-container">
+    <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+
+        <script type="text/javascript">
+            function handleAddUserOnClick(xhr, status, args) {
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('addUserDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
+                }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('addUserDialog').hide();
+            }
+
+            function handleEditUserOnClick(xhr, status, args) {
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editUserDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
+                }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editUserDialog').hide();
+            }
+
+            function addRoleOnClick(xhr, status, args) {
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editRoleDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
+                }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editRoleDialog').hide();
+            }
+
+            function editRoleOnClick(xhr, status, args) {
+                // Check if there are any error messages with severity 'error'
+                var errorMessages = PF('editRoleDialog').jq.find('.ui-messages-error');
+
+                if (args.validationFailed || errorMessages.length > 0) {
+                    // If there are validation errors or error messages, do not hide the dialog
+                    return;
+                }
+
+                // If no validation errors or error messages, hide the dialog
+                PF('editRoleDialog').hide();
+            }
+
+        </script>
+
+        <style type="text/css">
+            .column-1 {
+                width: 20%;
+            }
+            .column-2 {
+                width: 80%;
+            }
+        </style>
+
+        <f:event type="preRenderComponent" listener="#{navigationBean.updateActivePage}" />
+
+        <h:panelGroup layout="block" styleClass="top-bar">
+            <span class="menu-icon" onclick="toggleNav()">&#9776;</span>
+            <h:outputText value="Roles" styleClass="top-bar-title" />
+        </h:panelGroup>
+
+        <div class="content">
+        <h:form id="rolesForm">
+            <!--                <p:growl id="growl" showDetail="true" life="2000"  />-->
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true"
+                             width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" update=":rolesForm:rolesTable"/>
+            </p:confirmDialog>
+
+            <div class="cards-container">
+                <div class="card">
+                    <i class="pi pi-key card-icon"/>
+                    <div class="card-content">
+                        <h:outputText value="Total Amount Disbursed(UGX)" styleClass="card-title"/>
+                        <h:outputText value="#{requisitionBean.totalAmountDisbursed}" styleClass="card-number"/>
+                    </div>
+                </div>
+                <div class="card">
+                    <i class="pi pi-key card-icon"/>
+                    <div class="card-content">
+                        <h:outputText value="Number of Registered Users" styleClass="card-title"/>
+                        <h:outputText value="#{userBean.users.size()}" styleClass="card-number"/>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="pi pi-users card-icon"/>
+                    <div class="card-content">
+                        <h:outputText value="Active Budget Lines" styleClass="card-title"/>
+                        <h:outputText value="#{budgetLineCategoryManagedBean.activeBudgetLineCount}" styleClass="card-number"/>
+                    </div>
+                </div>
+            </div>
+
+            <p:growl showDetail="false" closable="true" severity="error, info" showSummary="true" life="3500">
+                <p:autoUpdate/>
+            </p:growl>
+            <h:panelGroup id="rolesTable" rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
+                <div class="search-container">
+                    <h3>All Roles</h3>
+                    <div class="search-and-filter">
+                        <div class="search">
+                            <p:inputText id="searchBar2" value="#{roleBean.searchQuery}" styleClass="search-bar" placeholder="Search..." rendered="#{loginBean.hasPermission('VIEW_ROLES')}">
+                                <p:ajax event="keyup" update=":rolesForm:rolesTable @form" listener="#{roleBean.searchRoles()}"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-header">
+                    <h:outputText value="#{roleBean.filteredRoles.size()} #{roleBean.rolesStringLabel()}" styleClass="total-users"/>
+                    <div class="table-header-buttons">
+                        <p:commandButton icon="pi pi-user-plus" update=":rolesForm:rolesTable :addRoleForm:addRolePanel" rendered="#{loginBean.hasPermission('CREATE_ROLE')}" value="Add Role" styleClass="add-button" oncomplete="PF('addRoleDialog').show()"/>
+
+                </div>
+            </div>
+
+                <p:dataTable rendered="#{loginBean.hasPermission('VIEW_ROLES')}" value="#{roleBean.filteredRoles}" var="role" paginator="true" rows="5" paginatorPosition="bottom">
+
+                    <p:column headerText="Id">
+                        <h:outputText value="#{roleBean.convertRoleIdToString(role.id)}"/>
+                    </p:column>
+
+                    <p:column headerText="Role Name">
+                        <h:outputText value="#{role.name}"/>
+                    </p:column>
+
+                    <p:column headerText="Permissions">
+                        <h:outputText value="#{role.permissions}"/>
+                    </p:column>
+
+
+                <p:column headerText="Actions">
+                    <p:commandButton value="Edit Role" rendered="#{loginBean.hasPermission('EDIT_ROLE') and role.name != 'ADMIN'}" styleClass="edit-button" action="#{roleBean.selectRole(role)}" oncomplete="PF('editRoleDialog').show();" update=":rolesForm:rolesTable :updateRoleForm:editRolePanel" style="font-size: medium !important"/>
+
+                    <p:commandButton value="Delete" rendered="#{loginBean.hasPermission('DELETE_ROLE') and role.name != 'ADMIN'}" action="#{roleBean.deleteRole(role)}" title="Delete" styleClass="delete-button" style="color:red;font-size: medium !important" update=":rolesForm:rolesTable">
+                        <p:confirm header="Confirm Deletion" message="Do you want to delete this Role?"
+                                   icon="pi pi-info-circle"/>
+                    </p:commandButton>
+                </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+
+        </h:form>
+        </div>
+
+        <!-- Dialogs -->
+
+        <h:form id="addRoleForm">
+            <p:dialog header="Add New Role."
+                      widgetVar="addRoleDialog"
+                      modal="true"
+                      resizable="true"
+                      minHeight="400"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closable="true"
+                      maximizable="true"
+                      minimizable="true"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="addRolePanel" rendered="true">
+                    <p:messages id="addRolePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid" columnClasses="column-1,column-2">
+                        <p:outputLabel for="roleName" value="Role Name">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="roleName" value="#{roleBean.roleName}" required="true" requiredMessage="Please add a role name">
+                            </p:inputText>
+                        </p:outputLabel>
+
+
+                        <h:outputLabel for="permissions" value="Select Permissions">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:selectManyCheckbox id="permissions" value="#{roleBean.selectedPermissions}" layout="grid" columns="3" style="height: 150px; overflow-y: scroll;" required="true" requiredMessage="Please select at least one permission">
+                                <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
+                            </p:selectManyCheckbox>
+                        </h:outputLabel>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Add" oncomplete="editRoleOnClick(xhr, status, args)" update=":rolesForm:rolesTable @form :addRoleForm:addRolePanel" actionListener="#{roleBean.createRole()}" icon="pi pi-check" styleClass="custom-button1"/>
+                    <p:commandButton value="Cancel" onclick="PF('addRoleDialog').hide();" icon="pi pi-times" styleClass="custom-button2" />
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="updateRoleForm">
+            <p:dialog header="Update Role"
+                      widgetVar="editRoleDialog"
+                      modal="true"
+                      resizable="true"
+                      minHeight="400"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closable="true"
+                      maximizable="true"
+                      minimizable="true"
+                      visible="#{facesContext.validationFailed}">
+                <p:outputPanel id="editRolePanel" rendered="true">
+                    <p:messages id="editRolePanelMessages" showDetail="false" closable="true" severity="error, info" showSummary="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panelGrid columns="2" styleClass="custom-grid" columnClasses="column-1,column-2">
+                        <p:outputLabel for="eroleName" value="Role Name">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:inputText id="eroleName" value="#{roleBean.selectedRole.name}" />
+                        </p:outputLabel>
+
+                        <h:outputLabel for="epermissions" value="Select Permissions">
+                            <div style="height: 8px">
+
+                            </div>
+                            <p:selectManyCheckbox id="epermissions" value="#{roleBean.updateSelectedPermissions}" layout="grid" columns="3" style="height: 150px; overflow-y: scroll;" required="true" requiredMessage="Please select at least one permission">
+                                <f:selectItems value="#{roleBean.availablePermissions}" var="permission" itemLabel="#{permission}" itemValue="#{permission}"/>
+                            </p:selectManyCheckbox>
+                        </h:outputLabel>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Update" update=":rolesForm:rolesTable @form :updateRoleForm:editRolePanel" actionListener="#{roleBean.updateRole}" icon="pi pi-check" styleClass="custom-button1" oncomplete="editRoleOnClick(xhr, status, args)"/>
+                    <p:commandButton value="Cancel" onclick="PF('editRoleDialog').hide();" icon="pi pi-times" styleClass="custom-button2" immediate="true" />
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

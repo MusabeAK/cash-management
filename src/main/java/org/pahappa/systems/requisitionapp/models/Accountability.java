@@ -1,5 +1,7 @@
 package org.pahappa.systems.requisitionapp.models;
 
+import org.pahappa.systems.requisitionapp.models.utils.AccountabilityStatus;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
@@ -8,13 +10,15 @@ import java.util.Objects;
 @Table(name = "accountabilities")
 public class Accountability {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "accountability_id")
     private long id;
 
     @Column(name = "description")
     private String description;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
     @Column(name = "amount_used")
@@ -23,6 +27,10 @@ public class Accountability {
     @OneToOne
     @JoinColumn(name = "requisition_id")
     private Requisition requisition;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private AccountabilityStatus status;
 
     public Accountability() {}
 
@@ -69,6 +77,14 @@ public class Accountability {
 
     public void setRequisition(Requisition requisition) {
         this.requisition = requisition;
+    }
+
+    public AccountabilityStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountabilityStatus status) {
+        this.status = status;
     }
 
     @Override

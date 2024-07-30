@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.pahappa.systems.requisitionapp.models.Accountability;
+import org.pahappa.systems.requisitionapp.models.BudgetLine;
 import org.pahappa.systems.requisitionapp.models.Requisition;
 import org.pahappa.systems.requisitionapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,32 @@ public class RequisitionDAO {
         return requisitions;
     }
 
+    public List<Requisition> getRequisitionsByBudgetLine(BudgetLine budgetLine) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Requisition> requisitions;
+        String hql = "FROM Requisition rq WHERE rq.budgetLine = :budgetLine";
+        requisitions = session.createQuery(hql, Requisition.class)
+                .setParameter("budgetLine", budgetLine)
+                .list();
+        return requisitions;
+    }
+
     public List<Requisition> searchRequisitions(String searchTerm) {
         String query = "FROM Requisition WHERE description LIKE :searchTerm " +
                 "OR subject LIKE :searchTerm";
         return sessionFactory.getCurrentSession()
                 .createQuery(query, Requisition.class)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
+    }
+
+    public List<Requisition> searchRequisitionsByUser(String searchTerm, User user) {
+        String query = "FROM Requisition WHERE user.username LIKE :user and (description LIKE :searchTerm " +
+                "OR subject LIKE :searchTerm)";
+        return sessionFactory.getCurrentSession()
+                .createQuery(query, Requisition.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .setParameter("user",   "%"+user.getUsername() + "%" )
                 .getResultList();
     }
 

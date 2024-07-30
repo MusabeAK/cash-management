@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+   <h:form id="createRequisitionForm" rendered="#{loginBean.hasPermission('VIEW_REQUISITIONS')}">
+      <p:outputPanel id="createRequisitionPanel" rendered="#{requisitionBean.currentForm != null}">
+         <div class="inner-div">
+            <h3>Create Requisition</h3>
+            <p:messages showDetail="false" closable="true" severity="error, info" showSummary="true">
+               <p:autoUpdate/>
+            </p:messages>
+            <h:outputText rendered="#{!loginBean.hasPermission('CREATE_REQUISITION')}" value="User does not have access to this function"/>
+
+            <p:panelGrid columns="2" styleClass="custom-grid" rendered="#{loginBean.hasPermission('CREATE_REQUISITION')}">
+               <p:outputLabel for="subject">Reason: </p:outputLabel>
+               <p:inputText id="subject" value="#{requisitionBean.newRequisition.subject}" required="true" requiredMessage="Add a reason for your requisition" validatorMessage="Reason can not be more than 60 characters">
+                  <f:validateLength maximum="60"/>
+               </p:inputText>
+
+               <p:outputLabel for="description">Description: </p:outputLabel>
+               <p:inputText id="description" value="#{requisitionBean.newRequisition.description}" required="true" requiredMessage="Add a description for your requisition" validatorMessage="Description can not be more than 255 characters">
+                  <f:validateLength maximum="255"/>
+               </p:inputText>
+
+               <p:outputLabel for="amount">Amount: </p:outputLabel>
+               <p:inputText id="amount" placeholder="UGX..." value="#{requisitionBean.newRequisition.amount}" required="true" requiredMessage="No amount given" validatorMessage="Amount should be a number">
+                  <f:convertNumber/>
+               </p:inputText>
+
+               <p:outputLabel for="budgetLineName" value="Budget Line: "/>
+               <p:autoComplete id="budgetLineName" value="#{requisitionBean.budgetLineName}" completeMethod="#{requisitionBean.searchBudgetLines}" required="true" requiredMessage="Select a budget line" style="width: 100%;"/>
+
+               <p:outputLabel for="editBudgetLineStartDate" value="Date Needed: "/>
+               <p:datePicker id="editBudgetLineStartDate" value="#{requisitionBean.newRequisition.dateNeeded}" pattern="dd-MM-yyyy" showOnFocus="true" showTime="false" timeInput="false" required="true" requiredMessage="Please add a date when you need this requisition" style="width: 100%;"/>
+            </p:panelGrid>
+
+            <p:commandButton value="Create" icon="pi pi-check" styleClass="custom-button1"
+                             actionListener="#{requisitionBean.makeRequisition}"
+                             action="#{budgetLineCategoryManagedBean.loadBudgetLines()}"
+                             oncomplete="handleCreateOnComplete(xhr, status, args)"
+                             update=":createRequisitionForm:createRequisitionPanel :userRequisitions:userRequisitionsTable"/>
+
+            <p:commandButton value="Back" icon="pi pi-arrow-left" styleClass="custom-button2" process="@this"
+                             actionListener="#{requisitionBean.cancelCurrentForm()}"
+                             oncomplete="window.location.reload();"
+                             update=":createRequisitionForm:createRequisitionPanel" style="float: right; background-color: gray !important"/>
+
+         </div>
+      </p:outputPanel>
+
+   </h:form>
+
+</ui:composition>
