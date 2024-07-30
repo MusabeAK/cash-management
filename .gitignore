@@ -7,7 +7,6 @@ bin/
 .DS_Store
 *.class
 .vscode/
-*.war
 target/
 *.jar
 *.idea/
